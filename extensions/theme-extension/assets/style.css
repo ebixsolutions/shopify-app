@@ -359,14 +359,14 @@ body:has(.ebix-modal.show) {
 }
 
 .offerType {
-    width: 150px;
+    width: 25%;
 }
 
 .offer-label {
     background: #fef445;
     font-weight: bold;
     color: #222;
-    width: 150px;
+    width: 25%;
     display: flex;
     align-items: center;
     font-size: 14px;
@@ -378,12 +378,14 @@ body:has(.ebix-modal.show) {
     color: #c0392b;
     padding: 5px;
     font-size: 14px;
+    width: 75%;
 }
 
 .offer-text {
     color: #c0392b;
     padding: 5px;
     font-size: 14px!important;
+    width: 75%;
 }
 
 .Promotion-List-block {
