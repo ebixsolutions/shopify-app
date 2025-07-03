@@ -1,0 +1,38 @@
+/* app/styles/styles.css */
+
+:root {
+  --p-color-bg-surface-connect: #fdf3d1;
+  --p-color-bg-surface-process: #eeeeee;
+}
+
+.Polaris-Button--variantPrimary {
+  background-color: #35beb2 !important;
+  /* Custom color for primary button */
+  border-color: #35beb2 !important;
+  box-shadow: none !important;
+  border-radius: 4px !important;
+}
+
+.Polaris-Button--variantPrimary:disabled {
+  background-color: #cccccc !important;
+  /* Custom disabled state color */
+  border-color: #cccccc !important;
+  box-shadow: none !important;
+  border-radius: 4px !important;
+}
+
+.Polaris-Checkbox__Input:checked~.Polaris-Checkbox__Icon,
+.Polaris-Checkbox__Input.Polaris-Checkbox__Input--indeterminate~.Polaris-Checkbox__Icon {
+  background: #0086d1 !important;
+  border-color: #0086d1 !important;
+}
+
+.Polaris-Choice__Descriptions {
+  padding: 0 !important;
+}
+
+.Polaris-RadioButton__Input:checked:not([disabled])+.Polaris-RadioButton__Backdrop,
+.Polaris-RadioButton__ChoiceLabel:hover .Polaris-RadioButton__Input:checked:not([disabled])+.Polaris-RadioButton__Backdrop {
+  background: #0086d1 !important;
+  border-color: #0086d1 !important;
+}

@@ -1,0 +1,11 @@
+.customSubscribeButton button,
+.customSubscribeButton button:hover {
+  color: white;
+  background: #2d9bf0;
+  box-shadow: none !important;
+  border-radius: 20px;
+}
+.textColor {
+  font-size: smaller;
+  color: #1e913a;
+}

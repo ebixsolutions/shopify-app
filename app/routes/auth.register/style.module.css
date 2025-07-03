@@ -1,0 +1,16 @@
+.pageContainer {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #0086d1;
+  color: #4d544d;
+}
+.logo {
+  width: 115px;
+}
+
+.registerCard {
+  width: 280px;
+}

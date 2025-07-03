@@ -1,0 +1,68 @@
+.customTable th,
+td {
+  font-weight: 700;
+  width: 98px;
+  display: inline-block;
+}
+
+.customTable {
+  display: inline;
+}
+
+.customTable tr th {
+  border: 0 !important;
+}
+
+.customTable div {
+  border-radius: 0px !important;
+}
+
+.customTable tr th:first-child {
+  width: 250px;
+}
+
+.customCard {
+  padding-bottom: 15px;
+}
+
+.customTable tr td:last-child {
+  float: right;
+}
+
+.customTable tbody tr,
+.customTable tbody tr:hover,
+.customTable tbody tr:hover th,
+.customTable tbody tr:hover td {
+  background-color: #eeeeee;
+}
+
+.customSubscribeButton button,
+.customSubscribeButton button:hover {
+  color: white;
+  background: #2d9bf0;
+  box-shadow: none !important;
+  border-radius: 20px;
+}
+
+.customActiveButton button,
+.customActiveButton button:hover {
+  font-weight: bold;
+  background: #affebf;
+  box-shadow: none !important;
+  border-radius: 20px;
+}
+
+.customInactiveButton button,
+.customInactiveButton button:hover {
+  color: #fff;
+  background: #999999;
+  box-shadow: none !important;
+  border-radius: 20px;
+}
+
+.customEditButton button {
+  color: #1a1a1a;
+  background: #fff;
+  border-radius: 0px;
+  border: 1px solid black;
+}

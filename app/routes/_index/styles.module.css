@@ -1,0 +1,25 @@
+
+.logo {
+  width: 115px;
+}
+.pageContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #0086d1;
+  color: "#4D544D";
+}
+.title {
+  font-size: 40px;
+  font-weight: bold;
+  color: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.loginCard {
+  width: 280px;
+}
+.loginButton {
+  margin-top: 5px;
+}

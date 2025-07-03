@@ -1,0 +1,79 @@
+.logo {
+    width: 90px;
+    margin: 0 auto;
+    margin-top: 30px;
+}
+
+.alert {
+    width: 20px;
+    height: 20px;
+}
+
+.customCard {
+    border: 3px solid #d69e2e;
+}
+
+.iconTextWrapper {
+    display: flex;
+}
+
+.progress {
+    margin-top: 8px;
+}
+
+.customCard .iconTextWrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.customCard .iconWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.customButton button,
+.customButton button:hover {
+    color: white;
+    background: #d69e2e;
+    margin-top: 5px;
+    margin-left: 30px;
+    border-radius: 0px;
+    box-shadow: none !important;
+}
+
+.customCreateButton button,
+.customCreateButton button:hover {
+    color: white;
+    background: #1a1a1a;
+    border-radius: 0px;
+    box-shadow: none !important;
+}
+
+.customTaskButton button,
+.customTaskButton button:hover {
+    color: #1a1a1a;
+    background: #fff;
+    border-radius: 20px;
+    margin-top: 5px;
+}
+
+.customEditButton button {
+    color: #1a1a1a;
+    background: #fff;
+    border-radius: 0px;
+    border: 1px solid black;
+}
+
+.bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+
+.customSpiner svg,
+.bar svg {
+    fill: #2d9bf0;
+}

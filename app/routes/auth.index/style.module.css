@@ -1,0 +1,19 @@
+.logo {
+  width: 115px;
+}
+
+.pageContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #0086d1;
+  color: "#4D544D";
+}
+
+.loginCard {
+  width: 280px;
+}
+.loginButton {
+  margin-top: 5px;
+}

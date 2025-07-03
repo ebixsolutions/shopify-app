@@ -1,0 +1,45 @@
+.logo {
+  width: 115px;
+}
+
+.pageContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #0086d1;
+  color: "#4D544D";
+}
+.status {
+  font-size: 1.2em;
+  color: white;
+}
+
+.description {
+  font-size: 1em;
+  color: white;
+}
+.progressBar {
+  width: 250px;
+  height: 10px;
+  background: #cfd8dc;
+  margin: 0 auto;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.progress {
+  width: 50%;
+  height: 100%;
+  background: #42a5f5;
+  animation: loading 10s infinite;
+}
+
+@keyframes loading {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}

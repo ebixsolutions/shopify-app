@@ -1,0 +1,395 @@
+#ebix-embeded-btn {
+    position: fixed;
+    z-index: 2147483647 !important;
+    background-color: #fff;
+    text-align: center;
+    border-radius: 50%;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, .2);
+    cursor: pointer;
+    height: 60px;
+    width: 60px;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    animation: ebix-embeded-shake 0.3s;
+    animation-iteration-count: 1;
+    transition: all .25s;
+}
+
+#ebix-embeded-btn:hover {
+    box-shadow: 0 0 15px 0 rgba(0, 0, 0, .3);
+}
+
+#ebix-loyalty-card {
+    display: none;
+}
+
+#ebix-referral-card {
+    display: none;
+}
+
+.ebix-embeded-close-btn {
+    position: absolute;
+    top: -12px;
+    right: 2px;
+    background: #fff;
+    line-height: .8;
+    color: #000;
+    border-radius: 50%;
+    padding: 0px 2px;
+    font-size: 16px;
+}
+
+.ebix-modal {
+    position: fixed;
+    z-index: 5 !important;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    outline: 0;
+    /* background-color: rgba(0, 0, 0, .5); */
+    transition: opacity .25s linear;
+}
+
+.ebix-modal-dialog {
+    display: flex;
+    align-items: center;
+    min-height: calc(100% - var(--modal-margin) * 2);
+    height: calc(100% - var(--modal-margin) * 2);
+    position: relative;
+    width: auto;
+    margin: var(--modal-margin);
+    pointer-events: none;
+}
+
+.ebix-modal-content {
+    max-height: 100%;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    color: #000;
+    pointer-events: auto;
+    background-color: #fff;
+    background-clip: padding-box;
+    border-radius: 5px;
+    box-shadow: 0 0 40px 0 rgba(0, 0, 0, .32);
+}
+
+.ebix-modal-header {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    padding: 5px;
+    /* border-bottom: 1px solid #000; */
+    /* background: #000;
+    color: #fff; */
+}
+
+.ebix-modal-title {
+    line-height: 0;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.ebix-modal-close {
+    box-sizing: content-box;
+    width: 1em;
+    height: 1em;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    margin: 0 5px 0 auto;
+    padding: .5rem .5rem;
+    border-radius: 50%;
+    font-size: 16px;
+    line-height: 1;
+}
+
+.ebix-modal-close:hover,
+.ebix-embeded-close-btn:hover {
+    filter: brightness(80%);
+}
+
+#ebix-embeded-shopping-btn {
+    outline: none;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+#ebix-embeded-shopping-btn:hover {
+    filter: brightness(90%);
+}
+
+.ebix-modal {
+    --modal-margin: 0.5rem;
+}
+
+.ebix-modal-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    z-index: 999;
+}
+.ebix-custom-modal {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    text-align: center;
+}
+.ebix-custom-modal input {
+    width: 100%;
+    padding: 8px;
+    margin: 10px 0;
+    border: 1px solid #aaa;
+    outline: none;
+    box-shadow: none;
+    border-radius: 4px;
+}
+
+.ebix-btn-confirm {
+    outline: none;
+    border: none;
+    text-decoration: none;
+    padding: 5px 10px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    color: white;
+    background-color: black;
+}
+
+.ebix-btn-cancel {
+    outline: none;
+    border: none;
+    text-decoration: none;
+    padding: 5px 10px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+@media (min-width: 576px) {
+    .ebix-modal-dialog {
+        max-width: 50vw;
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    .ebix-modal {
+        --modal-margin: 1.75rem;
+    }
+}
+
+#ebix-embeded .show {
+    visibility: visible;
+    opacity: 1;
+}
+
+.ebix-modal:not(.show) {
+    visibility: hidden;
+    opacity: 0;
+}
+
+body:has(.ebix-modal.show) {
+    overflow: hidden;
+}
+
+@keyframes ebix-embeded-shake {
+    20% {
+        transform: translate(0, -5px);
+    }
+
+    40% {
+        transform: translate(0, 5px);
+    }
+
+    60% {
+        transform: translate(0, -5px);
+    }
+
+    80% {
+        transform: translate(0, 5px);
+    }
+
+    100% {
+        transform: translate(0, -5px);
+    }
+}
+
+.ebix-modal-body {
+    max-height: 80vh;
+    overflow: auto;
+}
+
+.ebix-modal-body .title {
+    margin: 5px 16px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #000;
+}
+
+.ebix-card {
+    margin: 10px;
+    padding: 10px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, .32);
+    border-radius: 5px;
+    text-align: center;
+}
+
+.ebix-card h5 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1.6;
+}
+
+.ebix-card h6 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.2;
+    margin-top: 10px;
+}
+
+.ebix-card h4 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.2;
+    margin-top: 10px;
+}
+
+.ebix-card p {
+    margin: 0;
+    line-height: 1.5;
+    margin-top: 10px;
+}
+
+.ebix-card .ebix-card-btn {
+    outline: none;
+    border: none;
+    text-decoration: none;
+    padding: 5px 10px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.ebix-card .table {
+    margin-top: 20px;
+    border-collapse: collapse;
+    border-spacing: unset;
+    color: #606266;
+    font-size: 14px;
+    word-break: break-word;
+    width: 100%;
+}
+
+.ebix-card .table td,
+.ebix-card .table th {
+    border: 1px solid #ccc;
+    padding: 5px;
+}
+
+.ebix-card .color-primary {
+    color: blue;
+}
+
+#refer-friend span,
+#refer-friend a {
+    border: 1px solid #000;
+    border-radius: 50%;
+    padding: 6px;
+    margin: 2px;
+    display: inline-flex;
+    cursor: pointer;
+}
+
+.cart__ctas {
+    display: block !important;
+}
+
+.Promotion-List-offer-box {
+    background: #fff3b0;
+    border: 1px solid #ffe58f;
+    padding: 0px 10px 0px 0px;
+    margin-bottom: 8px;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.offer-box {
+    background: #fff3b0;
+    border: 1px solid #ffe58f;
+    padding: 0px 10px 0px 0px;
+    margin-bottom: 8px;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.Promotion-List-offer-label {
+    background: #ffe066;
+    font-weight: bold;
+    color: #222;
+    max-width: 120px;
+    display: flex;
+    align-items: center;
+    font-size: 15px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    position: absolute;
+    height: 100%;
+    padding: 10px;
+    top: 0px;
+}
+
+.offer-label {
+    background: #ffe066;
+    font-weight: bold;
+    color: #222;
+    max-width: 120px;
+    display: flex;
+    align-items: center;
+    font-size: 15px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    position: absolute;
+    height: 100%;
+    padding: 10px;
+    top: 0px;
+}
+
+.Promotion-List-offer-text {
+    color: #c0392b;
+    margin-left: 95px;
+}
+
+.offer-text {
+    color: #c0392b;
+    margin-left: 95px;
+}
+
+.Promotion-List-block {
+    max-height: 250px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}

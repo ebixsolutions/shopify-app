@@ -1,0 +1,238 @@
+{%- style -%}
+  .ebix-modal-header{
+    background: {{ block.settings.header_background_color }};
+    color: {{ block.settings.header_text_color }};
+  }
+
+  .ebix-modal-close{
+    color: {{ block.settings.header_text_color }};
+  }
+
+  .ebix-card-btn{
+    background: {{ block.settings.header_background_color }};
+    color: {{ block.settings.header_text_color }};
+  }
+{%- endstyle -%}
+
+<div id="custom-offer-widget" style="background-color: #f4f4f4; display:none; border: 1px solid #ddd; border-radius: 10px; padding: 14px 16px; margin: 15px auto; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08); font-family: 'Segoe UI', sans-serif; max-width: 460px; color: #333;">
+  <div style="font-weight: bold; font-size: 17px; margin-bottom: 10px;">🎉 You're a Special Customer!</div>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 8px;">
+  <p style="background: #f0f0f0; color: #444; border-radius: 5px; font-size: 15px; margin: 0; padding: 6px 10px;">
+    Special offer just for you:
+    <del style="color: rgb(99, 23, 23); margin: 0 6px;" id="unit-price">₹340</del>
+    <span style="color: #28a745; font-weight: bold; font-size: 16px;" id="spl-price">₹200 Only</span>
+  </p>
+</div>
+
+  <div>
+    <p style="font-size: 16px; color: #666; margin-top: 4px; margin-bottom: 0;">✨ The offer will be applied at checkout.</p>
+  </div>
+</div>
+
+<div id="Promotion-List" style="display: none;">
+  <div style="font-weight: bold; font-size: 17px; margin-bottom: 10px;">Extra Deals</div>
+  <div class="Promotion-List-block">
+    <div class="Promotion-List-offer-box">
+      <div class="offerType">
+        <div class="Promotion-List-offer-label">OFFER</div>
+      </div>
+      <div class="Promotion-List-offer-text">Get 10% off</div>
+    </div>
+  </div>
+</div>
+
+<div id="ebix-embeded">
+  <div id="ebix-embeded-btn" style="{{ block.settings.position }}">
+    <div class="ebix-embeded-close-btn">×</div>
+    <img src="{{ 'giftbox.svg' | asset_url }}" alt="promotion" width="40" height="40">
+  </div>
+
+  <!-- Modal -->
+  <div class="ebix-modal">
+    <div class="ebix-modal-dialog">
+      <div class="ebix-modal-content">
+        <div
+          class="ebix-modal-header"
+        >
+          <p class="ebix-modal-title">{{ block.settings.header_text }}</p>
+          <button type="button" class="ebix-modal-close">×</button>
+        </div>
+
+        <div class="ebix-modal-body">
+          {% if customer %}
+            <h6 class="title">
+              Hello,
+              {% if customer.first_name != '' %}
+                {{ customer.first_name }}!
+              {% else %}
+                {{ customer.last_name }}!
+              {% endif %}
+            </h6>
+          {% endif %}
+
+          <div class="ebix-card" id="ebix-loyalty-card">
+            <h5>Loyalty Points</h5>
+            {% if customer %}
+              <h6>Your Tier: <span id="ebix-tier">-</span></h6>
+              <h4>Your Points: <span id="ebix-points">0</span></h4>
+            {% endif %}
+
+            <p style="margin-top: 10px"><b>Earn:</b> <span id="ebix-reward">-</span></p>
+            <p><b>Redeem:</b> <span id="ebix-redeem">-</span></p>
+
+            {% if customer %}
+              <div id="ebix-redeem-point">
+                <hr style="margin: 10px;">
+                <p><b>Redeem Your points</b></p>
+                <h6>
+                  <span id="ebix-redeem-coupon"></span>
+                  <button class="ebix-card-btn" id="ebix-cpy-redeem-code">Copy</button>
+                </h6>
+                <p>Use code at checkout - redeem up to <span id="ebix-max-point"></span> Pts <span id="total-redeemable"></span></p>
+              </div>
+            {% else %}
+              <hr style="margin: 10px;">
+              <p><b>Get more points </b></p>
+              <a href="/account/register" class="ebix-card-btn">Join Now</a>
+            {% endif %}
+          </div>
+
+          <div class="ebix-card" id="ebix-referral-card">
+            <h5>Referral</h5>
+
+            {% if customer %}
+              <div id="refer-friend">
+                <p>Refer a friend:</p>
+                <span id="email">
+                  <img src="{{ 'email.svg' | asset_url }}" alt="email" width="20" height="20">
+                </span>
+                <a
+                  href="#"
+                  target="_blank"
+                  id="facebook"
+                >
+                  <img src="{{ 'facebook.svg' | asset_url }}" alt="facebook" width="20" height="20">
+                </a>
+                <a
+                  href="#"
+                  target="_blank"
+                  id="whatsapp"
+                >
+                  <img src="{{ 'whatsapp.svg' | asset_url }}" alt="whatsapp" width="20" height="20">
+                </a>
+              </div>
+              <div id="ebix-email-err"></div>
+              <h6>
+                Refer with code: <span id="ebix-pro-ref-code"></span>
+                <button class="ebix-card-btn" id="ebix-cpy-ref-code">Copy</button>
+              </h6>
+
+              <button class="ebix-card-btn" id="ebix-join-referral">Receive your reward</button>
+              <div id="ebix-ref-err"></div>
+            {% endif %}
+
+            <p><b>Rewards:</b></p>
+            <div id="ebix-ref-reward">-</div>
+            <div id="ebix-ref-history"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="ebix-custom-prompt" style="display:none;" class="ebix-modal-bg">
+    <div class="ebix-custom-modal">
+      <p>Enter Referral Code, Get Reward:</p>
+      <input type="text" id="ebix-referral-code-input" />
+      <div class="ebix-btn-group">
+        <button class="ebix-btn-confirm" id="ebix-confirm-referral">Confirm</button>
+        <button class="ebix-btn-cancel" id="ebix-cancel-referral">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  </div>
+  <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const offerWidget = document.getElementById("custom-offer-widget");
+    const promotionWidget = document.getElementById("Promotion-List");
+    const addToCartBtn = document.querySelector(
+      'form[action*="/cart/add"] button[type="submit"], .product-form__buttons button[type="submit"]'
+    );
+    if (addToCartBtn && offerWidget) {
+      addToCartBtn.parentNode.insertBefore(offerWidget, addToCartBtn);
+    } else {
+      console.warn("Add to Cart button not found.");
+    }
+    if(addToCartBtn && promotionWidget) {
+      addToCartBtn.parentNode.insertBefore(promotionWidget, addToCartBtn);
+    }
+  });
+</script>
+<!-- In your custom-liquid.liquid or section -->
+<div id="drawer-offers-template" style="display: none;">
+  <div class="drawer-offers-block">
+    <div class="offer-box">
+      <div class="offer-label">OFFER</div>
+      <div class="offer-text">Get 10% off</div>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ Visible Offers Section -->
+<div id="drawer-offers-list"></div>
+<script type="text/javascript" src="{{ 'jquery-3.7.1.min.js' | asset_url }}" defer></script>
+<script type="text/javascript">
+  const ebix_referral_img1 = "{{ 'referral1.svg' | asset_url }}";
+  const ebix_referral_img2 = "{{ 'referral2.svg' | asset_url }}";
+  const ebix_referral_img3 = "{{ 'referral3.svg' | asset_url }}";
+
+  var ebix_Promotion = {
+    CustomerId:null,
+    ShopId:null
+  };
+
+  {% if customer %}
+    ebix_Promotion.CustomerId = {{ customer.id }};
+  {% endif %}
+
+  {% if shop %}
+    ebix_Promotion.ShopId = {{ shop.id }};
+  {% endif %}
+</script>
+
+{% comment %}
+  "enabled_on": {
+    "templates": ["cart", "product"]
+  },
+{% endcomment %}
+
+{% schema %}
+{
+  "name": "Ebix Promotion Embed",
+  "target": "body",
+  "stylesheet": "style.css",
+  "javascript": "app.min.js",
+  "settings": [
+    { "type": "header", "content": "Floating Icon" },
+    {
+      "type": "select",
+      "id": "position",
+      "label": "Position",
+      "default": "right:10px; bottom:10px;",
+      "options": [
+        { "value": "right:10px; bottom:10px;", "label": "Right Bottom" },
+        { "value": "right:10px; top:calc(50% - 30px);", "label": "Right Middle" },
+        { "value": "left:10px; bottom:10px;", "label": "Left Bottom" },
+        { "value": "left:10px; top:calc(50% - 30px);", "label": "Left Middle" },
+        { "value": "left:calc(50% - 30px); bottom:10px;", "label": "Bottom Middle" }
+      ]
+    },
+    { "type": "header", "content": "Popup Header" },
+    { "type": "text", "id": "header_text", "label": "Text", "default": "★ Buy More, Get More ★" },
+    { "type": "color", "id": "header_background_color", "label": "Background Color", "default": "#000000" },
+    { "type": "color", "id": "header_text_color", "label": "Text Color", "default": "#ffffff" }
+  ]
+}
+{% endschema %}

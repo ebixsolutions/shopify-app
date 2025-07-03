@@ -1,0 +1,40 @@
+query RunInput {
+  shop {
+    localTime {
+      date
+    }
+  }
+  cart {
+    cost {
+      totalAmount {
+        amount
+      }
+    }
+    buyerIdentity {
+      customer {
+        id
+        numberOfOrders
+      }
+    }
+    lines {
+      quantity
+      cost {
+        subtotalAmount {
+          amount
+        }
+      }
+      merchandise {
+        __typename
+        ...on ProductVariant {
+            id
+        }
+      }
+    }
+  }
+  presentmentCurrencyRate
+  discountNode {
+    metafield(namespace: "promotion_rule", key: "rule-config"){
+      value
+    }
+  }
+}
