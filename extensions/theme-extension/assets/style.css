@@ -331,11 +331,8 @@ body:has(.ebix-modal.show) {
 .Promotion-List-offer-box {
     background: #fdfce2;
     border: 1px solid #fef445;
-    padding: 0px 0px 0px 0px;
     margin-bottom: 8px;
-    position: relative;
     display: flex;
-    align-items: center;
 }
 
 .offer-box {
@@ -357,10 +354,13 @@ body:has(.ebix-modal.show) {
     align-items: center;
     font-size: 15px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    position: absolute;
     height: 100%;
     padding: 10px;
     top: 0px;
+}
+
+.offerType {
+    width: 150px;
 }
 
 .offer-label {
@@ -380,7 +380,7 @@ body:has(.ebix-modal.show) {
 
 .Promotion-List-offer-text {
     color: #c0392b;
-    margin-left: 100px;
+    padding: 5px;
 }
 
 .offer-text {
