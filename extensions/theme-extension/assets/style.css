@@ -329,9 +329,9 @@ body:has(.ebix-modal.show) {
 }
 
 .Promotion-List-offer-box {
-    background: #fff3b0;
-    border: 1px solid #ffe58f;
-    padding: 0px 10px 0px 0px;
+    background: #fdfce2;
+    border: 1px solid #fef445;
+    padding: 0px 0px 0px 0px;
     margin-bottom: 8px;
     position: relative;
     display: flex;
@@ -339,9 +339,9 @@ body:has(.ebix-modal.show) {
 }
 
 .offer-box {
-    background: #fff3b0;
-    border: 1px solid #ffe58f;
-    padding: 0px 10px 0px 0px;
+    background: #fdfce2;
+    border: 1px solid #fef445;
+    padding: 0px 0px 0px 0px;
     margin-bottom: 8px;
     position: relative;
     display: flex;
@@ -349,7 +349,7 @@ body:has(.ebix-modal.show) {
 }
 
 .Promotion-List-offer-label {
-    background: #ffe066;
+    background: #fef445;
     font-weight: bold;
     color: #222;
     max-width: 120px;
@@ -364,7 +364,7 @@ body:has(.ebix-modal.show) {
 }
 
 .offer-label {
-    background: #ffe066;
+    background: #fef445;
     font-weight: bold;
     color: #222;
     max-width: 120px;
@@ -380,12 +380,13 @@ body:has(.ebix-modal.show) {
 
 .Promotion-List-offer-text {
     color: #c0392b;
-    margin-left: 95px;
+    margin-left: 100px;
 }
 
 .offer-text {
     color: #c0392b;
-    margin-left: 95px;
+    margin-left: 100px;
+    font-size: 15px!important;
 }
 
 .Promotion-List-block {
