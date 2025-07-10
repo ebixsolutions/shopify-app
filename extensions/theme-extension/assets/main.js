@@ -595,17 +595,13 @@ window.onload = () => {
 
     function nonAppliedOffer(retryCount = 0) {
         const promotion = window.ebix_Promotion;
-        if (!promotion?.CustomerId || !promotion?.ShopId) {
-            console.warn("CustomerId or ShopId missing in ebix_Promotion");
-            return;
-        }
 
         fetch(window.Shopify.routes.root + 'cart.js')
             .then(res => res.json())
             .then(cart => {
                 const payload = {
-                    user_id: promotion.CustomerId,
-                    shop_id: promotion.ShopId,
+                    user_id: promotion.CustomerId || null,
+                    shop_id: promotion.ShopId || null,
                     terminal: 'web',
                     country_id: ['1'],
                     coupon_code: '',
