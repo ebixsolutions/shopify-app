@@ -152,9 +152,13 @@
     </div>
   </div>
 
-  </div>
-  <script>
+</div>
+<script>
   document.addEventListener("DOMContentLoaded", function () {
+    if (!window.location.pathname.includes("/products/")) {
+      const promoBlock = document.querySelector(".Promotion-List-block");
+      if (promoBlock) promoBlock.style.display = "none";
+    }
     const offerWidget = document.getElementById("custom-offer-widget");
     const promotionWidget = document.getElementById("Promotion-List");
     const addToCartBtn = document.querySelector(
@@ -213,7 +217,7 @@
   "name": "Ebix Promotion Embed",
   "target": "body",
   "stylesheet": "style.css",
-  "javascript": "app.min.js",
+  "javascript": "main.js",
   "settings": [
     { "type": "header", "content": "Floating Icon" },
     {
