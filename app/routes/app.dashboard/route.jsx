@@ -71,16 +71,16 @@ export default function DashboardPage() {
     const day = date.getDate().toString().padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
-  
+
 
   const handleDashboard = async () => {
     console.log(state[0]);
 
-  const startDate = state[0].startDate ? new Date(state[0].startDate) : null;
-  const endDate = state[0].endDate ? new Date(state[0].endDate) : null;
+    const startDate = state[0].startDate ? new Date(state[0].startDate) : null;
+    const endDate = state[0].endDate ? new Date(state[0].endDate) : null;
 
-  const formattedStartDate = formatDate(startDate);
-  const formattedEndDate = formatDate(endDate);
+    const formattedStartDate = formatDate(startDate);
+    const formattedEndDate = formatDate(endDate);
 
     const dateRange = [formattedStartDate, formattedEndDate];
 
@@ -99,7 +99,7 @@ export default function DashboardPage() {
     setPopoverActive(false);
   };
 
-  
+
 
   const formatTrafficData = (data) => {
     const formattedData = [];
@@ -251,13 +251,29 @@ export default function DashboardPage() {
   }
 
   return (
-    <Page
-      title="Dashboard"
-      secondaryActions={[
-        { content: "Date", icon: CalendarIcon, onAction: togglePopover },
-      ]}
-      fullWidth
-    >
+    <Page fullWidth>
+      <div style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: "16px"
+      }}>
+        {/* Left side: Title */}
+        <h1 style={{ fontSize: "20px", fontWeight: "600" }}>Dashboard</h1>
+
+        {/* Right side: Date Range + Icon Button */}
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          {state[0].startDate && state[0].endDate && (
+            <span style={{ fontSize: "14px", color: "gray" }}>
+              {state[0].startDate.toLocaleDateString()} - {state[0].endDate.toLocaleDateString()}
+            </span>
+          )}
+          <Button icon={CalendarIcon} onClick={togglePopover}>
+            Date
+          </Button>
+        </div>
+      </div>
+
       <div>
         <Popover
           active={popoverActive}
@@ -267,7 +283,7 @@ export default function DashboardPage() {
           fluidContent
         >
           <div>
-                 
+
             <DateRange
               onChange={item => setState([item.selection])}
               showSelectionPreview={true}
@@ -286,8 +302,8 @@ export default function DashboardPage() {
               </p>
             )}
 
-             {/* Add OK button to confirm the selection */}
-             <div
+            {/* Add OK button to confirm the selection */}
+            <div
               className={styles.customEditButton}
               style={{
                 marginLeft: "10px",
