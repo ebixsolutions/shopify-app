@@ -135,8 +135,8 @@ export default {
                     targets = input.cart.lines
                         .filter(line => {
                             const variant = (line.merchandise);
-
-                            var flag = line.merchandise.__typename == "ProductVariant";
+                            const isGift = line.attribute === null;
+                            var flag = line.merchandise.__typename == "ProductVariant" && isGift;
 
                             if (effect.VID && effect.VID.length && variant.id) {
                                 var id_arr = variant.id.split("/")
@@ -237,8 +237,9 @@ export default {
                         input.cart.lines.forEach(line => {
                             const variant = (line.merchandise);
                             const cost = line.cost;
+                            const isGift = line.attribute === null;
 
-                            if (line.merchandise.__typename == "ProductVariant") {
+                            if (line.merchandise.__typename == "ProductVariant" && isGift) {
                                 var id_arr = variant.id.split("/")
                                 var id = id_arr ? id_arr[id_arr.length - 1] : "";
                                 const index = effect.VD.findIndex((v) => v.id == id);
