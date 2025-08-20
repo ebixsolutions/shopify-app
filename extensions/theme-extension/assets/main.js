@@ -85,7 +85,7 @@ window.onload = () => {
         if (data && data.length > 0) {
             var content = "<table class='table'>";
             content += "<tr><th></th><th>Tasks</th><th>Awards</th>";
-            content += flag ? "<th>Expiry</th></tr>" : "</tr>";
+            content += flag ? "<th>Get</th></tr>" : "</tr>";
 
             data.map((item) => {
                 item.rules.map((val, i) => {
