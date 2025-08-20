@@ -23,6 +23,8 @@ export function run(input) {
 
   const cartLines = cart.lines || [];
   const discounts = [];
+  // Collect all eligible effects first so we can choose the best per item across rules
+  const eligibleEffects = {};
 
   for (const [key, rule] of Object.entries(rules)) {
     const conditions = rule.C ?? [];
@@ -128,21 +130,21 @@ export function run(input) {
         }
       }
     } else {
-      const effects = {}; // Use object instead of array
-
       if (rule.C && rule.E) {
         const conditionFlag = common.checkCondition(input, rule.C);
         if (conditionFlag) {
-          effects[key] = rule.E; // Use rule key as object key
+          eligibleEffects[key] = rule.E; // defer generation so we can compare across rules
         }
       }
+    }
+  }
 
-      if (Object.keys(effects).length > 0) {
-        const generatedDiscounts = common.effectGenerate(input, effects);
-        if (Array.isArray(generatedDiscounts)) {
-          discounts.push(...generatedDiscounts);
-        }
-      }
+  // Generate discounts once using all eligible effects; common.effectGenerate
+  // will pick the best discount per line (e.g., 70% over 40%).
+  if (Object.keys(eligibleEffects).length > 0) {
+    const generatedDiscounts = common.effectGenerate(input, eligibleEffects);
+    if (Array.isArray(generatedDiscounts)) {
+      discounts.push(...generatedDiscounts);
     }
   }
 
