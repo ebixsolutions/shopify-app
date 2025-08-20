@@ -608,7 +608,7 @@ window.onload = () => {
 
     function nonAppliedOffer(retryCount = 0) {
         const promotion = window.ebix_Promotion;
-
+        const currency = (window.Shopify?.currency?.active) || null;
         fetch(window.Shopify.routes.root + 'cart.js')
             .then(res => res.json())
             .then(cart => {
@@ -617,6 +617,7 @@ window.onload = () => {
                     shop_id: promotion.ShopId || null,
                     terminal: 'web',
                     country_id: ['1'],
+                    currency: currency,
                     coupon_code: '',
                     items: cart.items
                 };
