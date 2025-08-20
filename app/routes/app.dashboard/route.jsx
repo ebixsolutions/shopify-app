@@ -71,16 +71,16 @@ export default function DashboardPage() {
     const day = date.getDate().toString().padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
-  
+
 
   const handleDashboard = async () => {
     console.log(state[0]);
 
-  const startDate = state[0].startDate ? new Date(state[0].startDate) : null;
-  const endDate = state[0].endDate ? new Date(state[0].endDate) : null;
+    const startDate = state[0].startDate ? new Date(state[0].startDate) : null;
+    const endDate = state[0].endDate ? new Date(state[0].endDate) : null;
 
-  const formattedStartDate = formatDate(startDate);
-  const formattedEndDate = formatDate(endDate);
+    const formattedStartDate = formatDate(startDate);
+    const formattedEndDate = formatDate(endDate);
 
     const dateRange = [formattedStartDate, formattedEndDate];
 
@@ -99,7 +99,7 @@ export default function DashboardPage() {
     setPopoverActive(false);
   };
 
-  
+
 
   const formatTrafficData = (data) => {
     const formattedData = [];
@@ -167,25 +167,74 @@ export default function DashboardPage() {
   };
 
   const tooltipMapping = {
-    VA: "Visitors Attracted",
-    CPA: "Cost Per Customer Acquisition",
-    SCR: "Sales Conversion Rate",
-    RRN: "Referral Registration Number",
-    RRR: "Referral Registration Rate",
-    RFCR: "Referral First Purchase Conversion Rate",
-    LCC: "Label Customers Count",
-    RCR: "Repeat Customers Rate",
-    RSCR: "Repeat Sales Conversion Rate",
-    TMC: "Total Membership Count",
-    TPRC: "Total Points Redemption Cost",
-    ADSA: "Average Daily Sales Amount",
-    PSCR: "Point Sales Contribution Rate",
-    RPR: "Repeat Purchase Rate",
-    ADU: "Average Days to Upgrade",
-    "CUM QTY": "Cumulative Quantity",
-    "CUM AMT": "Cumulative Amount",
-    ATR: "Attach Rate",
+    VA: {
+      title: "Visitors Attracted (VA)",
+      description:
+        "Number of visitors directed to the online store through social media ads or posts in the Boost Traffic ecosystem.",
+    },
+    CPA: {
+      title: "Cost Per Customer Acquisition (CPA)",
+      description:
+        "Formula: Promotion package cost ÷ Number of new registrations through 'Boost Traffic'.",
+    },
+    SCR: {
+      title: "Sales Conversion Rate (SCR)",
+      description:
+        "Formula: Transactions through 'Boost Traffic' ÷ Number of visitors attracted through 'Boost Traffic'.",
+    },
+    RRN: {
+      title: "Referral Registration Number (RRN)",
+      description:
+        "The count of successfully referred new customers registering on the online store through the 'Increase Customer Quantity' ecosystem.",
+    },
+    RRR: {
+      title: "Referral Registration Rate (RRR)",
+      description:
+        "Formula: Number of successfully referred registered new customers ÷ Number of referrals (rounded to nearest whole number).",
+    },
+    RFCR: {
+      title: "Referral First Purchase Conversion Rate (RFCR)",
+      description:
+        "Formula: First purchase transaction volume from referrals ÷ Number of new customers referred (rounded to nearest whole number).",
+    },
+    "CUM QTY": {
+      title: "Cumulative Quantity (CUM QTY)",
+      description: "Total quantity accumulated over time.",
+    },
+    "CUM AMT": {
+      title: "Cumulative Amount (CUM AMT)",
+      description: "Total amount accumulated over time.",
+    },
+    ATR: {
+      title: "Attach Rate (ATR)",
+      description:
+        "Formula: Number of attached sales (e.g., add-on purchases) ÷ Total sales.",
+    },
+    RSCR: {
+      title: "Total Sales Conversion Rate (TSCR)",
+      description:
+        "The percentage of selected customers (by label or membership level) who make a purchase.\nFormula: (Number of orders from selected customers ÷ Total selected customers) × 100%",
+    },
+    ADSA: {
+      title: "Average Daily Sales Amount (ADSA)",
+      description:
+        "The average daily sales amount from selected customers (by label or membership level).\nFormula: Total sales amount from selected customers ÷ Number of days.",
+    },
+    ACR: {
+      title: "Abandoned Cart Rate (ACR)",
+      description:
+        "The percentage of selected customers (by label or membership level) who add items to the cart but don’t complete checkout.\nFormula: ((Carts created − Carts purchased) by selected customers ÷ Carts created by selected customers) × 100%",
+    },
+
+    TMC: { title: "Total Membership Count" },
+    LCC: { title: "Label Customers Count", description: "Number of customers specified through the 'Increase Customer Purchase Volume' ecosystem. For Example: 1.Abandoned Cart 'Smartphone': 5 people, 2.Viewed 'Smarphone': 20 people, 3.Purchased 'Smartphone': 3 people. This ecosystem has selected 3 label customers. The label customer count will be 28 people (5 + 20 + 3 = 28)" },
+    RCR: { title: "Repeat Customers Rate", description: "Number of repeat customers/ Label customers count" },
+    TPRC: { title: "Total Points Redemption Cost (TPRC)" },
+    PSCR: { title: "Point Sales Contribution Rate", description: "The impact of the points program on the total sales amount. Sales revenue generated through point redemption/Total sales amount x 100%."  },
+    RPR: { title: "Repeat Purchase Rate (RPR", description: "The ratio of members using points to make repeat purchases. Number of members making repeat purchases with points/Total membership countx 100%." },
+    ADU: { title: "Average Days to Upgrade (ADU)", description: "Total days required for all members to upgrade/Total number of upgrades (rounded to the nearest whole number)" },
   };
+
 
   const handleSubscribe = () => {
     navigate("/app/subscribe");
@@ -251,13 +300,29 @@ export default function DashboardPage() {
   }
 
   return (
-    <Page
-      title="Dashboard"
-      secondaryActions={[
-        { content: "Date", icon: CalendarIcon, onAction: togglePopover },
-      ]}
-      fullWidth
-    >
+    <Page fullWidth>
+      <div style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: "16px"
+      }}>
+        {/* Left side: Title */}
+        <h1 style={{ fontSize: "20px", fontWeight: "600" }}>Dashboard</h1>
+
+        {/* Right side: Date Range + Icon Button */}
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          {state[0].startDate && state[0].endDate && (
+            <span style={{ fontSize: "14px", color: "gray" }}>
+              {state[0].startDate.toLocaleDateString()} - {state[0].endDate.toLocaleDateString()}
+            </span>
+          )}
+          <Button icon={CalendarIcon} onClick={togglePopover}>
+            Date
+          </Button>
+        </div>
+      </div>
+
       <div>
         <Popover
           active={popoverActive}
@@ -267,7 +332,7 @@ export default function DashboardPage() {
           fluidContent
         >
           <div>
-                 
+
             <DateRange
               onChange={item => setState([item.selection])}
               showSelectionPreview={true}
@@ -286,8 +351,8 @@ export default function DashboardPage() {
               </p>
             )}
 
-             {/* Add OK button to confirm the selection */}
-             <div
+            {/* Add OK button to confirm the selection */}
+            <div
               className={styles.customEditButton}
               style={{
                 marginLeft: "10px",
@@ -305,14 +370,29 @@ export default function DashboardPage() {
       {traffic.map((data, i) => {
         const headings = Object.keys(data).map((key) => {
           if (tooltipMapping[key]) {
+            const { title, description } = tooltipMapping[key];
             return (
-              <Tooltip content={tooltipMapping[key]} key={key}>
+              <Tooltip
+                key={key}
+                content={
+                  <div>
+                    <strong>{title}</strong>
+                    {description && (
+                      <>
+                      <br />
+                      <span>{description}</span>
+                      </>
+                    )}
+                  </div>
+                }
+              >
                 <span style={{ cursor: "pointer" }}>{key}</span>
               </Tooltip>
             );
           }
-          return key;
+          return <div key={key}>{key}</div>;
         });
+
 
         const rows = [
           [
