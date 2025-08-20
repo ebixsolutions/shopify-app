@@ -80,44 +80,57 @@ window.onload = () => {
         });
     }
 
-    function ebix_generate_table(data, id, flag = false) {
+    function ebix_generate_table(data, className, flag = false) {
 
         if (data && data.length > 0) {
-            var content = "<table class='table'>";
-            content += "<tr><th></th><th>Tasks</th><th>Awards</th>";
-            content += flag ? "<th>Get</th></tr>" : "</tr>";
+            $(`.${className}`).each(function () {
+                const elementId = $(this).attr("id");
 
-            data.map((item) => {
-                item.rules.map((val, i) => {
-                    content += "<tr>";
+                let content = "<table class='table'>";
 
-                    var img_src = ebix_referral_img3;
-                    if (val.attribute_operation == "Register")
-                        img_src = ebix_referral_img1;
-                    else if (val.attribute_operation == "visit_page")
-                        img_src = ebix_referral_img2;
+                // choose heading depending on container id
+                let table_heading = "<tr><th></th><th>Referee (New member) Tasks</th><th>Awards</th>";
+                if (elementId === "reward_only") {
+                    table_heading = "<tr><th></th><th>Tasks</th><th>Awards</th>";
+                }
 
-                    content += `<td><img src="${img_src}" width="26" alt="${val.attribute_operation}"/></td>`;
-                    content += `<td>${val.task}</td>`;
+                content += table_heading;
+                content += flag ? "<th>Get</th></tr>" : "</tr>";
 
-                    if (i == 0) {
-                        content += `<td rowspan="${item.rules.length}">${item.award}</td>`;
-                        if (flag) {
-                            if (val.is_rule_passed)
-                                content += `<td rowspan="${item.rules.length}" style="font-size: 2rem;color: green;">✓</td>`;
-                            else if (val.expiry_status)
-                                content += `<td rowspan="${item.rules.length}" style="color: red;>${val.expiry_date} Expired</td>`;
-                            else
-                                content += `<td rowspan="${item.rules.length}">${val.expiry_date}</td>`;
+                data.forEach((item) => {
+                    item.rules.forEach((val, i) => {
+                        content += "<tr>";
+
+                        let img_src = ebix_referral_img3;
+                        if (val.attribute_operation === "Register")
+                            img_src = ebix_referral_img1;
+                        else if (val.attribute_operation === "visit_page")
+                            img_src = ebix_referral_img2;
+
+                        content += `<td><img src="${img_src}" width="26" alt="${val.attribute_operation}"/></td>`;
+                        content += `<td>${val.task}</td>`;
+
+                        if (i === 0) {
+                            content += `<td rowspan="${item.rules.length}">${item.award}</td>`;
+                            if (flag) {
+                                if (val.is_rule_passed)
+                                    content += `<td rowspan="${item.rules.length}" style="font-size: 2rem;color: green;">✓</td>`;
+                                else if (val.expiry_status)
+                                    content += `<td rowspan="${item.rules.length}" style="color: red;">${val.expiry_date} Expired</td>`;
+                                else
+                                    content += `<td rowspan="${item.rules.length}">${val.expiry_date}</td>`;
+                            }
                         }
-                        content += "</tr>";
-                    } else
-                        content += "</tr>";
-                })
-            })
-            content += "</table>";
 
-            $(`#${id}`).html(content);
+                        content += "</tr>";
+                    });
+                });
+
+                content += "</table>";
+
+                // inject into THIS element only
+                $(this).html(content);
+            });
         }
 
         const ids = $(".ebix-modal #specific-link");
@@ -165,7 +178,7 @@ window.onload = () => {
 
     function ebix_referral_table(data, id) {
         if (data && data.length > 0) {
-            var content = "<p><b>From Referrals</b></p>";
+            var content = "<p><b>From Referrals</b><p>You can get rewards when your recommended friends complete tasks</p></p>";
             content += "<table class='table'>";
             content += "<tr><th>Referral No</th><th>Recipient email</th><th>Date</th><th>Status</th><th>Rewards</th></tr>";
 
