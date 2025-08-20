@@ -126,31 +126,42 @@ export default function DashboardPage() {
       });
     }
 
-    if (data.boost_repeat_customer_labels) {
-      const { LCC, RCR, RSCR, status } = data.boost_repeat_customer_labels;
+    if (data.boost_customer) {
+      const { TSCR, ADSA, ABR, status } = data.boost_customer;
       formattedData.push({
-        "Process (Customer Labels)": "SU Boost Repeat Customers",
+        "Process": "SU Boost Repeat Customers",
         Status: status === 1 ? "Active" : "Inactive",
-        LCC: LCC.value,
-        RCR: RCR.value,
-        RSCR: RSCR.value,
+        TSCR: TSCR.value,
+        ADSA: ADSA.value,
+        ACR: ABR.value,
       });
     }
 
-    if (data.boost_repeat_customer_tiers) {
-      const { TMC, TPRC, ADSA, PSCR, RPR, ADU, status } =
-        data.boost_repeat_customer_tiers;
-      formattedData.push({
-        "Process (Membership Tiers)": "SU Boost Repeat Customers",
-        Status: status === 1 ? "Active" : "Inactive",
-        TMC: TMC.value,
-        TPRC: TPRC.value,
-        ADSA: ADSA.value,
-        PSCR: PSCR.percentage,
-        RPR: RPR.percentage,
-        ADU: ADU.value,
-      });
-    }
+    // if (data.boost_repeat_customer_labels) {
+    //   const { LCC, RCR, RSCR, status } = data.boost_repeat_customer_labels;
+    //   formattedData.push({
+    //     "Process (Customer Labels)": "SU Boost Repeat Customers",
+    //     Status: status === 1 ? "Active" : "Inactive",
+    //     LCC: LCC.value,
+    //     RCR: RCR.value,
+    //     RSCR: RSCR.value,
+    //   });
+    // }
+
+    // if (data.boost_repeat_customer_tiers) {
+    //   const { TMC, TPRC, ADSA, PSCR, RPR, ADU, status } =
+    //     data.boost_repeat_customer_tiers;
+    //   formattedData.push({
+    //     "Process (Membership Tiers)": "SU Boost Repeat Customers",
+    //     Status: status === 1 ? "Active" : "Inactive",
+    //     TMC: TMC.value,
+    //     TPRC: TPRC.value,
+    //     ADSA: ADSA.value,
+    //     PSCR: PSCR.percentage,
+    //     RPR: RPR.percentage,
+    //     ADU: ADU.value,
+    //   });
+    // }
 
     if (data.boost_purchasing_volume) {
       const { CUM_QTY, CUM_AMT, ATR, status } = data.boost_purchasing_volume;
@@ -233,6 +244,11 @@ export default function DashboardPage() {
     PSCR: { title: "Point Sales Contribution Rate", description: "The impact of the points program on the total sales amount. Sales revenue generated through point redemption/Total sales amount x 100%."  },
     RPR: { title: "Repeat Purchase Rate (RPR", description: "The ratio of members using points to make repeat purchases. Number of members making repeat purchases with points/Total membership countx 100%." },
     ADU: { title: "Average Days to Upgrade (ADU)", description: "Total days required for all members to upgrade/Total number of upgrades (rounded to the nearest whole number)" },
+    TSCR: {
+      title: "Total Sales Conversion Rate",
+      description:
+        "The percentage of selected customers (by label or membership level) who make a purchase \nFormula: (Number of orders from selected customers/Total selected customers) x 100%",
+    },
   };
 
 
