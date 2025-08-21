@@ -660,7 +660,7 @@ export default function HomePage() {
                               </div>
                               <Text as="h5">
                                 To ensure the proper functioning of this plugin,
-                                it is necessary to enable the pop-up feature for
+                                it is necessary to enable the SU Sales Embed pop-up feature for
                                 the storefront.
                               </Text>
                             </div>
@@ -674,7 +674,7 @@ export default function HomePage() {
                                   );
                                 }}
                               >
-                                Enable popup
+                                Enable SU Sales Embed popup
                               </Button>
                             </div>
                           </Card>
