@@ -22,6 +22,7 @@ export default {
                         .map(line => {
                             const variant = (line.merchandise);
                             const cost = line.cost;
+                            const isnotGift = line.attribute === null;
 
                             if (variant.id) {
                                 var id_arr = variant.id.split("/")
@@ -32,7 +33,10 @@ export default {
                                     if (condition.VT == 1)   // amount
                                         value += cost.subtotalAmount.amount
                                     else if (condition.VT == 2) // count
-                                        value += line.quantity
+                                        if(isnotGift){
+                                            value += line.quantity
+                                        }
+                                        
                                 }
                             }
                         })
@@ -58,7 +62,9 @@ export default {
                 // const totalAmount = input.cart.lines.reduce((t, v) => t + v.cost.subtotalAmount.amount)
                 condFlag = this.ConditionCheck(totalAmount, condition.C, condition.V * input.presentmentCurrencyRate)
             } else if (condition.T == 5) {  // cart_item_count
-                var quantity = input.cart.lines.reduce((a, v) => v.quantity + a, 0)
+                var quantity = input.cart.lines.reduce((a, v) => {
+                    return (v.attribute == null ) ? a + v.quantity : a;
+                }, 0);
                 condFlag = this.ConditionCheck(quantity, condition.C, condition.V)
             } else if (condition.T == 6) {  // condition_flag
                 condFlag = condition.V

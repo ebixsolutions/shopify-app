@@ -50,8 +50,11 @@ export function run(input) {
             const matchQty = cartLines.reduce((total, line) => {
               const variantId = Number(line.merchandise.id.split("/").pop());
               const hasNoProperties = !line.attribute || line.attribute.length === 0;
+              const isnotGift = line.attribute === null;
               if (variantIdList.includes(variantId) && hasNoProperties) {
-                total += line.quantity;
+                if(isnotGift){
+                   total += line.quantity;
+                  }
               }
               return total;
             }, 0);
@@ -68,9 +71,10 @@ export function run(input) {
             return compare(matchAmount, cond.V, cond.C);
           }
         } else if (cond.T === 5) {
-          const totalQty = cartLines
-            .filter(line => !line.attribute || Object.keys(line.attribute).length === 0)
-            .reduce((sum, line) => sum + line.quantity, 0);
+          const totalQty = cartLines.reduce(
+            (sum, line) => (line.attribute == null || Object.keys(line.attribute).length === 0) ? sum + line.quantity : sum,
+            0
+          );
           return compare(totalQty, cond.V, cond.C);
         } else if (cond.T === 4) {
           const totalAmount = cartLines.reduce((total, line) => {
