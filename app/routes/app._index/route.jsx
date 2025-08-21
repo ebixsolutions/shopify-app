@@ -1316,21 +1316,23 @@ export default function HomePage() {
                               <List.Item>
                                 <Text>
                                   <Text as="span" fontWeight="bold">
-                                    Unit Discount
+                                    Discount upon a bought unit 
                                   </Text>{" "}
                                   <Text as="span" fontWeight="normal">
                                     (e.g. Buy 1, -20%)
                                   </Text>
                                 </Text>
+                                <Text>Buy X+ Save Each</Text>
                               </List.Item>
                               <List.Item>
                                 <Text>
                                   <Text as="span" fontWeight="bold">
-                                    Total Order Discount
+                                    Discount upon a bought amount
                                   </Text>{" "}
                                   <Text as="span" fontWeight="normal">
                                     (e.g. Spend $100, -$10)
                                   </Text>
+                                  <Text>Selected Item Order Discount</Text>
                                 </Text>
                               </List.Item>
                               <List.Item>
@@ -1346,10 +1348,10 @@ export default function HomePage() {
                               <List.Item>
                                 <Text>
                                   <Text as="span" fontWeight="bold">
-                                    Bonus Points
+                                    Multiple Reward Point
                                   </Text>{" "}
                                   <Text as="span" fontWeight="normal">
-                                    (e.g. 2x points, every SAT & SUN)
+                                    (e.g. x2 points per order)
                                   </Text>
                                 </Text>
                               </List.Item>
