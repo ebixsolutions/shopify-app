@@ -1316,23 +1316,21 @@ export default function HomePage() {
                               <List.Item>
                                 <Text>
                                   <Text as="span" fontWeight="bold">
-                                    Discount upon a bought unit 
+                                    Buy X+ Save Each 
                                   </Text>{" "}
                                   <Text as="span" fontWeight="normal">
                                     (e.g. Buy 1, -20%)
                                   </Text>
                                 </Text>
-                                <Text>Buy X+ Save Each</Text>
                               </List.Item>
                               <List.Item>
                                 <Text>
                                   <Text as="span" fontWeight="bold">
-                                    Discount upon a bought amount
+                                    Selected Item Order Discount
                                   </Text>{" "}
                                   <Text as="span" fontWeight="normal">
                                     (e.g. Spend $100, -$10)
                                   </Text>
-                                  <Text>Selected Item Order Discount</Text>
                                 </Text>
                               </List.Item>
                               <List.Item>
