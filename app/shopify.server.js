@@ -22,10 +22,11 @@ const shopify = shopifyApp({
   sessionStorage: new PrismaSessionStorage(prisma, {
     sessionCookie: {
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'None',
+      sameSite: 'Lax',
       httpOnly: true,
-      maxAge: 60 * 60 * 24 * 30, // 30 days
+      maxAge: 60 * 60 * 24 * 7, // 7 days
       path: '/',
+      domain: process.env.NODE_ENV === 'production' ? '.yourdomain.com' : undefined
     }
   }),
   distribution: AppDistribution.AppStore,
