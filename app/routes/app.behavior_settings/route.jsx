@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import styles from "../auth.success/style.module.css";
 import config from "../../utils/config";
 import { useAppContext } from "../app/route";
+import { handleChildRouteSession } from "../../utils/sessionUtils";
 import {
   SkeletonPage,
   LegacyCard,
@@ -16,10 +17,15 @@ export default function BehaviorSettings() {
   const [iframeSrc, setIframeSrc] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const Iframe = config.IFRAME_URL;
-  const { user } = useAppContext();
+  const { user, shop } = useAppContext();
+
+  // Handle session data for child route
+  useEffect(() => {
+    handleChildRouteSession(user, shop);
+  }, [user, shop]);
 
   useEffect(() => {
-    if (user.shopify_code) {
+    if (user?.shopify_code) {
       setIframeSrc(
         `${Iframe}behavioSettings?shopify_code=${user.shopify_code}`,
       );

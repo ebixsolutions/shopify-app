@@ -11,33 +11,40 @@ const service = axios.create({
 // Add a request interceptor to set the Authorization header with the token
 service.interceptors.request.use(
   async (config) => {
-
-    // Ensure the headers are set correctly
-    config.headers['Content-Type'] = "application/json";
-    config.headers['Sys-Language'] = "en";
-
     try {
-      // Assuming you have a function to get session (get the user and token)
-      const session = await getSession(config); // Extract session
-      const user = session.get("user");
+      // Ensure the headers are set correctly
+      config.headers['Content-Type'] = "application/json";
+      config.headers['Sys-Language'] = "en";
 
-      if (user && user.token) {
-        config.headers['Authorization'] = `Bearer ${user.token}`;
-        console.log('Authorization header set:', config.headers['Authorization']);
-      } else {
-        console.log('No token found in session');
+      // For client-side requests, we need to get the token from localStorage or context
+      // Since we can't access the session directly in the interceptor, we'll get it from localStorage
+      if (typeof window !== "undefined") {
+        try {
+          const tempUserData = localStorage.getItem('tempUserData');
+          if (tempUserData) {
+            const user = JSON.parse(tempUserData);
+            if (user && user.token) {
+              config.headers['Authorization'] = `Bearer ${user.token}`;
+              console.log('Authorization header set from localStorage:', config.headers['Authorization']);
+            }
+          } else {
+            console.log('No tempUserData found in localStorage');
+          }
+        } catch (storageError) {
+          console.error("Error reading from localStorage:", storageError);
+        }
       }
+
+      console.log("Request config:", config.url);
+      return config;
     } catch (error) {
-      console.error("Error retrieving session or token:", error);
+      console.error("Request interceptor error:", error);
+      return Promise.reject(error);
     }
-
-    console.log("config", config)
-
-    return config;  // Ensure you return the modified config
   },
   (error) => {
-    console.error("Request interceptor error:", error);
-    return Promise.reject(error);  // Reject if interceptor fails
+    console.error("Request interceptor setup error:", error);
+    return Promise.reject(error);
   }
 );
 

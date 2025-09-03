@@ -25,24 +25,48 @@ import { useAppContext } from "../app/route"; // Import the hook from the parent
 import styles from "./style.module.css";
 
 export default function HomePage() {
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [isEshopVisible, setIsEshopVisible] = useState(false);
-  const [isCustomerVisible, setIsCustomerVisible] = useState(false);
-  const [isRepeatCustomerVisible, setIsRepeatCustomerVisible] = useState(false);
-  const [isRepeatCustomerPurchase, setIsRepeatCustomerPurchase] =
-    useState(false);
-  const [selectedOption, setSelectedOption] = useState("option1");
-  const [steps, setSteps] = useState([]);
-  const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [migrationComplete, setMigrationComplete] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const isFetched = useRef(false);
-  const { user, shop } = useAppContext();
+  try {
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [isEshopVisible, setIsEshopVisible] = useState(false);
+    const [isCustomerVisible, setIsCustomerVisible] = useState(false);
+    const [isRepeatCustomerVisible, setIsRepeatCustomerVisible] = useState(false);
+    const [isRepeatCustomerPurchase, setIsRepeatCustomerPurchase] =
+      useState(false);
+    const [selectedOption, setSelectedOption] = useState("option1");
+    const [steps, setSteps] = useState([]);
+    const [currentStepIndex, setCurrentStepIndex] = useState(0);
+    const [migrationComplete, setMigrationComplete] = useState(false);
+    const [progress, setProgress] = useState(0);
+    const isFetched = useRef(false);
+    const { user, shop } = useAppContext();
+    
+    console.log("HomePage component loaded with user:", user?.user_id, "shop:", shop);
+    
+    // Store user data in localStorage for API requests
+    useEffect(() => {
+      if (user && typeof window !== "undefined") {
+        try {
+          localStorage.setItem('tempUserData', JSON.stringify(user));
+          console.log("User data stored in localStorage for API requests");
+        } catch (error) {
+          console.error("Error storing user data in localStorage:", error);
+        }
+      }
+    }, [user]);
+    
   useEffect(() => {
     const fetchMigrationStatus = async () => {
       try {
+        // Check if user exists before accessing its properties
+        if (!user) {
+          console.error("User not found in context");
+          setError("User session not found. Please log in again.");
+          setLoading(false);
+          return;
+        }
+        
         const logs = user.logs || {};
         const data = { company_id: logs.company_id || null };
 
@@ -123,6 +147,11 @@ export default function HomePage() {
       console.log(`${step.title} is already completed. Skipping.`);
       return;
     }
+    if (!user) {
+      console.error("User not found in context during migration step");
+      return;
+    }
+    
     let logs = user.logs;
     const data = {
       company_id: logs ? logs.company_id : null,
@@ -215,6 +244,11 @@ export default function HomePage() {
 
   const handleBoostEshopTraffic = async () => {
     try {
+      if (!user) {
+        console.error("User not found in context");
+        return;
+      }
+      
       let logs = user.logs;
       const data = {
         company_id: logs ? logs.company_id : null,
@@ -238,6 +272,11 @@ export default function HomePage() {
 
   const handleBoostCustomer = async () => {
     try {
+      if (!user) {
+        console.error("User not found in context");
+        return;
+      }
+      
       let logs = user.logs;
       const data = {
         company_id: logs ? logs.company_id : null,
@@ -265,6 +304,11 @@ export default function HomePage() {
 
   const handleBoostRepeatCustomerLabel = async () => {
     try {
+      if (!user) {
+        console.error("User not found in context");
+        return;
+      }
+      
       let logs = user.logs;
       const data = {
         company_id: logs ? logs.company_id : null,
@@ -292,6 +336,11 @@ export default function HomePage() {
 
   const handleBoostRepeatCustomerTiers = async () => {
     try {
+      if (!user) {
+        console.error("User not found in context");
+        return;
+      }
+      
       let logs = user.logs;
       const data = {
         company_id: logs ? logs.company_id : null,
@@ -311,6 +360,11 @@ export default function HomePage() {
 
   const handleBoostCustomerPurchase = async () => {
     try {
+      if (!user) {
+        console.error("User not found in context");
+        return;
+      }
+      
       let logs = user.logs;
       const data = {
         company_id: logs ? logs.company_id : null,
@@ -1377,4 +1431,28 @@ export default function HomePage() {
       </BlockStack>
     </Page>
   );
+  } catch (error) {
+    console.error("Error in HomePage component:", error);
+    console.error("Error stack:", error.stack);
+    return (
+      <Page fullWidth>
+        <Layout>
+          <Layout.Section>
+            <LegacyCard sectioned>
+              <Text alignment="center" variant="headingLg">
+                Component Error
+              </Text>
+              <Text alignment="center">
+                An error occurred while loading the homepage.
+              </Text>
+              <details>
+                <summary>Error Details</summary>
+                <pre>{error.message}</pre>
+              </details>
+            </LegacyCard>
+          </Layout.Section>
+        </Layout>
+      </Page>
+    );
+  }
 }

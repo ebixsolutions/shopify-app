@@ -16,12 +16,18 @@ import { useNavigate } from "@remix-run/react";
 import styles from "./style.module.css";
 import { ChevronUpIcon } from "@shopify/polaris-icons";
 import { useAppContext } from "../app/route";
+import { handleChildRouteSession } from "../../utils/sessionUtils";
 
 export default function Referral() {
   const navigate = useNavigate();
   const [isReferralVisible, setReferralVisible] = useState(true);
   const [loading, setLoading] = useState(true);
-  const { shop } = useAppContext();
+  const { user, shop } = useAppContext();
+  
+  // Handle session data for child route
+  useEffect(() => {
+    handleChildRouteSession(user, shop);
+  }, [user, shop]);
 
   useEffect(() => {
     const timer = setTimeout(() => {

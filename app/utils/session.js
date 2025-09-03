@@ -5,10 +5,11 @@ export const sessionStorage = createCookieSessionStorage({
     name: "__session",
     httpOnly: true,
     path: "/",
-    sameSite: "None",  // 'Strict' is more secure but 'Lax' works in most cases
+    domain: process.env.NODE_ENV === "production" ? ".sup-uni.com" : undefined, // Only set domain in production
+    sameSite: "None",  // Required for iframe cross-origin requests
     secrets: ["G##th@CGS"], // Make sure this is a secure secret key
-    secure: true, // Use HTTPS in production
-    maxAge: 60 * 60 * 24 * 7,  // Keep the session for a week testing
+    secure: true, // Set to true for HTTPS (required with SameSite=None)
+    maxAge: 60 * 60 * 24 * 7,  // Keep the session for a week
   },
 });
 

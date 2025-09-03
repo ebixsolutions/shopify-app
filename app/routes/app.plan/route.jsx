@@ -18,12 +18,20 @@ import { useNavigate } from "@remix-run/react";
 import React, { useState, useEffect, useRef } from "react";
 import styles from "./style.module.css";
 import api from "../../api/app";
+import { useAppContext } from "../app/route";
+import { handleChildRouteSession } from "../../utils/sessionUtils";
 
 export default function PlanPage() {
   const navigate = useNavigate();
+  const { user, shop } = useAppContext();
   const [loading, setLoading] = useState(true);
   const [planData, setPlanData] = useState("");
   const isFetched = useRef(false);
+  
+  // Handle session data for child route
+  useEffect(() => {
+    handleChildRouteSession(user, shop);
+  }, [user, shop]);
   useEffect(() => {
     const fetchPlanDetails = async () => {
       try {

@@ -21,13 +21,22 @@ import { addDays } from 'date-fns';
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import api from "../../api/app";
+import { useAppContext } from "../app/route";
+import { handleChildRouteSession } from "../../utils/sessionUtils";
 
 export default function DashboardPage() {
   const navigate = useNavigate();
+  const { user, shop } = useAppContext();
+  console.log("Dashboard - user from context:", user?.user_id, "shop:", shop);
   const [loading, setLoading] = useState(true);
   const [popoverActive, setPopoverActive] = useState(false);
   const [traffic, setTraffic] = useState([]);
   const isFetched = useRef(false);
+  
+  // Handle session data for child route
+  useEffect(() => {
+    handleChildRouteSession(user, shop);
+  }, [user, shop]);
   const [state, setState] = useState([
     {
       startDate: new Date(),

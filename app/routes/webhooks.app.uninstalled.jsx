@@ -13,7 +13,7 @@ export const action = async ({ request }) => {
 
     // Clear cookies
     const headers = new Headers();
-    headers.append("Set-Cookie", `session_=; Max-Age=0; Path=/; HttpOnly; Secure`);
+    headers.append("Set-Cookie", `session_=; Max-Age=0; Path=/; HttpOnly; SameSite=Lax`);
 
     return new Response(JSON.stringify({ clearStorages: true }), { headers, status: 200 });
   }
