@@ -22,7 +22,7 @@ export const loader = async ({ request }) => {
     const shop = session.shop;
     const token = user.token; // Assume token is part of the sessionValidation
     // Return the user data alongside the apiKey
-
+    console.log("Valid session found for user:", user);
     return json({
       shop: shop || null, // Provide a fallback if shop is undefined
       user,
@@ -30,7 +30,7 @@ export const loader = async ({ request }) => {
       token
     });
   }
-
+  console.log("No valid session, redirecting to login.", sessionValidation);
   // Fallback in case of missing session or user
   return redirect(`/auth/index?${url.searchParams.toString()}`);
 };
