@@ -291,7 +291,7 @@ body:has(.ebix-modal.show) {
     margin: 5px;
     cursor: pointer;
     border-radius: 5px;
-    font-size: 14px;
+    font-size: 17px;
 }
 
 .ebix-card .table {

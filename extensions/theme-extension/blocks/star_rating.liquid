@@ -96,12 +96,13 @@
               <p><b>Get more points </b></p>
               <a href="/account/register" class="ebix-card-btn">Join Now</a>
             {% endif %}
-            
-            <p>
-              <b>Rewards:</b>
-              <p>Complete these tasks to earn points for yourself.</p>
-            </p>
-             <div class="ebix-ref-reward" id="reward_only">-</div>
+            {% if customer %}
+              <p>
+                <b>Rewards:</b>
+                <p>Complete these tasks to earn points for yourself.</p>
+              </p>
+               <div class="ebix-ref-reward" id="reward_only">-</div>
+            {% endif %}
           </div>
 
           <div class="ebix-card" id="ebix-referral-card">
