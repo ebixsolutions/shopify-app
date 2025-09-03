@@ -30,15 +30,29 @@ export default async function handleRequest(
           const stream = createReadableStreamFromReadable(body);
 
           responseHeaders.set("Content-Type", "text/html");
-          responseHeaders.set("Access-Control-Allow-Origin", "*");
+          responseHeaders.set("Access-Control-Allow-Origin", responseHeaders.get("Origin") || "*");
           responseHeaders.set("Access-Control-Allow-Credentials", "true");
           responseHeaders.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
           responseHeaders.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
           responseHeaders.set("X-Content-Type-Options", "nosniff");
-          responseHeaders.set("X-Frame-Options", "DENY");
+          responseHeaders.set("X-Frame-Options", "SAMEORIGIN");
           responseHeaders.set("X-XSS-Protection", "1; mode=block");
           responseHeaders.set("Referrer-Policy", "strict-origin-when-cross-origin");
-          
+          responseHeaders.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+
+          // Set SameSite=None and Secure for cookies in production
+          const cookies = responseHeaders.getSetCookie();
+          if (cookies && cookies.length > 0) {
+            responseHeaders.delete('Set-Cookie');
+            const isProduction = process.env.NODE_ENV === 'production';
+            const secureFlag = isProduction ? '; Secure' : '';
+            const sameSiteFlag = isProduction ? '; SameSite=None' : '; SameSite=Lax';
+            
+            cookies.forEach(cookie => {
+              responseHeaders.append('Set-Cookie', `${cookie}${secureFlag}${sameSiteFlag}`);
+            });
+          }
+
           resolve(
             new Response(stream, {
               headers: responseHeaders,
