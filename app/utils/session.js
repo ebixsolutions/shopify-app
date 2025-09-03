@@ -5,11 +5,10 @@ export const sessionStorage = createCookieSessionStorage({
     name: "__session",
     httpOnly: true,
     path: "/",
-    sameSite: "Lax",  // Changed from 'None' to 'Lax' for better compatibility
-    secrets: ["G##th@CGS"],
-    secure: process.env.NODE_ENV === 'production', // Only true in production
-    maxAge: 60 * 60 * 24 * 7,  // 1 week
-    domain: process.env.NODE_ENV === 'production' ? '.yourdomain.com' : undefined
+    sameSite: "None",  // 'Strict' is more secure but 'Lax' works in most cases
+    secrets: ["G##th@CGS"], // Make sure this is a secure secret key
+    secure: true, // Use HTTPS in production
+    maxAge: 60 * 60 * 24 * 7,  // Keep the session for a week testing
   },
 });
 
