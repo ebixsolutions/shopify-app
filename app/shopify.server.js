@@ -19,7 +19,15 @@ const shopify = shopifyApp({
   scopes: process.env.SCOPES?.split(","),
   appUrl: process.env.SHOPIFY_APP_URL || "",
   authPathPrefix: "/auth",
-  sessionStorage: new PrismaSessionStorage(prisma),
+  sessionStorage: new PrismaSessionStorage(prisma, {
+    sessionCookie: {
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'None',
+      httpOnly: true,
+      maxAge: 60 * 60 * 24 * 30, // 30 days
+      path: '/',
+    }
+  }),
   distribution: AppDistribution.AppStore,
   restResources,
   future: {
