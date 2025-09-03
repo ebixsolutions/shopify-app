@@ -13,6 +13,7 @@ const AppContext = createContext();
 export const useAppContext = () => useContext(AppContext);
 
 export const loader = async ({ request }) => {
+  console.log("Nithish:", request);
   const url = new URL(request.url);
   const { session } = await authenticate.admin(request);
   const sessionValidation = await validateSessionMiddleware(request,session.shop);
