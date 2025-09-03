@@ -12,6 +12,11 @@
     background: {{ block.settings.header_background_color }};
     color: {{ block.settings.header_text_color }};
   }
+
+    .ebix-card-btn1{
+    background: {{ block.settings.header_background_color }};
+    color: {{ block.settings.header_text_color }};
+  }
 {%- endstyle -%}
 
 <div id="custom-offer-widget" style="background-color: #f4f4f4; display:none; border: 1px solid #ddd; border-radius: 10px; padding: 14px 16px; margin: 15px auto; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08); font-family: 'Segoe UI', sans-serif; max-width: 460px; color: #333;">
@@ -93,8 +98,10 @@
               </div>
             {% else %}
               <hr style="margin: 10px;">
-              <p><b>Get more points </b></p>
-              <a href="/account/register" class="ebix-card-btn">Join Now</a>
+              <p style="margin-bottom: 15px;"><b>Get more points </b></p>
+              <div style="margin-bottom: 15px;">
+                <a href="/account/register" class="ebix-card-btn1">Join Now</a>
+              </div>
             {% endif %}
             {% if customer %}
               <p>
