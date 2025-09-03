@@ -7,6 +7,7 @@ import { createContext, useContext, useEffect } from "react";
 import polarisStyles from "@shopify/polaris/build/esm/styles.css?url";
 import { authenticate } from "../../shopify.server";
 import { validateSessionMiddleware } from "../../utils/auth";
+import { updateUrlWithSessionData } from "../../utils/sessionUtils";
 export const links = () => [{ rel: "stylesheet", href: polarisStyles }];
 
 const AppContext = createContext();
@@ -85,7 +86,38 @@ export const loader = async ({ request }) => {
       return redirect(`/auth/index?${url.searchParams.toString()}`);
     }
 
-    // First, try to get session from cookies (preferred method for main route)
+    // For main /app route, check session_data in URL first (iframe compatibility)
+    const sessionData = url.searchParams.get("session_data");
+    if (sessionData) {
+      console.log("Found session_data in URL, processing...");
+      try {
+        const user = JSON.parse(decodeURIComponent(sessionData));
+        console.log("User data from URL:", user.user_id);
+        
+        if (user && user.user_id && user.token) {
+          console.log("Valid user from URL, returning app data");
+          // Extract shop from URL parameters or use user's shop data
+          const shopFromUrl = url.searchParams.get("shop");
+          const shop = shopFromUrl || user.shop_id || "unknown-shop.myshopify.com";
+          
+          // Keep session_data in URL for child routes (iframe requirement)
+          const cleanUrl = new URL(request.url);
+          // Don't delete session_data - child routes need it for iframe context
+          
+          return json({
+            shop: shop,
+            user,
+            apiKey: process.env.SHOPIFY_API_KEY || "",
+            token: user.token,
+            cleanUrl: cleanUrl.toString()
+          });
+        }
+      } catch (parseError) {
+        console.error("Error parsing session data from URL:", parseError);
+      }
+    }
+
+    // Fallback: Try to get session from cookies (for non-iframe contexts)
     try {
       const sessionValidation = await validateSessionMiddleware(request);
       console.log("Session validation result:", sessionValidation);
@@ -112,37 +144,6 @@ export const loader = async ({ request }) => {
       }
     } catch (sessionError) {
       console.log("Session validation failed:", sessionError);
-    }
-
-    // Fallback: Check if we have session data in URL (for iframe compatibility)
-    const sessionData = url.searchParams.get("session_data");
-    if (sessionData) {
-      console.log("Found session_data in URL as fallback, processing...");
-      try {
-        const user = JSON.parse(decodeURIComponent(sessionData));
-        console.log("User data from URL fallback:", user.user_id);
-        
-        if (user && user.user_id && user.token) {
-          console.log("Valid user from URL fallback, returning app data");
-          // Extract shop from URL parameters or use user's shop data
-          const shopFromUrl = url.searchParams.get("shop");
-          const shop = shopFromUrl || user.shop_id || "unknown-shop.myshopify.com";
-          
-          // Keep session_data in URL for child routes (iframe requirement)
-          const cleanUrl = new URL(request.url);
-          // Don't delete session_data - child routes need it for iframe context
-          
-          return json({
-            shop: shop,
-            user,
-            apiKey: process.env.SHOPIFY_API_KEY || "",
-            token: user.token,
-            cleanUrl: cleanUrl.toString()
-          });
-        }
-      } catch (parseError) {
-        console.error("Error parsing session data from URL:", parseError);
-      }
     }
     
     // Try Shopify authentication
@@ -222,73 +223,45 @@ export default function App() {
     }
   }, [cleanUrl]);
     
+    // Helper function to create navigation URLs with session data
+    const createNavUrl = (path) => {
+      const sessionData = encodeURIComponent(JSON.stringify(user));
+      const shopParam = encodeURIComponent(shop);
+      return `${path}?session_data=${sessionData}&shop=${shopParam}`;
+    };
+
+    // Helper function to handle navigation clicks
+    const handleNavClick = (path) => (e) => {
+      e.preventDefault();
+      console.log(`${path} link clicked`);
+      window.location.href = createNavUrl(path);
+    };
+
     console.log("AppContext.Provider values:", { shop, user: user?.user_id, token: !!token });
     
     return (
       <AppProvider isEmbeddedApp apiKey={apiKey}>
         <AppContext.Provider value={{ shop, user, token }}>
         <NavMenu>
-          <Link to="/app" rel="home">
+          <a href={createNavUrl('/app')} onClick={handleNavClick('/app')}>
             Home
-          </Link>
-          <a 
-            href={`/app/dashboard?session_data=${encodeURIComponent(JSON.stringify(user))}&shop=${encodeURIComponent(shop)}`}
-            onClick={(e) => {
-              e.preventDefault();
-              console.log("Dashboard link clicked");
-              window.location.href = `/app/dashboard?session_data=${encodeURIComponent(JSON.stringify(user))}&shop=${encodeURIComponent(shop)}`;
-            }}
-          >
+          </a>
+          <a href={createNavUrl('/app/dashboard')} onClick={handleNavClick('/app/dashboard')}>
             Dashboard
           </a>
-          <a 
-            href={`/app/behavior_settings?session_data=${encodeURIComponent(JSON.stringify(user))}&shop=${encodeURIComponent(shop)}`}
-            onClick={(e) => {
-              e.preventDefault();
-              console.log("Behavior Settings link clicked");
-              window.location.href = `/app/behavior_settings?session_data=${encodeURIComponent(JSON.stringify(user))}&shop=${encodeURIComponent(shop)}`;
-            }}
-          >
+          <a href={createNavUrl('/app/behavior_settings')} onClick={handleNavClick('/app/behavior_settings')}>
             Behavior Tracking Settings
           </a>
-          <a 
-            href={`/app/point_settings?session_data=${encodeURIComponent(JSON.stringify(user))}&shop=${encodeURIComponent(shop)}`}
-            onClick={(e) => {
-              e.preventDefault();
-              console.log("Point Settings link clicked");
-              window.location.href = `/app/point_settings?session_data=${encodeURIComponent(JSON.stringify(user))}&shop=${encodeURIComponent(shop)}`;
-            }}
-          >
+          <a href={createNavUrl('/app/point_settings')} onClick={handleNavClick('/app/point_settings')}>
             Points Settings
           </a>
-          <a 
-            href={`/app/referral?session_data=${encodeURIComponent(JSON.stringify(user))}&shop=${encodeURIComponent(shop)}`}
-            onClick={(e) => {
-              e.preventDefault();
-              console.log("Referral link clicked");
-              window.location.href = `/app/referral?session_data=${encodeURIComponent(JSON.stringify(user))}&shop=${encodeURIComponent(shop)}`;
-            }}
-          >
+          <a href={createNavUrl('/app/referral')} onClick={handleNavClick('/app/referral')}>
             Referral
           </a>
-          <a 
-            href={`/app/loyalty?session_data=${encodeURIComponent(JSON.stringify(user))}&shop=${encodeURIComponent(shop)}`}
-            onClick={(e) => {
-              e.preventDefault();
-              console.log("Loyalty link clicked");
-              window.location.href = `/app/loyalty?session_data=${encodeURIComponent(JSON.stringify(user))}&shop=${encodeURIComponent(shop)}`;
-            }}
-          >
+          <a href={createNavUrl('/app/loyalty')} onClick={handleNavClick('/app/loyalty')}>
             Loyalty
           </a>
-          <a 
-            href={`/app/plan?session_data=${encodeURIComponent(JSON.stringify(user))}&shop=${encodeURIComponent(shop)}`}
-            onClick={(e) => {
-              e.preventDefault();
-              console.log("Plan link clicked");
-              window.location.href = `/app/plan?session_data=${encodeURIComponent(JSON.stringify(user))}&shop=${encodeURIComponent(shop)}`;
-            }}
-          >
+          <a href={createNavUrl('/app/plan')} onClick={handleNavClick('/app/plan')}>
             Plan
           </a>
         </NavMenu>
