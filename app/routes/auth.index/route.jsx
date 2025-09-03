@@ -70,6 +70,7 @@ export default function LoginPage() {
         if (sessionResponse.ok) {
           toast.success(response.msg);
           navigate("/app");
+          console.log("Navigating to /app");
         } else {
           toast.error("Failed to set session. Please try again.");
         }
