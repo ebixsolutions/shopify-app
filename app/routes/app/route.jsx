@@ -17,6 +17,7 @@ export const loader = async ({ request }) => {
   const { session } = await authenticate.admin(request);
   const sessionValidation = await validateSessionMiddleware(request,session.shop);
     // If user session is valid, retrieve user data
+  console.log("Session Validation Result:", sessionValidation);
   if (sessionValidation.user) {   
     const user = sessionValidation.user;
     const shop = session.shop;
