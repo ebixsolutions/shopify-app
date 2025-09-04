@@ -46,7 +46,18 @@ export default function DashboardPage() {
   ]);
   useEffect(() => {
     const fetchDefaultData = async () => {
-      const response = await api.getDashboard();
+
+    const startDate = state[0].startDate ? new Date(state[0].startDate) : null;
+    const endDate = state[0].endDate ? new Date(state[0].endDate) : null;
+
+    const formattedStartDate = formatDate(startDate);
+    const formattedEndDate = formatDate(endDate);
+
+    const dateRange = [formattedStartDate, formattedEndDate];
+
+    console.log("API Call with Date Range: ", dateRange);
+    const response = await api.getDashboard(dateRange);
+
 
       if (response.status === 200) {
         const dashboard = response.data;
