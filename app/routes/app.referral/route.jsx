@@ -40,15 +40,27 @@ export default function Referral() {
     setReferralVisible((prev) => !prev);
   };
   const handlePoints = () => {
-    navigate("/app/point_settings");
+    // Create URL with session data for private window compatibility
+    const sessionData = encodeURIComponent(JSON.stringify(user));
+    const shopParam = encodeURIComponent(shop);
+    const url = `/app/point_settings?session_data=${sessionData}&shop=${shopParam}`;
+    window.location.href = url;
   };
 
   const createReferral = () => {
-    navigate("/app/referral_program");
+    // Create URL with session data for private window compatibility
+    const sessionData = encodeURIComponent(JSON.stringify(user));
+    const shopParam = encodeURIComponent(shop);
+    const url = `/app/referral_program?session_data=${sessionData}&shop=${shopParam}`;
+    window.location.href = url;
   };
 
   const manageReferral = () => {
-    navigate("/app/referral_program_management");
+    // Create URL with session data for private window compatibility
+    const sessionData = encodeURIComponent(JSON.stringify(user));
+    const shopParam = encodeURIComponent(shop);
+    const url = `/app/referral_program_management?session_data=${sessionData}&shop=${shopParam}`;
+    window.location.href = url;
   };
 
   if (loading) {
