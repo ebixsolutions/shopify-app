@@ -256,10 +256,16 @@ export default function HomePage() {
       };
       const response = await api.getSubscribe(data);
 
+      // Create URL with session data for private window compatibility
+      const sessionData = encodeURIComponent(JSON.stringify(user));
+      const shopParam = encodeURIComponent(shop);
+
       if (response.data) {
-        navigate("/app/boost_eshop_traffic");
+        const url = `/app/boost_eshop_traffic?session_data=${sessionData}&shop=${shopParam}`;
+        window.location.href = url;
       } else {
-        navigate("/app/subscribe");
+        const url = `/app/subscribe?session_data=${sessionData}&shop=${shopParam}`;
+        window.location.href = url;
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -267,7 +273,11 @@ export default function HomePage() {
   };
 
   const handleBoostEshopTrafficManagement = () => {
-    navigate("/app/boost_eshop_traffic_management");
+    // Create URL with session data for private window compatibility
+    const sessionData = encodeURIComponent(JSON.stringify(user));
+    const shopParam = encodeURIComponent(shop);
+    const url = `/app/boost_eshop_traffic_management?session_data=${sessionData}&shop=${shopParam}`;
+    window.location.href = url;
   };
 
   const handleBoostCustomer = async () => {
@@ -284,10 +294,16 @@ export default function HomePage() {
       };
       const response = await api.getSubscribe(data);
 
+      // Create URL with session data for private window compatibility
+      const sessionData = encodeURIComponent(JSON.stringify(user));
+      const shopParam = encodeURIComponent(shop);
+
       if (response.data) {
-        navigate("/app/boost_customer");
+        const url = `/app/boost_customer?session_data=${sessionData}&shop=${shopParam}`;
+        window.location.href = url;
       } else {
-        navigate("/app/subscribe");
+        const url = `/app/subscribe?session_data=${sessionData}&shop=${shopParam}`;
+        window.location.href = url;
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -295,11 +311,19 @@ export default function HomePage() {
   };
 
   const handleReferral = () => {
-    navigate("/app/referral_program");
+    // Create URL with session data for private window compatibility
+    const sessionData = encodeURIComponent(JSON.stringify(user));
+    const shopParam = encodeURIComponent(shop);
+    const url = `/app/referral_program?session_data=${sessionData}&shop=${shopParam}`;
+    window.location.href = url;
   };
 
   const handleBoostCustomerManagement = () => {
-    navigate("/app/boost_customer_management");
+    // Create URL with session data for private window compatibility
+    const sessionData = encodeURIComponent(JSON.stringify(user));
+    const shopParam = encodeURIComponent(shop);
+    const url = `/app/boost_customer_management?session_data=${sessionData}&shop=${shopParam}`;
+    window.location.href = url;
   };
 
   const handleBoostRepeatCustomerLabel = async () => {
@@ -316,10 +340,16 @@ export default function HomePage() {
       };
       const response = await api.getSubscribe(data);
 
+      // Create URL with session data for private window compatibility
+      const sessionData = encodeURIComponent(JSON.stringify(user));
+      const shopParam = encodeURIComponent(shop);
+
       if (response.data) {
-        navigate("/app/boost_repeat_customer_labels");
+        const url = `/app/boost_repeat_customer_labels?session_data=${sessionData}&shop=${shopParam}`;
+        window.location.href = url;
       } else {
-        navigate("/app/subscribe");
+        const url = `/app/subscribe?session_data=${sessionData}&shop=${shopParam}`;
+        window.location.href = url;
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -327,11 +357,19 @@ export default function HomePage() {
   };
 
   const handleBoostRepeatCustomerManagement = () => {
-    navigate("/app/boost_repeat_customer_management");
+    // Create URL with session data for private window compatibility
+    const sessionData = encodeURIComponent(JSON.stringify(user));
+    const shopParam = encodeURIComponent(shop);
+    const url = `/app/boost_repeat_customer_management?session_data=${sessionData}&shop=${shopParam}`;
+    window.location.href = url;
   };
 
   const handleLoyaltyProgram = () => {
-    navigate("/app/loyalty_program");
+    // Create URL with session data for private window compatibility
+    const sessionData = encodeURIComponent(JSON.stringify(user));
+    const shopParam = encodeURIComponent(shop);
+    const url = `/app/loyalty_program?session_data=${sessionData}&shop=${shopParam}`;
+    window.location.href = url;
   };
 
   const handleBoostRepeatCustomerTiers = async () => {
@@ -348,10 +386,16 @@ export default function HomePage() {
       };
       const response = await api.getSubscribe(data);
 
+      // Create URL with session data for private window compatibility
+      const sessionData = encodeURIComponent(JSON.stringify(user));
+      const shopParam = encodeURIComponent(shop);
+
       if (response.data) {
-        navigate("/app/boost_repeat_customer_tiers");
+        const url = `/app/boost_repeat_customer_tiers?session_data=${sessionData}&shop=${shopParam}`;
+        window.location.href = url;
       } else {
-        navigate("/app/subscribe");
+        const url = `/app/subscribe?session_data=${sessionData}&shop=${shopParam}`;
+        window.location.href = url;
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -372,10 +416,16 @@ export default function HomePage() {
       };
       const response = await api.getSubscribe(data);
 
+      // Create URL with session data for private window compatibility
+      const sessionData = encodeURIComponent(JSON.stringify(user));
+      const shopParam = encodeURIComponent(shop);
+
       if (response.data) {
-        navigate("/app/boost_customer_purchase");
+        const url = `/app/boost_customer_purchase?session_data=${sessionData}&shop=${shopParam}`;
+        window.location.href = url;
       } else {
-        navigate("/app/subscribe");
+        const url = `/app/subscribe?session_data=${sessionData}&shop=${shopParam}`;
+        window.location.href = url;
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -383,7 +433,11 @@ export default function HomePage() {
   };
 
   const handleBoostCustomerPurchaseManagement = () => {
-    navigate("/app/boost_customer_purchase_management");
+    // Create URL with session data for private window compatibility
+    const sessionData = encodeURIComponent(JSON.stringify(user));
+    const shopParam = encodeURIComponent(shop);
+    const url = `/app/boost_customer_purchase_management?session_data=${sessionData}&shop=${shopParam}`;
+    window.location.href = url;
   };
 
   if (loading) {
