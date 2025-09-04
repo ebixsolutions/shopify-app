@@ -40,19 +40,35 @@ export default function Referral() {
     setReferralVisible((prev) => !prev);
   };
   const handlePoints = () => {
-    navigate("/app/point_settings");
+    // Create URL with session data for private window compatibility
+    const sessionData = encodeURIComponent(JSON.stringify(user));
+    const shopParam = encodeURIComponent(shop);
+    const url = `/app/point_settings?session_data=${sessionData}&shop=${shopParam}`;
+    window.location.href = url;
   };
 
   const createMembershipTiers = () => {
-    navigate("/app/membership_tier");
+    // Create URL with session data for private window compatibility
+    const sessionData = encodeURIComponent(JSON.stringify(user));
+    const shopParam = encodeURIComponent(shop);
+    const url = `/app/membership_tier?session_data=${sessionData}&shop=${shopParam}`;
+    window.location.href = url;
   };
 
   const createMultipleRewardPointRules = () => {
-    navigate("/app/multiple_reward_point_rules");
+    // Create URL with session data for private window compatibility
+    const sessionData = encodeURIComponent(JSON.stringify(user));
+    const shopParam = encodeURIComponent(shop);
+    const url = `/app/multiple_reward_point_rules?session_data=${sessionData}&shop=${shopParam}`;
+    window.location.href = url;
   };
 
   const managePointsRecord = () => {
-    navigate("/app/member_points_record");
+    // Create URL with session data for private window compatibility
+    const sessionData = encodeURIComponent(JSON.stringify(user));
+    const shopParam = encodeURIComponent(shop);
+    const url = `/app/member_points_record?session_data=${sessionData}&shop=${shopParam}`;
+    window.location.href = url;
   };
 
   if (loading) {

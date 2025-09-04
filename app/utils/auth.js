@@ -7,8 +7,12 @@ export const validateSessionMiddleware = async (request, shop) => {
   
   // Debug logging for private window issues
   const cookieHeader = request.headers.get("Cookie");
+  const userAgent = request.headers.get("User-Agent") || "";
+  const isPrivateWindow = userAgent.includes("Incognito") || userAgent.includes("Private");
+  
   console.log("Cookie header:", cookieHeader ? "Present" : "Missing");
   console.log("Shop parameter:", shopName);
+  console.log("Private window detected:", isPrivateWindow);
   
   try {
     const session = await getSession(request);
@@ -16,7 +20,7 @@ export const validateSessionMiddleware = async (request, shop) => {
 
     console.log("Session user:", user ? "Found" : "Not found");
     
-    // If no user in session, check URL parameters as fallback
+    // If no user in session, check URL parameters as fallback (especially important for private windows)
     if (!user) {
       const sessionData = url.searchParams.get("session_data");
       if (sessionData) {
@@ -26,10 +30,15 @@ export const validateSessionMiddleware = async (request, shop) => {
           console.log("User data found in URL parameters:", user?.user_id);
           
           if (user && user.user_id && user.token) {
-            // Set the user in session for future requests
-            session.set("user", user);
-            const cookieHeader = await commitSession(session);
-            console.log("Session set from URL data successfully");
+            // For private windows, we'll rely more on URL parameters
+            // Still try to set session but don't fail if it doesn't work
+            try {
+              session.set("user", user);
+              await commitSession(session);
+              console.log("Session set from URL data successfully");
+            } catch (sessionError) {
+              console.log("Could not set session (likely private window), continuing with URL data");
+            }
           } else {
             console.error("Invalid user data from URL parameters:", user);
             user = null;

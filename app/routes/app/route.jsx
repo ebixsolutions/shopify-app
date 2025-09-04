@@ -234,7 +234,9 @@ export default function App() {
     const handleNavClick = (path) => (e) => {
       e.preventDefault();
       console.log(`${path} link clicked`);
-      window.location.href = createNavUrl(path);
+      const url = createNavUrl(path);
+      console.log("Navigating to:", url);
+      window.location.href = url;
     };
 
     console.log("AppContext.Provider values:", { shop, user: user?.user_id, token: !!token });

@@ -30,8 +30,33 @@ export const updateUrlWithSessionData = (user, shop) => {
       const shopParam = encodeURIComponent(shop || "unknown-shop.myshopify.com");
       const newUrl = `${currentUrl.pathname}?session_data=${sessionData}&shop=${shopParam}`;
       window.history.replaceState({}, '', newUrl);
-      console.log("Updated URL with session data");
+      console.log("Updated URL with session data for private window compatibility");
     }
+  }
+};
+
+/**
+ * Check if we're in a private/incognito window
+ * @returns {boolean} True if in private window
+ */
+export const isPrivateWindow = () => {
+  if (typeof window === "undefined") return false;
+  
+  try {
+    // Check for private window indicators
+    const userAgent = navigator.userAgent;
+    if (userAgent.includes("Incognito") || userAgent.includes("Private")) {
+      return true;
+    }
+    
+    // Test localStorage availability (often restricted in private windows)
+    const testKey = '__private_window_test__';
+    localStorage.setItem(testKey, 'test');
+    localStorage.removeItem(testKey);
+    return false;
+  } catch (error) {
+    // If localStorage fails, likely a private window
+    return true;
   }
 };
 
@@ -41,6 +66,13 @@ export const updateUrlWithSessionData = (user, shop) => {
  * @param {string} shop - Shop name
  */
 export const handleChildRouteSession = (user, shop) => {
-  storeUserInLocalStorage(user);
+  // Always update URL with session data for private window compatibility
   updateUrlWithSessionData(user, shop);
+  
+  // Try to store in localStorage, but don't fail if it doesn't work (private windows)
+  try {
+    storeUserInLocalStorage(user);
+  } catch (error) {
+    console.log("Could not store in localStorage (likely private window), continuing with URL-based session");
+  }
 };
