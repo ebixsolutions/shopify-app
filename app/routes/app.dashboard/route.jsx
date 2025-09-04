@@ -39,7 +39,7 @@ export default function DashboardPage() {
   }, [user, shop]);
   const [state, setState] = useState([
     {
-      startDate: new Date(),
+      startDate: addDays(new Date(), -29),
       endDate: new Date(),
       key: 'selection'
     }
