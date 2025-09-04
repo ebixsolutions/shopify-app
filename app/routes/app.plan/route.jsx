@@ -50,7 +50,11 @@ export default function PlanPage() {
     }
   }, []);
   const handleSubscribe = () => {
-    navigate("/app/subscribe");
+    // Create URL with session data for private window compatibility
+    const sessionData = encodeURIComponent(JSON.stringify(user));
+    const shopParam = encodeURIComponent(shop);
+    const url = `/app/subscribe?session_data=${sessionData}&shop=${shopParam}`;
+    window.location.href = url;
   };
 
   if (loading) {
