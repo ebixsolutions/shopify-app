@@ -326,56 +326,6 @@ export default function PlanPage() {
                 </div>
               </Card>
             </Grid.Cell>
-            <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 4, xl: 6 }}>
-              <Card roundedAbove="none" sectioned>
-                <Text as="h2" variant="headingXs" fontWeight="bold">
-                  Referral Program
-                </Text>
-                <Text>
-                  <Text as="span" variant="headingLg" tone="subdued">
-                    $38
-                  </Text>{" "}
-                  <Text as="span" variant="headingLg" fontWeight="bold">
-                    /month
-                  </Text>
-                </Text>
-                <BlockStack gap="300">
-                  <div className={styles.textColor}>
-                    <Text variant="p" as="h6">
-                      Or $408/year (save 10%).
-                    </Text>
-                  </div>
-                  <Divider />
-                </BlockStack>
-                <div style={{ marginTop: "8px", marginBottom: "8px" }}>
-                  <Text>Features</Text>
-                </div>
-                <div style={{ marginTop: "5px", marginBottom: "10px" }}>
-                  <List type="bullet">
-                    <List.Item>
-                      <Text as="span" fontWeight="normal">
-                        Referral Registration Reward
-                      </Text>
-                    </List.Item>
-                    <List.Item>
-                      <Text as="span" fontWeight="normal">
-                        Referral Registration + 1st Order Award
-                      </Text>
-                    </List.Item>
-                    <List.Item>
-                      <Text as="span" fontWeight="normal">
-                        Referral Registration + View Specific Page Reward
-                      </Text>
-                    </List.Item>
-                    <List.Item>
-                      <Text as="span" fontWeight="normal">
-                        Referral Repeat Purchase Reward
-                      </Text>
-                    </List.Item>
-                  </List>
-                </div>
-              </Card>
-            </Grid.Cell>
             <Grid.Cell columnSpan={{ xs: 6, sm: 2, md: 2, lg: 4, xl: 6 }}>
               <Card roundedAbove="none" sectioned>
                 <Text as="h2" variant="headingXs" fontWeight="bold">
@@ -398,7 +348,7 @@ export default function PlanPage() {
                   <Divider />
                 </BlockStack>
                 <div style={{ marginTop: "8px", marginBottom: "8px" }}>
-                  <Text>Features</Text>
+                  <Text>Includes</Text>
                 </div>
                 <div style={{ marginTop: "5px", marginBottom: "30px" }}>
                   <List type="bullet">
@@ -414,12 +364,17 @@ export default function PlanPage() {
                     </List.Item>
                     <List.Item>
                       <Text as="span" fontWeight="normal">
-                        Member Reward Points
+                        Reward Points
                       </Text>
                     </List.Item>
                     <List.Item>
                       <Text as="span" fontWeight="normal">
-                        Multiple Member Reward Point Rules
+                        Multiplier Rules
+                      </Text>
+                    </List.Item>
+                    <List.Item>
+                      <Text as="span" fontWeight="normal">
+                        Referral Workflows
                       </Text>
                     </List.Item>
                   </List>
