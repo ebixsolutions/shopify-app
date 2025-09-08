@@ -92,6 +92,21 @@ export default function DashboardPage() {
     return `${year}-${month}-${day}`;
   };
 
+  // Used for UI display (Aug 10 2025)
+  const formatDisplayDate = (date) => {
+    if (!date) return "";
+    const parts = new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    }).formatToParts(date);
+
+    const month = parts.find((p) => p.type === "month").value;
+    const day = parts.find((p) => p.type === "day").value;
+    const year = parts.find((p) => p.type === "year").value;
+
+    return `${month} ${day} ${year}`;
+  };
 
   const handleDashboard = async () => {
     console.log(state[0]);
@@ -350,7 +365,8 @@ export default function DashboardPage() {
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           {state[0].startDate && state[0].endDate && (
             <span style={{ fontSize: "14px", color: "gray" }}>
-              {state[0].startDate.toLocaleDateString()} - {state[0].endDate.toLocaleDateString()}
+              {formatDisplayDate(state[0].startDate)} –{" "}
+              {formatDisplayDate(state[0].endDate)}
             </span>
           )}
           <Button icon={CalendarIcon} onClick={togglePopover}>
@@ -382,8 +398,8 @@ export default function DashboardPage() {
 
             {state[0].startDate && state[0].endDate && (
               <p style={{ marginLeft: "10px", marginTop: "10px" }}>
-                Selected Range: {state[0].startDate.toLocaleDateString()} to{" "}
-                {state[0].endDate.toLocaleDateString()}
+                Selected Range: {formatDisplayDate(state[0].startDate)} to{" "}
+                {formatDisplayDate(state[0].endDate)}
               </p>
             )}
 
