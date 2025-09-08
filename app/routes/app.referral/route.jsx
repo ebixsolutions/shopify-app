@@ -23,7 +23,7 @@ export default function Referral() {
   const [isReferralVisible, setReferralVisible] = useState(true);
   const [loading, setLoading] = useState(true);
   const { user, shop } = useAppContext();
-  
+
   // Handle session data for child route
   useEffect(() => {
     handleChildRouteSession(user, shop);
@@ -139,9 +139,8 @@ export default function Referral() {
                             />
                           </div>
                           <Text as="h5">
-                            To ensure the proper functioning of this plugin, it
-                            is necessary to enable the pop-up feature for the
-                            storefront.
+                            Enable the pop‑up feature in your storefront to use
+                            this plugin.
                           </Text>
                         </div>
                         <div className={styles.customButton}>
@@ -163,9 +162,8 @@ export default function Referral() {
                       Points Settings
                     </Text>
                     <Text>
-                      Manage points rewards easily by setting credit timing,
-                      purchase rewards, point redemption, and birthday bonuses
-                      to enhance customer experience and loyalty.
+                      Set up credit timing, purchase rewards, point redemption
+                      and birthday bonuses to encourage loyalty.
                     </Text>
                     <div
                       style={{ width: "auto" }}
@@ -196,9 +194,9 @@ export default function Referral() {
                             Referral program Setup
                           </Text>
                           <Text>
-                            Reward your existing customers with{" "}
-                            <b>cash, discount codes, or points</b> for referring
-                            your online store to their friends.
+                            Reward customers with{" "}
+                            <b>cash, discount codes, or points</b> when they
+                            refer friends.
                           </Text>
 
                           <div
@@ -215,15 +213,9 @@ export default function Referral() {
                           </div>
                           <div style={{ marginTop: "10px" }}>
                             <Text>
-                              For testing, please click the "Gift icon" at the
-                              bottom right to view the <br />
-                              Referral Program rules and reward conditions. If
-                              you do not see the "Gift icon," <br />
-                              please ensure that the{" "}
-                              <span style={{ color: "#2d9bf0" }}>
-                                pop-up feature
-                              </span>{" "}
-                              is enabled for the storefront.
+                              Click the gift icon at the bottom right to preview
+                              referral rules. If you don't see it, enable
+                              pop‑ups in your storefront.
                             </Text>
                             <div
                               style={{ marginTop: "5px", width: "200px" }}
@@ -250,7 +242,7 @@ export default function Referral() {
                       </div>
                     </Card>
                     <Text as="h3" variant="headingMd">
-                      Manage existing processes.
+                      Manage referral workflows.
                     </Text>
                     <div
                       style={{ width: "auto" }}
@@ -273,22 +265,23 @@ export default function Referral() {
                         <List type="bullet">
                           <List.Item>
                             <Text as="span" fontWeight="bold">
-                              Referral Registration Reward
+                              Reward for registration
                             </Text>
                           </List.Item>
                           <List.Item>
                             <Text as="span" fontWeight="bold">
-                              Referral Registration + 1st Order Award
+                              Reward for registration and first order
                             </Text>
                           </List.Item>
                           <List.Item>
                             <Text as="span" fontWeight="bold">
-                              Referral Registration + View Specific Page Reward
+                              Reward for registration and viewing a specific
+                              page
                             </Text>
                           </List.Item>
                           <List.Item>
                             <Text as="span" fontWeight="bold">
-                              Referral Repeat Purchase Reward
+                              Reward for repeat purchases
                             </Text>
                           </List.Item>
                         </List>

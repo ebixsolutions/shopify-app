@@ -23,7 +23,7 @@ export default function Referral() {
   const [isReferralVisible, setReferralVisible] = useState(true);
   const [loading, setLoading] = useState(true);
   const { user, shop } = useAppContext();
-  
+
   // Handle session data for child route
   useEffect(() => {
     handleChildRouteSession(user, shop);
@@ -121,12 +121,10 @@ export default function Referral() {
                   How This App Helps Your Shop
                 </Text>
                 <Text alignment="center">
-                  Through a few simple steps, we provide step-by-step guidance
-                  to help you seamlessly set up and manage your <br />
-                  online store's Referral Program. Let your existing customers
-                  join, refer friends to sign up, make their first
-                  <br /> purchase, visit specific pages, or shop again to earn
-                  discount coupons or reward points!
+                  Follow step-by-step guidance to set up and manage your
+                  referral program.
+                  <br /> Encourage customers to refer friends, shop and earn
+                  coupons or points.
                 </Text>
               </BlockStack>
             </Card>
@@ -149,7 +147,7 @@ export default function Referral() {
                 {isReferralVisible && (
                   <BlockStack gap="400">
                     <Text as="h3" variant="headingMd">
-                      Enable & Manage popup and widgets
+                      Enable and manage pop‑ups and widgets
                     </Text>
                     <div className={styles.customCard}>
                       <Card background="bg-surface-connect" roundedAbove="none">
@@ -162,9 +160,8 @@ export default function Referral() {
                             />
                           </div>
                           <Text as="h5">
-                            To ensure the proper functioning of this plugin, it
-                            is necessary to enable the pop-up feature for the
-                            storefront.
+                            Enable the pop‑up feature in your storefront to use
+                            this plugin.
                           </Text>
                         </div>
                         <div className={styles.customButton}>
@@ -220,10 +217,9 @@ export default function Referral() {
                             Membership Tiers setup
                           </Text>
                           <Text>
-                            Create and manage various membership levels such as
-                            Gold, Silver, and Bronze. New members start at a
-                            basic level, and you can set spending thresholds for
-                            upgrades to encourage continuous engagement.
+                            Create and manage membership levels like Gold,
+                            Silver and Bronze. Set spending thresholds for
+                            upgrades.
                           </Text>
 
                           <div
@@ -258,11 +254,9 @@ export default function Referral() {
                             Multiple Member Reward Point Rules
                           </Text>
                           <Text>
-                            Customize multiplier events based on different
-                            spending conditions or specific dates. For example,
-                            set a rule that every Sunday, purchases of
-                            designated products over $10 earn 3x points to boost
-                            sales and customer participation.
+                            Create multiplier rules for points based on spending
+                            conditions or dates (e.g., 3× points on certain
+                            products every Sunday).
                           </Text>
 
                           <div
@@ -297,10 +291,8 @@ export default function Referral() {
                             Member Points Record
                           </Text>
                           <Text>
-                            Maintain a complete record of customer point
-                            transactions for easy tracking. Manual adjustments
-                            are supported for special cases or compensation,
-                            ensuring precise effective point management.
+                            View and manage customer point histories, including
+                            manual adjustments when needed.
                           </Text>
 
                           <div
@@ -326,7 +318,7 @@ export default function Referral() {
                       }}
                     >
                       <div style={{ flex: "1" }}>
-                      <div
+                        <div
                           style={{
                             display: "flex",
                             alignItems: "center",
@@ -339,7 +331,7 @@ export default function Referral() {
                             className={styles.alert}
                           />
                           <Text fontWeight="bold">
-                            We strongly recommend enabling{" "}
+                            We recommend enabling{" "}
                             <a
                               href={`https://${shop}/admin/online_store/preferences`}
                               target="_blank"
@@ -350,20 +342,18 @@ export default function Referral() {
                             >
                               password protection
                             </a>{" "}
-                            and testing your rules first before making your
-                            store public.
+                            and testing your rules before your store goes live.
                           </Text>
                         </div>
-                        <div style={{ marginTop: "10px"}}>
+                        <div style={{ marginTop: "10px" }}>
                           <Text>
-                            For testing, please click the "Gift icon" at the
-                            bottom right to view the Referral Program rules and
-                            reward conditions. If you do not see the "Gift
-                            icon," please ensure that the{" "}
+                            To test, click the Gift icon at the bottom right to
+                            view the referral program rules and reward tiers. If
+                            you do not see the icon, make sure the{" "}
                             <span style={{ color: "#2d9bf0" }}>
                               pop-up feature
                             </span>{" "}
-                            is enabled for the storefront.
+                            is enabled for your storefront.
                           </Text>
                           <div
                             style={{ marginTop: "10px", width: "200px" }}

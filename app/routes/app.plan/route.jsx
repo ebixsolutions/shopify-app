@@ -27,7 +27,7 @@ export default function PlanPage() {
   const [loading, setLoading] = useState(true);
   const [planData, setPlanData] = useState("");
   const isFetched = useRef(false);
-  
+
   // Handle session data for child route
   useEffect(() => {
     handleChildRouteSession(user, shop);
@@ -105,13 +105,10 @@ export default function PlanPage() {
                 >
                   <div style={{ flex: "1" }}>
                     <Text as="h3" variant="headingMd">
-                      Your trial ends at {planData}
+                      Your trial ends on {planData}
                     </Text>
                     <div style={{ marginTop: "5px" }}>
-                      <Text>
-                        Subscribe to the plan by {planData}, to avoid any
-                        disruptions to your sales strategy.
-                      </Text>
+                      <Text>Subscribe by then to avoid disruption.</Text>
                     </div>
                   </div>
                   <div
@@ -135,44 +132,44 @@ export default function PlanPage() {
                   Starter
                 </Text>
                 <Text>
-                  <Text as="span" variant="headingSm" tone="subdued">
-                    /m
+                  <Text as="span" variant="headingLg" tone="subdued">
+                    $8
                   </Text>{" "}
                   <Text as="span" variant="headingLg" fontWeight="bold">
-                    $8
+                    /month
                   </Text>
                 </Text>
                 <BlockStack gap="300">
                   <div className={styles.textColor}>
                     <Text variant="p" as="h6">
-                      Or $99 annually, saving 10% on costs.
+                      Or $99/year (save 10%).
                     </Text>
                   </div>
                   <Divider />
                 </BlockStack>
                 <div style={{ marginTop: "8px", marginBottom: "8px" }}>
-                  <Text>Select Any 1 Option</Text>
+                  <Text>Choose one feature</Text>
                 </div>
                 <div style={{ marginTop: "5px", marginBottom: "30px" }}>
                   <List type="bullet">
                     <List.Item>
                       <Text as="span" fontWeight="normal">
-                        SU Boost Traffic
+                        Boost Traffic
                       </Text>
                     </List.Item>
                     <List.Item>
                       <Text as="span" fontWeight="normal">
-                        SU Boost Customers
+                        Boost Customers
                       </Text>
                     </List.Item>
                     <List.Item>
                       <Text as="span" fontWeight="normal">
-                        SU Boost Repeat Customers
+                        Boost Repeat Customers
                       </Text>
                     </List.Item>
                     <List.Item>
                       <Text as="span" fontWeight="normal">
-                        SU Boost Purchase Volume
+                        Boost Purchase Volume
                       </Text>
                     </List.Item>
                   </List>
@@ -185,44 +182,44 @@ export default function PlanPage() {
                   Standard
                 </Text>
                 <Text>
-                  <Text as="span" variant="headingSm" tone="subdued">
-                    /m
+                  <Text as="span" variant="headingLg" tone="subdued">
+                    $18
                   </Text>{" "}
                   <Text as="span" variant="headingLg" fontWeight="bold">
-                    $18
+                    /month
                   </Text>
                 </Text>
                 <BlockStack gap="300">
                   <div className={styles.textColor}>
                     <Text variant="p" as="h6">
-                      Or $180 annually, saving 10% on costs.
+                      Or $198/year (save 10%).
                     </Text>
                   </div>
                   <Divider />
                 </BlockStack>
                 <div style={{ marginTop: "8px", marginBottom: "8px" }}>
-                  <Text>Select Any 2 Options</Text>
+                  <Text>Choose any two features</Text>
                 </div>
                 <div style={{ marginTop: "5px", marginBottom: "30px" }}>
                   <List type="bullet">
                     <List.Item>
                       <Text as="span" fontWeight="normal">
-                        SU Boost Traffic
+                        Boost Traffic
                       </Text>
                     </List.Item>
                     <List.Item>
                       <Text as="span" fontWeight="normal">
-                        SU Boost Customers
+                        Boost Customers
                       </Text>
                     </List.Item>
                     <List.Item>
                       <Text as="span" fontWeight="normal">
-                        SU Boost Repeat Customers
+                        Boost Repeat Customers
                       </Text>
                     </List.Item>
                     <List.Item>
                       <Text as="span" fontWeight="normal">
-                        SU Boost Purchase Volume
+                        Boost Purchase Volume
                       </Text>
                     </List.Item>
                   </List>
@@ -235,44 +232,44 @@ export default function PlanPage() {
                   Pro
                 </Text>
                 <Text>
-                  <Text as="span" variant="headingSm" tone="subdued">
-                    /m
+                  <Text as="span" variant="headingLg" tone="subdued">
+                    $28
                   </Text>{" "}
                   <Text as="span" variant="headingLg" fontWeight="bold">
-                    $28
+                    /month
                   </Text>
                 </Text>
                 <BlockStack gap="300">
                   <div className={styles.textColor}>
                     <Text variant="p" as="h6">
-                      Or $288 annually, saving 10% on costs.
+                      Or $288/year (save 10%).
                     </Text>
                   </div>
                   <Divider />
                 </BlockStack>
                 <div style={{ marginTop: "8px", marginBottom: "8px" }}>
-                  <Text>Select Any 3 Options</Text>
+                  <Text>Choose any three features</Text>
                 </div>
                 <div style={{ marginTop: "5px", marginBottom: "30px" }}>
                   <List type="bullet">
                     <List.Item>
                       <Text as="span" fontWeight="normal">
-                        SU Boost Traffic
+                        Boost Traffic
                       </Text>
                     </List.Item>
                     <List.Item>
                       <Text as="span" fontWeight="normal">
-                        SU Boost Customers
+                        Boost Customers
                       </Text>
                     </List.Item>
                     <List.Item>
                       <Text as="span" fontWeight="normal">
-                        SU Boost Repeat Customers
+                        Boost Repeat Customers
                       </Text>
                     </List.Item>
                     <List.Item>
                       <Text as="span" fontWeight="normal">
-                        SU Boost Purchase Volume
+                        Boost Purchase Volume
                       </Text>
                     </List.Item>
                   </List>
@@ -285,44 +282,44 @@ export default function PlanPage() {
                   Premium
                 </Text>
                 <Text>
-                  <Text as="span" variant="headingSm" tone="subdued">
-                    /m
+                  <Text as="span" variant="headingLg" tone="subdued">
+                    $38
                   </Text>{" "}
                   <Text as="span" variant="headingLg" fontWeight="bold">
-                    $38
+                    /month
                   </Text>
                 </Text>
                 <BlockStack gap="300">
                   <div className={styles.textColor}>
                     <Text variant="p" as="h6">
-                      Or $400 annually, saving 10% on costs.
+                      Or $400/year (save 10%).
                     </Text>
                   </div>
                   <Divider />
                 </BlockStack>
                 <div style={{ marginTop: "8px", marginBottom: "8px" }}>
-                  <Text>Full Features</Text>
+                  <Text>Includes all four features</Text>
                 </div>
                 <div style={{ marginTop: "5px", marginBottom: "30px" }}>
                   <List type="bullet">
                     <List.Item>
                       <Text as="span" fontWeight="normal">
-                        SU Boost Traffic
+                        Boost Traffic
                       </Text>
                     </List.Item>
                     <List.Item>
                       <Text as="span" fontWeight="normal">
-                        SU Boost Customers
+                        Boost Customers
                       </Text>
                     </List.Item>
                     <List.Item>
                       <Text as="span" fontWeight="normal">
-                        SU Boost Repeat Customers
+                        Boost Repeat Customers
                       </Text>
                     </List.Item>
                     <List.Item>
                       <Text as="span" fontWeight="normal">
-                        SU Boost Purchase Volume
+                        Boost Purchase Volume
                       </Text>
                     </List.Item>
                   </List>
@@ -335,17 +332,17 @@ export default function PlanPage() {
                   Referral Program
                 </Text>
                 <Text>
-                  <Text as="span" variant="headingSm" tone="subdued">
-                    /m
+                  <Text as="span" variant="headingLg" tone="subdued">
+                    $38
                   </Text>{" "}
                   <Text as="span" variant="headingLg" fontWeight="bold">
-                    $38
+                    /month
                   </Text>
                 </Text>
                 <BlockStack gap="300">
                   <div className={styles.textColor}>
                     <Text variant="p" as="h6">
-                      Or $408 annually, saving 10% on costs.
+                      Or $408/year (save 10%).
                     </Text>
                   </div>
                   <Divider />
@@ -385,17 +382,17 @@ export default function PlanPage() {
                   Referral Program
                 </Text>
                 <Text>
-                  <Text as="span" variant="headingSm" tone="subdued">
-                    /m
+                  <Text as="span" variant="headingLg" tone="subdued">
+                    $38
                   </Text>{" "}
                   <Text as="span" variant="headingLg" fontWeight="bold">
-                    $38
+                    /month
                   </Text>
                 </Text>
                 <BlockStack gap="300">
                   <div className={styles.textColor}>
                     <Text variant="p" as="h6">
-                      Or $408 annually, saving 10% on costs.
+                      Or $408/year (save 10%).
                     </Text>
                   </div>
                   <Divider />
