@@ -53,7 +53,7 @@ export default function PlanPage() {
     // Create URL with session data for private window compatibility
     const sessionData = encodeURIComponent(JSON.stringify(user));
     const shopParam = encodeURIComponent(shop);
-    const url = `/app/subscribe?session_data=${sessionData}&shop=${shopParam}`;
+    const url = `/app/subscribe.start?plan=standard&session_data=${sessionData}&shop=${shopParam}`;
     window.location.href = url;
   };
 
