@@ -4,60 +4,108 @@ export default function InternalServerErrorPage({ msg }) {
       ? JSON.stringify(msg, null, 2)
       : String(msg || "Unknown error");
 
+  const handleGoLogin = () => {
+    try {
+      const params = typeof window !== 'undefined' ? window.location.search : '';
+      window.location.href = `/auth/index${params || ''}`;
+    } catch {
+      window.location.href = '/auth/index';
+    }
+  };
+
+  const handleRetry = () => {
+    try {
+      if (typeof window !== 'undefined') {
+        window.location.reload();
+      }
+    } catch {
+      // no-op
+    }
+  };
+
   return (
     <div
       style={{
+        minHeight: "100vh",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        background: "#f6f7f9",
+        padding: "24px",
       }}
     >
       <div
         style={{
           width: "100%",
-          padding: "50px",
-          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+          maxWidth: "720px",
           backgroundColor: "#fff",
-          textAlign: "center",
+          boxShadow: "0 12px 24px rgba(0,0,0,0.08)",
+          borderRadius: "12px",
+          padding: "32px",
         }}
       >
-        <h1 style={{ fontSize: "30px", color: "red" }}>
-          500 - Internal Server Error
-        </h1>
-        <p>Something went wrong on our end. Please try again later.</p>
+        <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
+          <img src="/images/alert.png" alt="Error" style={{ width: 48, height: 48 }} />
+          <div>
+            <h1 style={{ margin: 0, fontSize: "24px", color: "#1f2937" }}>Something went wrong</h1>
+            <p style={{ margin: "6px 0 0", color: "#6b7280" }}>
+              We hit an unexpected error. You can try again, or go back to login.
+            </p>
+          </div>
+        </div>
 
-        {process.env.NODE_ENV === "development" ? (
-          <pre
+        {process.env.NODE_ENV === "development" && (
+          <div
             style={{
-              color: "red",
-              textAlign: "left",
-              margin: "10px auto",
-              maxWidth: "500px",
-              backgroundColor: "#f8d7da",
-              padding: "10px",
-              borderRadius: "5px",
+              marginTop: "16px",
+              background: "#fff7f7",
+              border: "1px solid #ffd6d6",
+              color: "#b91c1c",
+              padding: "12px 14px",
+              borderRadius: "8px",
+              maxHeight: "240px",
+              overflow: "auto",
               whiteSpace: "pre-wrap",
+              fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+              fontSize: "12px",
             }}
           >
             {errorMessage}
-          </pre>
-        ) : (
-          <p>If the issue persists, please contact support.</p>
+          </div>
         )}
-        <button
-        onClick={() => window.location.href = '/'}
-          style={{
-          marginTop: '20px',
-          padding: '10px 20px',
-          backgroundColor: '#007BFF',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer',
-          }}
-        >
-          Go Back to Home
-        </button>
+
+        <div style={{ display: "flex", gap: "12px", marginTop: "20px" }}>
+          <button
+            onClick={handleRetry}
+            style={{
+              padding: '10px 16px',
+              backgroundColor: '#111827',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '8px',
+              cursor: 'pointer',
+            }}
+          >
+            Retry
+          </button>
+          <button
+            onClick={handleGoLogin}
+            style={{
+              padding: '10px 16px',
+              backgroundColor: '#2563eb',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '8px',
+              cursor: 'pointer',
+            }}
+          >
+            Go to Login
+          </button>
+        </div>
+
+        <div style={{ marginTop: "16px", color: "#9ca3af", fontSize: "12px" }}>
+          <span>Error code: 500</span>
+        </div>
       </div>
     </div>
   );
