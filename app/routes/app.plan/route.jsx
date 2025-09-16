@@ -49,11 +49,11 @@ export default function PlanPage() {
       fetchPlanDetails();
     }
   }, []);
-  const handleSubscribe = () => {
+  const handleSubscribe = (plan = 'pro') => {
     // Create URL with session data for private window compatibility
     const sessionData = encodeURIComponent(JSON.stringify(user));
     const shopParam = encodeURIComponent(shop);
-    const url = `/app/subscribe/start?plan=standard&session_data=${sessionData}&shop=${shopParam}`;
+    const url = `/app/subscribe/start?plan=${encodeURIComponent(plan)}&session_data=${sessionData}&shop=${shopParam}`;
     window.location.href = url;
   };
 
@@ -109,18 +109,9 @@ export default function PlanPage() {
                     </Text>
                     <div style={{ marginTop: "5px" }}>
                       <Text>
-                        Subscribe to the plan by {planData}, to avoid any
-                        disruptions to your sales strategy.
+                        Subscribe by {planData} to avoid any disruptions to your sales strategy.
                       </Text>
                     </div>
-                  </div>
-                  <div
-                    style={{ flex: "0 0 auto" }}
-                    className={styles.customSubscribeButton}
-                  >
-                    <Button size="medium" onClick={handleSubscribe}>
-                      Subscribe
-                    </Button>
                   </div>
                 </div>
               </Card>
@@ -129,303 +120,39 @@ export default function PlanPage() {
         </Layout.Section>
         <Layout.Section>
           <Grid>
-            <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 4, xl: 6 }}>
+            <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 6, xl: 6 }}>
               <Card roundedAbove="none" sectioned>
-                <Text as="h2" variant="headingXs" fontWeight="bold">
-                  Starter
-                </Text>
+                <Text as="h2" variant="headingXs" fontWeight="bold">Free Trial</Text>
                 <Text>
-                  <Text as="span" variant="headingSm" tone="subdued">
-                    /m
-                  </Text>{" "}
-                  <Text as="span" variant="headingLg" fontWeight="bold">
-                    $8
-                  </Text>
+                  <Text as="span" variant="headingSm" tone="subdued">30 days</Text>{" "}
+                  <Text as="span" variant="headingLg" fontWeight="bold">$0</Text>
                 </Text>
-                <BlockStack gap="300">
-                  <div className={styles.textColor}>
-                    <Text variant="p" as="h6">
-                      Or $99 annually, saving 10% on costs.
-                    </Text>
-                  </div>
-                  <Divider />
-                </BlockStack>
-                <div style={{ marginTop: "8px", marginBottom: "8px" }}>
-                  <Text>Select Any 1 Option</Text>
-                </div>
-                <div style={{ marginTop: "5px", marginBottom: "30px" }}>
+                <div style={{ marginTop: "12px" }}>
                   <List type="bullet">
-                    <List.Item>
-                      <Text as="span" fontWeight="normal">
-                        SU Boost Traffic
-                      </Text>
-                    </List.Item>
-                    <List.Item>
-                      <Text as="span" fontWeight="normal">
-                        SU Boost Customers
-                      </Text>
-                    </List.Item>
-                    <List.Item>
-                      <Text as="span" fontWeight="normal">
-                        SU Boost Repeat Customers
-                      </Text>
-                    </List.Item>
-                    <List.Item>
-                      <Text as="span" fontWeight="normal">
-                        SU Boost Purchase Volume
-                      </Text>
-                    </List.Item>
+                    <List.Item><Text as="span">All Pro features for 30 days</Text></List.Item>
+                    <List.Item><Text as="span">Auto-renews to Pro unless canceled</Text></List.Item>
                   </List>
+                </div>
+                <div style={{ marginTop: "16px" }}>
+                  <Button size="medium" onClick={() => handleSubscribe('free')}>Start Free Trial</Button>
                 </div>
               </Card>
             </Grid.Cell>
-            <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 4, xl: 6 }}>
+            <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 6, xl: 6 }}>
               <Card roundedAbove="none" sectioned>
-                <Text as="h2" variant="headingXs" fontWeight="bold">
-                  Standard
-                </Text>
+                <Text as="h2" variant="headingXs" fontWeight="bold">Pro</Text>
                 <Text>
-                  <Text as="span" variant="headingSm" tone="subdued">
-                    /m
-                  </Text>{" "}
-                  <Text as="span" variant="headingLg" fontWeight="bold">
-                    $18
-                  </Text>
+                  <Text as="span" variant="headingSm" tone="subdued">/m</Text>{" "}
+                  <Text as="span" variant="headingLg" fontWeight="bold">$28</Text>
                 </Text>
-                <BlockStack gap="300">
-                  <div className={styles.textColor}>
-                    <Text variant="p" as="h6">
-                      Or $180 annually, saving 10% on costs.
-                    </Text>
-                  </div>
-                  <Divider />
-                </BlockStack>
-                <div style={{ marginTop: "8px", marginBottom: "8px" }}>
-                  <Text>Select Any 2 Options</Text>
-                </div>
-                <div style={{ marginTop: "5px", marginBottom: "30px" }}>
+                <div style={{ marginTop: "12px" }}>
                   <List type="bullet">
-                    <List.Item>
-                      <Text as="span" fontWeight="normal">
-                        SU Boost Traffic
-                      </Text>
-                    </List.Item>
-                    <List.Item>
-                      <Text as="span" fontWeight="normal">
-                        SU Boost Customers
-                      </Text>
-                    </List.Item>
-                    <List.Item>
-                      <Text as="span" fontWeight="normal">
-                        SU Boost Repeat Customers
-                      </Text>
-                    </List.Item>
-                    <List.Item>
-                      <Text as="span" fontWeight="normal">
-                        SU Boost Purchase Volume
-                      </Text>
-                    </List.Item>
+                    <List.Item><Text as="span">Full features</Text></List.Item>
+                    <List.Item><Text as="span">Priority support</Text></List.Item>
                   </List>
                 </div>
-              </Card>
-            </Grid.Cell>
-            <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 4, xl: 6 }}>
-              <Card roundedAbove="none" sectioned>
-                <Text as="h2" variant="headingXs" fontWeight="bold">
-                  Pro
-                </Text>
-                <Text>
-                  <Text as="span" variant="headingSm" tone="subdued">
-                    /m
-                  </Text>{" "}
-                  <Text as="span" variant="headingLg" fontWeight="bold">
-                    $28
-                  </Text>
-                </Text>
-                <BlockStack gap="300">
-                  <div className={styles.textColor}>
-                    <Text variant="p" as="h6">
-                      Or $288 annually, saving 10% on costs.
-                    </Text>
-                  </div>
-                  <Divider />
-                </BlockStack>
-                <div style={{ marginTop: "8px", marginBottom: "8px" }}>
-                  <Text>Select Any 3 Options</Text>
-                </div>
-                <div style={{ marginTop: "5px", marginBottom: "30px" }}>
-                  <List type="bullet">
-                    <List.Item>
-                      <Text as="span" fontWeight="normal">
-                        SU Boost Traffic
-                      </Text>
-                    </List.Item>
-                    <List.Item>
-                      <Text as="span" fontWeight="normal">
-                        SU Boost Customers
-                      </Text>
-                    </List.Item>
-                    <List.Item>
-                      <Text as="span" fontWeight="normal">
-                        SU Boost Repeat Customers
-                      </Text>
-                    </List.Item>
-                    <List.Item>
-                      <Text as="span" fontWeight="normal">
-                        SU Boost Purchase Volume
-                      </Text>
-                    </List.Item>
-                  </List>
-                </div>
-              </Card>
-            </Grid.Cell>
-            <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 4, xl: 6 }}>
-              <Card roundedAbove="none" sectioned>
-                <Text as="h2" variant="headingXs" fontWeight="bold">
-                  Premium
-                </Text>
-                <Text>
-                  <Text as="span" variant="headingSm" tone="subdued">
-                    /m
-                  </Text>{" "}
-                  <Text as="span" variant="headingLg" fontWeight="bold">
-                    $38
-                  </Text>
-                </Text>
-                <BlockStack gap="300">
-                  <div className={styles.textColor}>
-                    <Text variant="p" as="h6">
-                      Or $400 annually, saving 10% on costs.
-                    </Text>
-                  </div>
-                  <Divider />
-                </BlockStack>
-                <div style={{ marginTop: "8px", marginBottom: "8px" }}>
-                  <Text>Full Features</Text>
-                </div>
-                <div style={{ marginTop: "5px", marginBottom: "30px" }}>
-                  <List type="bullet">
-                    <List.Item>
-                      <Text as="span" fontWeight="normal">
-                        SU Boost Traffic
-                      </Text>
-                    </List.Item>
-                    <List.Item>
-                      <Text as="span" fontWeight="normal">
-                        SU Boost Customers
-                      </Text>
-                    </List.Item>
-                    <List.Item>
-                      <Text as="span" fontWeight="normal">
-                        SU Boost Repeat Customers
-                      </Text>
-                    </List.Item>
-                    <List.Item>
-                      <Text as="span" fontWeight="normal">
-                        SU Boost Purchase Volume
-                      </Text>
-                    </List.Item>
-                  </List>
-                </div>
-              </Card>
-            </Grid.Cell>
-            <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 4, xl: 6 }}>
-              <Card roundedAbove="none" sectioned>
-                <Text as="h2" variant="headingXs" fontWeight="bold">
-                  Referral Program
-                </Text>
-                <Text>
-                  <Text as="span" variant="headingSm" tone="subdued">
-                    /m
-                  </Text>{" "}
-                  <Text as="span" variant="headingLg" fontWeight="bold">
-                    $38
-                  </Text>
-                </Text>
-                <BlockStack gap="300">
-                  <div className={styles.textColor}>
-                    <Text variant="p" as="h6">
-                      Or $408 annually, saving 10% on costs.
-                    </Text>
-                  </div>
-                  <Divider />
-                </BlockStack>
-                <div style={{ marginTop: "8px", marginBottom: "8px" }}>
-                  <Text>Features</Text>
-                </div>
-                <div style={{ marginTop: "5px", marginBottom: "10px" }}>
-                  <List type="bullet">
-                    <List.Item>
-                      <Text as="span" fontWeight="normal">
-                        Referral Registration Reward
-                      </Text>
-                    </List.Item>
-                    <List.Item>
-                      <Text as="span" fontWeight="normal">
-                        Referral Registration + 1st Order Award
-                      </Text>
-                    </List.Item>
-                    <List.Item>
-                      <Text as="span" fontWeight="normal">
-                        Referral Registration + View Specific Page Reward
-                      </Text>
-                    </List.Item>
-                    <List.Item>
-                      <Text as="span" fontWeight="normal">
-                        Referral Repeat Purchase Reward
-                      </Text>
-                    </List.Item>
-                  </List>
-                </div>
-              </Card>
-            </Grid.Cell>
-            <Grid.Cell columnSpan={{ xs: 6, sm: 2, md: 2, lg: 4, xl: 6 }}>
-              <Card roundedAbove="none" sectioned>
-                <Text as="h2" variant="headingXs" fontWeight="bold">
-                  Referral Program
-                </Text>
-                <Text>
-                  <Text as="span" variant="headingSm" tone="subdued">
-                    /m
-                  </Text>{" "}
-                  <Text as="span" variant="headingLg" fontWeight="bold">
-                    $38
-                  </Text>
-                </Text>
-                <BlockStack gap="300">
-                  <div className={styles.textColor}>
-                    <Text variant="p" as="h6">
-                      Or $408 annually, saving 10% on costs.
-                    </Text>
-                  </div>
-                  <Divider />
-                </BlockStack>
-                <div style={{ marginTop: "8px", marginBottom: "8px" }}>
-                  <Text>Features</Text>
-                </div>
-                <div style={{ marginTop: "5px", marginBottom: "30px" }}>
-                  <List type="bullet">
-                    <List.Item>
-                      <Text as="span" fontWeight="normal">
-                        Membership Tiers
-                      </Text>
-                    </List.Item>
-                    <List.Item>
-                      <Text as="span" fontWeight="normal">
-                        Member Offer
-                      </Text>
-                    </List.Item>
-                    <List.Item>
-                      <Text as="span" fontWeight="normal">
-                        Member Reward Points
-                      </Text>
-                    </List.Item>
-                    <List.Item>
-                      <Text as="span" fontWeight="normal">
-                        Multiple Member Reward Point Rules
-                      </Text>
-                    </List.Item>
-                  </List>
+                <div style={{ marginTop: "16px" }}>
+                  <Button size="medium" onClick={() => handleSubscribe('pro')}>Subscribe to Pro</Button>
                 </div>
               </Card>
             </Grid.Cell>
@@ -435,8 +162,7 @@ export default function PlanPage() {
           </div>
           <div style={{ marginTop: "10px", marginBottom: "15px" }}>
             <Text>
-              Charges are billed in USD. Recurring and usage-based charges are
-              billed every month.
+              Charges are billed in USD. Recurring charges are billed every month.
             </Text>
           </div>
         </Layout.Section>
