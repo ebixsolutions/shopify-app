@@ -13,9 +13,22 @@ export const loader = async ({ request }) => {
   try {
     console.log("Login Enterning");
     const url = new URL(request.url);
-    const shop = url.searchParams.get("shop");
+    let shop = url.searchParams.get("shop");
+
+    // Fallback: derive shop from Shopify session if missing in URL
+    if (!shop) {
+      try {
+        const { session } = await (await import("../../shopify.server")).authenticate.admin(request);
+        if (session?.shop) {
+          shop = session.shop;
+        }
+      } catch (e) {
+        // ignore; will remain null
+      }
+    }
+
     console.log("Shop parameter:", shop);
-    return { shop }; 
+    return { shop };
   } catch (error) {
     console.error("Error in login loader:", error);
     console.error("Error stack:", error.stack);
@@ -139,6 +152,9 @@ export default function LoginPage() {
         <Layout>
           <Card sectioned>
             <form className={styles.loginCard} onSubmit={handleSubmit}>
+              {shop && (
+                <input type="hidden" name="shop" value={shop} />
+              )}
               <div className="mb-4">
                 <TextField
                   label="Email address"
