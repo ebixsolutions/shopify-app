@@ -23,8 +23,11 @@ export const loader = async ({ request }) => {
     const amount = planToPrice[selectedPlan] ?? planToPrice.pro;
     const planName = selectedPlan === 'free' ? 'SU Sales - Free Trial (Pro)' : 'SU Sales - Pro';
 
-    const appUrl = process.env.SHOPIFY_APP_URL?.replace(/\/$/, "") || "";
-    const baseReturnUrl = `${appUrl}/app/plan`;
+    // Build a valid absolute return URL (fallback to current origin if env missing)
+    const configuredAppUrl = (process.env.SHOPIFY_APP_URL || '').replace(/\/$/, "");
+    const origin = new URL(request.url).origin;
+    const appBase = configuredAppUrl || origin;
+    const baseReturnUrl = `${appBase}/app/plan`;
 
     const returnUrl = new URL(baseReturnUrl);
     if (sessionData) returnUrl.searchParams.set("session_data", sessionData);
@@ -32,6 +35,9 @@ export const loader = async ({ request }) => {
 
     // Trial days: 30 for free trial flow, 0 for direct pro
     const trialDays = selectedPlan === 'free' ? 30 : 0;
+
+    // Force test mode in dev, or when SHOPIFY_BILLING_TEST=true
+    const testMode = (process.env.SHOPIFY_BILLING_TEST || '').toLowerCase() === 'true' || process.env.NODE_ENV !== 'production';
 
     const mutation = `#graphql
       mutation appSubscriptionCreate($name: String!, $returnUrl: URL!, $lineItems: [AppSubscriptionLineItemInput!]!, $test: Boolean) {
@@ -50,7 +56,7 @@ export const loader = async ({ request }) => {
     const variables = {
       name: planName,
       returnUrl: returnUrl.toString(),
-      test: process.env.NODE_ENV !== "production",
+      test: testMode,
       lineItems: [
         {
           plan: {
@@ -66,6 +72,12 @@ export const loader = async ({ request }) => {
 
     const resp = await admin.graphql(mutation, { variables });
     const data = await resp.json();
+
+    const topErrors = data?.errors;
+    if (topErrors && topErrors.length) {
+      console.error("Billing top-level GraphQL errors:", topErrors);
+      return json({ error: "Billing creation failed", details: topErrors }, { status: 400 });
+    }
 
     const errors = data?.data?.appSubscriptionCreate?.userErrors;
     const confirmationUrl = data?.data?.appSubscriptionCreate?.confirmationUrl;
@@ -84,9 +96,14 @@ export const loader = async ({ request }) => {
     return redirect(confirmationUrl);
   } catch (error) {
     // If authenticate.admin threw a Response (e.g., redirect to /auth/login), rethrow so Remix includes headers
-    if (error && typeof error === 'object' && 'status' in error && 'headers' in error) {
+    if (error instanceof Response) {
       throw error;
     }
+    try {
+      if (error && typeof error === 'object' && 'status' in error && 'headers' in error) {
+        throw error;
+      }
+    } catch {}
     console.error("Error starting billing:", error);
     return json({ error: "Failed to start billing" }, { status: 500 });
   }
