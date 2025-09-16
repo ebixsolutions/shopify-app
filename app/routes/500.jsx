@@ -4,22 +4,44 @@ export default function InternalServerErrorPage({ msg }) {
       ? JSON.stringify(msg, null, 2)
       : String(msg || "Unknown error");
 
-  const handleGoLogin = () => {
+  const getQueryString = () => {
     try {
-      const params = typeof window !== 'undefined' ? window.location.search : '';
-      window.location.href = `/auth/index${params || ''}`;
+      if (typeof window !== 'undefined') {
+        const url = new URL(window.location.href);
+        return url.search || '';
+      }
+    } catch {}
+    return '';
+  };
+
+  const navigateTop = (href) => {
+    try {
+      const target = typeof window !== 'undefined' && window.top ? window.top : window;
+      target.location.href = href;
     } catch {
-      window.location.href = '/auth/index';
+      try {
+        window.location.href = href;
+      } catch {}
     }
+  };
+
+  const handleGoLogin = () => {
+    const params = getQueryString();
+    navigateTop(`/auth/index${params || ''}`);
   };
 
   const handleRetry = () => {
     try {
-      if (typeof window !== 'undefined') {
-        window.location.reload();
+      const target = typeof window !== 'undefined' && window.top ? window.top : window;
+      if (target.history && target.history.length > 1) {
+        target.history.back();
+      } else {
+        target.location.reload();
       }
     } catch {
-      // no-op
+      try {
+        window.location.reload();
+      } catch {}
     }
   };
 

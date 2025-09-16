@@ -215,7 +215,23 @@ export default function App() {
         console.log("Cleaning URL from:", window.location.href, "to:", cleanUrl);
         // Use setTimeout to ensure this happens after the component is fully rendered
         setTimeout(() => {
-          window.history.replaceState({}, '', cleanUrl);
+          try {
+            const current = new URL(window.location.href);
+            const target = new URL(cleanUrl, current.origin);
+            // If origins differ or protocols mismatch, use a relative URL to avoid SecurityError
+            const sameOrigin = current.origin === target.origin;
+            const relative = `${target.pathname}${target.search}${target.hash}`;
+            window.history.replaceState({}, '', sameOrigin ? target.toString() : relative);
+          } catch (innerErr) {
+            console.error("Inner error cleaning URL, falling back to relative:", innerErr);
+            try {
+              const fallback = new URL(cleanUrl, window.location.origin);
+              const relative = `${fallback.pathname}${fallback.search}${fallback.hash}`;
+              window.history.replaceState({}, '', relative);
+            } catch (fallbackErr) {
+              console.error("Fallback error cleaning URL:", fallbackErr);
+            }
+          }
         }, 100);
       } catch (error) {
         console.error("Error cleaning URL:", error);
