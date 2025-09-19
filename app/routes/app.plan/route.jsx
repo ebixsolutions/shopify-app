@@ -133,7 +133,7 @@ export default function PlanPage() {
                 </Text>
                 <Text>
                   <Text as="span" variant="headingLg" tone="subdued">
-                    $8
+                    $29
                   </Text>{" "}
                   <Text as="span" variant="headingLg" fontWeight="bold">
                     /month
@@ -142,7 +142,7 @@ export default function PlanPage() {
                 <BlockStack gap="300">
                   <div className={styles.textColor}>
                     <Text variant="p" as="h6">
-                      Or $99/year (save 10%).
+                      Or $300/year (save 15%).
                     </Text>
                   </div>
                   <Divider />
@@ -175,6 +175,9 @@ export default function PlanPage() {
                   </List>
                 </div>
               </Card>
+              <div style={{ marginTop: "7px", textAlign: "center", fontSize: "20px" }}>
+                  <Text fontWeight="bold">30-day free trial</Text>
+                </div>
             </Grid.Cell>
             <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 4, xl: 6 }}>
               <Card roundedAbove="none" sectioned>
@@ -183,7 +186,7 @@ export default function PlanPage() {
                 </Text>
                 <Text>
                   <Text as="span" variant="headingLg" tone="subdued">
-                    $18
+                    $79
                   </Text>{" "}
                   <Text as="span" variant="headingLg" fontWeight="bold">
                     /month
@@ -192,7 +195,7 @@ export default function PlanPage() {
                 <BlockStack gap="300">
                   <div className={styles.textColor}>
                     <Text variant="p" as="h6">
-                      Or $198/year (save 10%).
+                      Or $828/year (save 15%).
                     </Text>
                   </div>
                   <Divider />
@@ -225,6 +228,9 @@ export default function PlanPage() {
                   </List>
                 </div>
               </Card>
+              <div style={{ marginTop: "7px", textAlign: "center", fontSize: "20px" }}>
+                  <Text fontWeight="bold">30-day free trial</Text>
+                </div>
             </Grid.Cell>
             <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 4, xl: 6 }}>
               <Card roundedAbove="none" sectioned>
@@ -233,7 +239,7 @@ export default function PlanPage() {
                 </Text>
                 <Text>
                   <Text as="span" variant="headingLg" tone="subdued">
-                    $28
+                    $89
                   </Text>{" "}
                   <Text as="span" variant="headingLg" fontWeight="bold">
                     /month
@@ -242,7 +248,7 @@ export default function PlanPage() {
                 <BlockStack gap="300">
                   <div className={styles.textColor}>
                     <Text variant="p" as="h6">
-                      Or $288/year (save 10%).
+                      Or $948/year (save 15%).
                     </Text>
                   </div>
                   <Divider />
@@ -275,6 +281,9 @@ export default function PlanPage() {
                   </List>
                 </div>
               </Card>
+              <div style={{ marginTop: "7px", textAlign: "center", fontSize: "20px" }}>
+                <Text fontWeight="bold">30-day free trial</Text>
+              </div>
             </Grid.Cell>
             <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 4, xl: 6 }}>
               <Card roundedAbove="none" sectioned>
@@ -283,7 +292,7 @@ export default function PlanPage() {
                 </Text>
                 <Text>
                   <Text as="span" variant="headingLg" tone="subdued">
-                    $38
+                    $109
                   </Text>{" "}
                   <Text as="span" variant="headingLg" fontWeight="bold">
                     /month
@@ -292,7 +301,7 @@ export default function PlanPage() {
                 <BlockStack gap="300">
                   <div className={styles.textColor}>
                     <Text variant="p" as="h6">
-                      Or $400/year (save 10%).
+                      Or $1188/year (save 15%).
                     </Text>
                   </div>
                   <Divider />
@@ -325,8 +334,11 @@ export default function PlanPage() {
                   </List>
                 </div>
               </Card>
+              <div style={{ marginTop: "7px", textAlign: "center", fontSize: "20px" }}>
+                <Text fontWeight="bold">30-day free trial</Text>
+              </div>
             </Grid.Cell>
-            <Grid.Cell columnSpan={{ xs: 6, sm: 2, md: 2, lg: 4, xl: 6 }}>
+            {/* <Grid.Cell columnSpan={{ xs: 6, sm: 2, md: 2, lg: 4, xl: 6 }}>
               <Card roundedAbove="none" sectioned>
                 <Text as="h2" variant="headingXs" fontWeight="bold">
                   Referral Program
@@ -380,11 +392,11 @@ export default function PlanPage() {
                   </List>
                 </div>
               </Card>
-            </Grid.Cell>
+              <div style={{ marginTop: "15px", textAlign: "center", fontSize: "20px" }}>
+                <Text fontWeight="bold">30-day free trial</Text>
+              </div>
+            </Grid.Cell> */}
           </Grid>
-          <div style={{ marginTop: "15px" }}>
-            <Text fontWeight="bold">30-day free trial</Text>
-          </div>
           <div style={{ marginTop: "10px", marginBottom: "15px" }}>
             <Text>
               Charges are billed in USD. Recurring and usage-based charges are
