@@ -1,12 +1,5 @@
 window.onload = () => {
 
-    function ebix_setCookie(cname, cvalue, exhour) {
-        const d = new Date();
-        d.setTime(d.getTime() + (exhour * 60 * 60 * 1000));
-        let expires = "expires=" + d.toUTCString();
-        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-    }
-
     function ebix_getCookie(cname) {
         let name = cname + "=";
         let decodedCookie = decodeURIComponent(document.cookie);
@@ -480,7 +473,6 @@ window.onload = () => {
     $(".ebix-embeded-close-btn").click((e) => {
         e.stopPropagation();
         $("#ebix-embeded-btn").css("display", "none")
-        ebix_setCookie("ebix-embeded-closed", true, 24);
     });
     $("#ebix-embeded-btn").click((e) => {
         $(".ebix-modal").toggleClass("show")
