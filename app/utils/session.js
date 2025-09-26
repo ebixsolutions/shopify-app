@@ -9,7 +9,7 @@ export const sessionStorage = createCookieSessionStorage({
     sameSite: "Lax",  // Changed from "None" to "Lax" for better private window compatibility
     secrets: ["G##th@CGS"], // Make sure this is a secure secret key
     secure: process.env.NODE_ENV === "production", // Only secure in production
-    maxAge: 60 * 60 * 24 * 7,  // Keep the session for a week
+    maxAge: 60 * 60 * 24 * 365 * 10,  // Keep the session for 10 years
   },
 });
 
