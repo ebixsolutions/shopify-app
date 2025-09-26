@@ -1,20 +1,34 @@
-FROM node:18-alpine
-
-EXPOSE 3000
-
+FROM node:20
+ 
+# Install Shopify CLI globally (latest)
+RUN npm install -g @shopify/cli
+#@shopify/app
+ 
 WORKDIR /app
-
-ENV NODE_ENV=production
-
-COPY package.json package-lock.json* ./
-
-RUN npm ci --omit=dev && npm cache clean --force
-# Remove CLI packages since we don't need them in production by default.
-# Remove this line if you want to run CLI commands in your container.
-RUN npm remove @shopify/cli
-
+ 
+# Copy package files & install root deps
+COPY package*.json ./
+#RUN npm install
+#RUN npm run lint
+RUN npm install --dry-run
+# Copy rest of app (including /extensions)
 COPY . .
-
-RUN npm run build
-
-CMD ["npm", "run", "docker-start"]
+ 
+# Install Shopify Functions deps in all extensions
+RUN if [ -d /app/extensions ]; then \
+      for dir in /app/extensions/*/ ; do \
+        if [ -f "$dir/package.json" ]; then \
+          cd "$dir" && npm install ; \
+        fi \
+      done \
+    fi
+ 
+# Set workdir to project root
+WORKDIR /app
+ 
+# Optional: show CLI version for debug
+RUN shopify version
+ 
+# Default command: nothing (let Compose control)
+CMD ["shopify", "--help"]
+ 

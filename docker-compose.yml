@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  shopify-deploy:
+    build: .
+    environment:
+      - SHOPIFY_API_KEY=
+      - SHOPIFY_API_SECRET=
+      - SHOPIFY_CLI_AUTH_TOKEN=  # use only AUTH_TOKEN
+      - SHOPIFY_CLI_PARTNERS_TOKEN=
+    command: ["shopify", "app", "deploy"]
+    volumes:
+      - .:/app
+      - ./node_modules:/app/node_modules
+      - ./shopify-app/.shopify:/app/.shopify  # mount project .shopify here
+    restart: "no"
+ 
+ 
