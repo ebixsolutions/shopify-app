@@ -203,8 +203,8 @@ export default function DashboardPage() {
       formattedData.push({
         Process: "SU Boost Purchase Volume",
         Status: status === 1 ? "Active" : "Inactive",
-        "CUM QTY": CUM_QTY.value,
-        "CUM AMT": CUM_AMT.value,
+        "CML QTY": CUM_QTY.value,
+        "CML AMT": CUM_AMT.value,
         ATR: 1,
       });
     }
@@ -243,12 +243,12 @@ export default function DashboardPage() {
       description:
         "Formula: First purchase transaction volume from referrals ÷ Number of new customers referred (rounded to nearest whole number).",
     },
-    "CUM QTY": {
-      title: "Cumulative Quantity (CUM QTY)",
+    "CML QTY": {
+      title: "Cumulative Quantity (CML QTY)",
       description: "Total quantity accumulated over time.",
     },
-    "CUM AMT": {
-      title: "Cumulative Amount (CUM AMT)",
+    "CML AMT": {
+      title: "Cumulative Amount (CML AMT)",
       description: "Total amount accumulated over time.",
     },
     ATR: {
