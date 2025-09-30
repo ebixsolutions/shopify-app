@@ -104,7 +104,7 @@ export default function RegisterPage() {
         <Layout>
           <div className="mb-5">
             <img
-              src="/images/logo.png"
+              src="/images/company_logo.png"
               alt="Logo"
               className={styles.logo}
             />

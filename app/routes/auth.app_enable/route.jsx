@@ -43,7 +43,7 @@ export default function AppEnablePage() {
       <Page>
         <div className="mb-3">
           <Layout>
-            <img src="/images/logo.png" alt="Logo" className={styles.logo} />
+            <img src="/images/company_logo.png" alt="Logo" className={styles.logo} />
           </Layout>
         </div>
         <div className="mb-3">

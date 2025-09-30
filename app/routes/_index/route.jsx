@@ -80,7 +80,7 @@ export default function App() {
       <Page>
         <Layout>
           <div className="mb-5 text-center">
-            <img src="/images/logo.png" alt="Logo" className={styles.logo} />
+            <img src="/images/company_logo.png" alt="Logo" className={styles.logo} />
             <h1 className={styles.title}>Boost Your Sales with </h1>
             <h1 className={`${styles.title} text-warning`}>SU Sales</h1>
           </div>
