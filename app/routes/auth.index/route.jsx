@@ -133,7 +133,7 @@ export default function LoginPage() {
        <Page>
         <Layout>
           <div className="mb-5">
-            <img src="/images/logo.png" alt="Logo" className={styles.logo} />
+            <img src="/images/company_logo.png" alt="Logo" className={styles.logo} />
           </div>
         </Layout>
         <Layout>
