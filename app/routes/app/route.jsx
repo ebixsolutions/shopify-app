@@ -261,6 +261,13 @@ export default function App() {
       <AppProvider isEmbeddedApp apiKey={apiKey}>
         <AppContext.Provider value={{ shop, user, token }}>
         <NavMenu>
+          <Link
+              to={createNavUrl("/app")}
+              onClick={handleNavClick("/app")}
+              rel="home"
+            >
+            Home
+          </Link>
           <a href={createNavUrl('/app')} onClick={handleNavClick('/app')}>
             Home
           </a>
