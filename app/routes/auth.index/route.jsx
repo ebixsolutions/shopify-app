@@ -1,132 +1,105 @@
 import { json, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { Page, Card, TextField, Button, Layout } from "@shopify/polaris";
-import { useState, useTransition} from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import api from "../../api/auth";
 import { validateForm } from "../../utils/validation";
 import styles from "./style.module.css";
 import { toast } from "react-toastify";
-// import { validateSessionMiddleware } from "../../utils/auth";
 
 export const loader = async ({ request }) => {
-  try {
-    console.log("Login Enterning");
-    const url = new URL(request.url);
-    const shop = url.searchParams.get("shop");
-    console.log("Shop parameter:", shop);
-    return { shop }; 
-  } catch (error) {
-    console.error("Error in login loader:", error);
-    console.error("Error stack:", error.stack);
-    return { shop: null, error: error.message };
-  }
+  const url = new URL(request.url);
+  const shop = url.searchParams.get("shop");
+  return { shop };
 };
+
 export default function LoginPage() {
-  try {
-    const { shop } = useLoaderData();
-    console.log(shop, "Geetha Testing");
-    const [formData, setFormData] = useState({
-      email: "",
-      password: "",
-    });
-    const transition = useTransition();
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [errors, setErrors] = useState({});
-    const navigate = useNavigate();
+  const { shop } = useLoaderData();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const formRef = useRef(null);
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleChange = (field) => (value) => {
-    setFormData((prevData) => ({ ...prevData, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
-  const handleSubmit = async (e) => {
-    try {
-      e.preventDefault();
-      console.log("Login form submitted");
-      setIsSubmitting(true);
-      setErrors({});
 
-      const validationRules = { required: true };
+  const handleSubmit = async (e, data = null) => {
+    e?.preventDefault();
+    setIsSubmitting(true);
+    setErrors({});
 
-      console.log("Validating form data:", formData);
-      const validationErrors = validateForm(formData, validationRules);
-      console.log("Validation errors:", validationErrors);
+    const submitData = data || formData; // use passed data if available
 
-      if (Object.keys(validationErrors).length > 0) {
-        toast.error("Please fix the errors in the form.");
-        setErrors(validationErrors);
-        setIsSubmitting(false);
-        return;
-      }
-
-      const shopData = {
-        username: formData.email,
-        password: formData.password,
-        shop: shop,
-      };
-      console.log("Shop data prepared:", shopData);
+    const validationErrors = validateForm(submitData, { required: true });
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      toast.error("Please fix the errors in the form.");
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
-      console.log("Calling LoginShop API with data:", shopData);
-      const response = await api.LoginShop(shopData);
-      console.log("LoginShop response:", response);
-      
-      if (response.code == 0) {
+      const response = await api.LoginShop({
+        username: submitData.email,
+        password: submitData.password,
+        shop,
+      });
+
+      if (response.code === 0) {
         const userData = response.data;
-        console.log("User data received:", userData);
-        
-        // Store user data in localStorage temporarily
-        try {
-          localStorage.setItem('tempUserData', JSON.stringify(userData));
-          console.log("User data stored in localStorage");
-        } catch (storageError) {
-          console.error("Error storing in localStorage:", storageError);
-        }
-        
-        // Create a form to submit to session route
-        try {
-          const form = document.createElement('form');
-          form.method = 'POST';
-          form.action = '/session';
-          form.style.display = 'none';
-          
-          const userInput = document.createElement('input');
-          userInput.type = 'hidden';
-          userInput.name = 'user';
-          userInput.value = JSON.stringify(userData);
-          
-          const shopInput = document.createElement('input');
-          shopInput.type = 'hidden';
-          shopInput.name = 'shop';
-          shopInput.value = shop;
-          
-          form.appendChild(userInput);
-          form.appendChild(shopInput);
-          document.body.appendChild(form);
-          
-          console.log("Form created, submitting to /session");
-          form.submit();
-        } catch (formError) {
-          console.error("Error creating/submitting form:", formError);
-          toast.error("Error creating session. Please try again.");
-          setIsSubmitting(false);
-        }
+
+        // Submit to session route
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = "/session";
+        form.style.display = "none";
+
+        const userInput = document.createElement("input");
+        userInput.name = "user";
+        userInput.value = JSON.stringify(userData);
+
+        const shopInput = document.createElement("input");
+        shopInput.name = "shop";
+        shopInput.value = shop;
+
+        form.appendChild(userInput);
+        form.appendChild(shopInput);
+        document.body.appendChild(form);
+        form.submit();
       } else {
-        console.error("Login failed:", response.msg);
         toast.error(response.msg);
         setIsSubmitting(false);
       }
-    } catch (error) {
-      console.error("Error in login process:", error);
-      console.error("Error stack:", error.stack);
-      toast.error("An error occurred while Login. Please try again.");
-      setIsSubmitting(false);
-    }
-    } catch (outerError) {
-      console.error("Outer error in handleSubmit:", outerError);
-      console.error("Outer error stack:", outerError.stack);
-      toast.error("A critical error occurred. Please try again.");
+    } catch (err) {
+      console.error(err);
+      toast.error("Login failed. Please try again.");
       setIsSubmitting(false);
     }
   };
+
+
+  // Auto-login effect
+  useEffect(() => {
+    if (location.state?.autoLogin && location.state.email && location.state.password) {
+      const autoData = {
+        email: location.state.email,
+        password: location.state.password,
+      };
+      setFormData(autoData);
+
+      // Call handleSubmit with the autoData directly
+      handleSubmit(null, autoData);
+    }
+  }, [location.state]);
+
 
   return (
     <div className={styles.pageContainer}>
@@ -138,7 +111,7 @@ export default function LoginPage() {
         </Layout>
         <Layout>
           <Card sectioned>
-            <form className={styles.loginCard} onSubmit={handleSubmit}>
+            <form ref={formRef} className={styles.loginCard} onSubmit={handleSubmit}>
               <div className="mb-4">
                 <TextField
                   label="Email address"
@@ -162,35 +135,14 @@ export default function LoginPage() {
                 />
               </div>
               <div className={styles.loginButton}>
-                <Button
-                  submit
-                  variant="primary"
-                  fullWidth
-                  disabled={transition.state === "submitting" || isSubmitting}
-                >
-                  {transition.state === "submitting" || isSubmitting
-                    ? "Login..."
-                    : "Submit"}
+                <Button submit variant="primary" fullWidth disabled={isSubmitting}>
+                  {isSubmitting ? "Logging in..." : "Login"}
                 </Button>
               </div>
             </form>
           </Card>
         </Layout>
-      </Page> 
+      </Page>
     </div>
   );
-  } catch (error) {
-    console.error("Error in LoginPage component:", error);
-    console.error("Error stack:", error.stack);
-    return (
-      <div style={{ padding: '20px', textAlign: 'center' }}>
-        <h2>Login Error</h2>
-        <p>An error occurred while loading the login page.</p>
-        <details>
-          <summary>Error Details</summary>
-          <pre>{error.message}</pre>
-        </details>
-      </div>
-    );
-  }
 }

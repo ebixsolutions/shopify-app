@@ -30,6 +30,7 @@ export default function RegisterPage() {
   const navigate = useNavigate();
   const { shopDetails, params } = useLoaderData();
   const [formData, setFormData] = useState({
+    email: "",
     password: "",
     confirmPassword: "",
     termsPrivacy: false, // Boolean for checkbox
@@ -71,7 +72,8 @@ export default function RegisterPage() {
 	const shopData = {
 	  shop: shopDetails.domain,
 	  name: shopDetails.name,
-	  email: shopDetails.email,
+    shopify_session_id: shopDetails.id,
+	  email: formData.email,
 	  Sys_Language: "en",
 	  regType: 1,
 	  default_lang: "en",
@@ -85,7 +87,12 @@ export default function RegisterPage() {
 	  const response = await api.registerShop(shopData,queryParams);
 	  if(response.code==0) {
 		toast.success(response.msg);
-    navigate("/auth/success");
+    navigate("/auth/success", {  
+    state: { 
+    ...response.data, 
+    email: formData.email,
+    password: formData.password
+  } });
 	  }else {
 		toast.error(response.msg);
 	  }
@@ -113,6 +120,15 @@ export default function RegisterPage() {
         <Layout>
           <Card sectioned>
             <form className={styles.registerCard} onSubmit={handleSubmit}>
+              <div className="mb-3">
+                <TextField
+                  label="Email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange("email")}
+                  autoComplete="email"
+                />
+              </div>
               <div className="mb-3">
                 <TextField
                   label="Password"
