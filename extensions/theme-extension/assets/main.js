@@ -100,7 +100,7 @@ window.onload = () => {
                         else if (val.attribute_operation === "visit_page")
                             img_src = ebix_referral_img2;
 
-                        content += `<td><img src="${img_src}" width="26" alt="${val.attribute_operation}"/></td>`;
+                        content += `<td><img src="${img_src}" style="width: 26px !important;" alt="${val.attribute_operation}"/></td>`;
                         content += `<td>${val.task}</td>`;
 
                         if (i === 0) {

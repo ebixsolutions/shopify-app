@@ -201,6 +201,7 @@
 #ebix-embeded .show {
     visibility: visible;
     opacity: 1;
+    z-index: 999 !important;
 }
 
 .ebix-modal:not(.show) {
