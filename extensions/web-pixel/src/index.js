@@ -11,11 +11,13 @@ register(({ settings, analytics, init }) => {
     if (apiFlag)
       fetch(`${config.baseURL}/shopify/web_pixel_event`, {
         method: "POST",
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          ...payload,
+          language: 'en'
+        }),
         headers: {
           'Content-Type': 'application/json',
-          'ngrok-skip-browser-warning': 'true',
-          'Sys-Language': 'en'
+          'ngrok-skip-browser-warning': 'true'
         }
       });
   }
