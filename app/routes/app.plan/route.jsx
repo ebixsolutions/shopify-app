@@ -17,6 +17,7 @@ import {
 import { useNavigate } from "@remix-run/react";
 import React, { useState, useEffect, useRef } from "react";
 import styles from "./style.module.css";
+import config from "../../utils/config";
 import api from "../../api/app";
 import { useAppContext } from "../app/route";
 import { handleChildRouteSession } from "../../utils/sessionUtils";
@@ -50,11 +51,8 @@ export default function PlanPage() {
     }
   }, []);
   const handleSubscribe = () => {
-    // Create URL with session data for private window compatibility
-    const sessionData = encodeURIComponent(JSON.stringify(user));
-    const shopParam = encodeURIComponent(shop);
-    const url = `/app/subscribe?session_data=${sessionData}&shop=${shopParam}`;
-    window.location.href = url;
+    const billingUrl = `${config.IFRAME_URL}billing?shopify_code=${user.shopify_code}`;
+    window.open(billingUrl, "_blank"); // Directly open billing iframe page
   };
 
   if (loading) {
