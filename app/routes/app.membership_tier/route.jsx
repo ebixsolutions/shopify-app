@@ -76,11 +76,12 @@ export default function MembershipTier() {
           src={iframeSrc}
           title="Behavior Settings"
           width="100%"
-          height="600px"
           style={{
             border: "1px solid #ccc",
             borderRadius: "8px",
             display: isLoading ? "none" : "block",
+            minHeight: "600px",
+            height: "calc(100vh - 5px)"
           }}
           onLoad={handleIframeLoad}
         ></iframe>

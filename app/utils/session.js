@@ -5,16 +5,19 @@ export const sessionStorage = createCookieSessionStorage({
     name: "__session",
     httpOnly: true,
     path: "/",
-    domain: process.env.NODE_ENV === "production" ? ".sup-uni.com" : undefined, // Only set domain in production
-    sameSite: "Lax",  // Changed from "None" to "Lax" for better private window compatibility
+    // domain: process.env.NODE_ENV === "production" ? ".sup-uni.com" : undefined, // Only set domain in production
+    sameSite: "none",  // Changed from "None" to "Lax" for better private window compatibility
     secrets: ["G##th@CGS"], // Make sure this is a secure secret key
-    secure: process.env.NODE_ENV === "production", // Only secure in production
+    secure: true, // Only secure in production
     maxAge: 60 * 60 * 24 * 365 * 10,  // Keep the session for 10 years
   },
 });
 
 export const getSession = async (request) => {
   const cookie = request.headers?.get ? request.headers.get("Cookie") : request.headers?.cookie || '';
+  console.log("request", request);
+  console.log("request1", request.headers);
+  console.log("cookie", cookie);
   return await sessionStorage.getSession(cookie);
 };
 
