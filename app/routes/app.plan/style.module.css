@@ -16,6 +16,7 @@
 
 .billingToggleWrapper{
   margin: 0 auto 24px auto;
+  margin-left: 200px;
   display: inline-flex;
   gap: 8px;
   align-items: center;

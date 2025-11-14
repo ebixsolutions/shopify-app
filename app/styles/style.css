@@ -36,3 +36,7 @@
   background: #0086d1 !important;
   border-color: #0086d1 !important;
 }
+
+.Polaris-Modal__Body {
+  overflow: hidden !important;
+}

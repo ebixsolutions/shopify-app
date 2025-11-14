@@ -242,6 +242,9 @@ export default function PlanPage() {
 
   const isFeatureDisabled = (feature) => {
     const flowCount = getFlowCount();
+    if (flowCount === 4) {
+      return true;
+    }
     const currentChecked = getCheckedCount();
     return !checkedFeatures[feature] && currentChecked >= flowCount;
   };
@@ -412,7 +415,7 @@ export default function PlanPage() {
               style={{
                 padding: "6px 16px",
                 border: "none",
-                borderRadius: 4,
+                borderRadius: 20,
                 background: billingCycle === "monthly" ? "#fff" : "transparent",
                 color: billingCycle === "monthly" ? "#000" : "#666",
                 cursor: "pointer",
@@ -427,7 +430,7 @@ export default function PlanPage() {
               style={{
                 padding: "6px 16px",
                 border: "none",
-                borderRadius: 4,
+                borderRadius: 20,
                 background: billingCycle === "yearly" ? "#fff" : "transparent",
                 color: billingCycle === "yearly" ? "#000" : "#666",
                 cursor: "pointer",
@@ -579,7 +582,10 @@ export default function PlanPage() {
 
                     <div style={{ marginTop: 8 }}>
                       <Text tone="subdued" variant="bodyXs">
-                        * {currentPlan.short_description}
+                        <span style={{ color: "#DC2626", marginRight: 6 }}>
+                          *
+                        </span>
+                        {currentPlan.short_description}
                       </Text>
                     </div>
 
@@ -599,7 +605,11 @@ export default function PlanPage() {
                         >
                           <input
                             type="checkbox"
-                            checked={checkedFeatures[item.value]}
+                            checked={
+                              getFlowCount() === 4
+                                ? true
+                                : checkedFeatures[item.value]
+                            }
                             onChange={() => handleFeatureChange(item.value)}
                             disabled={isFeatureDisabled(item.value)}
                             style={{
@@ -607,9 +617,10 @@ export default function PlanPage() {
                               cursor: isFeatureDisabled(item.value)
                                 ? "not-allowed"
                                 : "pointer",
-                              opacity: isFeatureDisabled(item.value) ? 0.5 : 1,
+                              opacity: isFeatureDisabled(item.value) ? 0.6 : 1,
                             }}
                           />
+
                           <span>{item.label}</span>
                         </div>
                       ))}
@@ -617,18 +628,33 @@ export default function PlanPage() {
 
                     {/* Price Breakdown */}
                     <div style={{ marginTop: 12 }}>
-                      {planPriceInfo[billingCycle]?.price_list?.map((p) => (
-                        <div
-                          key={p.label}
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                          }}
-                        >
-                          <Text>{p.label.replace("_", " ")}</Text>
-                          <Text>${p.value}</Text>
-                        </div>
-                      ))}
+                      {planPriceInfo[billingCycle]?.price_list
+                        ?.filter((p) => p.label !== "discount")
+                        ?.map((p) => {
+                          const labelText =
+                            p.label === "sub_total"
+                              ? "Sub Total"
+                              : p.label.replace("_", " ");
+
+                          const isDiscount = p.label === "discount";
+
+                          return (
+                            <div
+                              key={p.label}
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                              }}
+                            >
+                              <Text
+                                {...(!isDiscount ? { fontWeight: "bold" } : {})}
+                              >
+                                {labelText}
+                              </Text>
+                              <Text>${p.value}</Text>
+                            </div>
+                          );
+                        })}
                     </div>
 
                     {/* Total */}
@@ -749,7 +775,7 @@ export default function PlanPage() {
         open={iframeModal.open}
         onClose={() => setIframeModal({ open: false, title: "", url: "" })}
         title={iframeModal.title}
-        large
+        size="large"
       >
         <Modal.Section>
           <div style={{ height: "75vh" }}>
@@ -764,6 +790,7 @@ export default function PlanPage() {
           </div>
         </Modal.Section>
       </Modal>
+
       <Modal open={paymentModal.open} onClose={handleModalClose} title="" large>
         <Modal.Section>
           {paymentModal.data && (
