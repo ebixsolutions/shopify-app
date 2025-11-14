@@ -84,8 +84,10 @@ export default function LoginPage() {
       setIsSubmitting(false);
     }
   };
-
-
+  const handleForgetPassword = () => {
+    navigate(`/auth/forgetpassword${location.search}`);
+    //navigate("/auth/forgetPassword");
+  };
   // Auto-login effect
   useEffect(() => {
     if (location.state?.autoLogin && location.state.email && location.state.password) {
@@ -103,7 +105,7 @@ export default function LoginPage() {
 
   return (
     <div className={styles.pageContainer}>
-       <Page>
+      <Page>
         <Layout>
           <div className="mb-5">
             <img src="/images/company_logo.png" alt="Logo" className={styles.logo} />
@@ -134,6 +136,14 @@ export default function LoginPage() {
                   error={errors.password}
                 />
               </div>
+
+               {/* Forgot password link */}
+              <div className="mb-4">
+                <p onClick={handleForgetPassword} className={styles.ForgetPassword}>
+                  Forgot password?
+                </p>
+              </div>
+              
               <div className={styles.loginButton}>
                 <Button submit variant="primary" fullWidth disabled={isSubmitting}>
                   {isSubmitting ? "Logging in..." : "Login"}

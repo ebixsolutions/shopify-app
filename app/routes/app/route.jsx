@@ -286,6 +286,9 @@ export default function App() {
           <a href={createNavUrl('/app/loyalty')} onClick={handleNavClick('/app/loyalty')}>
             Loyalty
           </a>
+          <a href={createNavUrl('/app/my_account')} onClick={handleNavClick('/app/my_account')}>
+            My Account
+          </a>
           <a href={createNavUrl('/app/plan')} onClick={handleNavClick('/app/plan')}>
             Plan
           </a>
