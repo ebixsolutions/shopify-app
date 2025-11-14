@@ -9,3 +9,90 @@
   font-size: smaller;
   color: #1e913a;
 }
+
+:root{
+  --primary:#0b6cff;
+}
+
+.billingToggleWrapper{
+  margin: 0 auto 24px auto;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e1e1e1;
+  border-radius: 4px;
+  padding: 8px 12px;
+  width: fit-content;
+}
+
+.plansAndSummary{
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.plansContainer{
+  flex: 1 1 480px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.planSummaryWrapper{
+  flex: 0 0 320px;
+  max-width: 320px;
+  align-self: flex-start;
+  margin-top: -85px;
+}
+
+.customSubscribeButton{
+  display: flex;
+  justify-content: center;
+}
+
+.plansContainer > div{
+  min-width: 150px;
+  width: 160px;
+  box-sizing: border-box;
+}
+
+.plansContainer button,
+.billingToggleWrapper button{
+  touch-action: manipulation;
+}
+
+@media (max-width: 920px){
+  .billingToggleWrapper{
+    margin-left: 12px;
+    margin-right: 12px;
+  }
+
+  .plansAndSummary{
+    gap: 16px;
+  }
+
+  .planSummaryWrapper{
+    flex-basis: 100%;
+    max-width: 100%;
+    order: 2;
+    margin-top: 12px;
+  }
+
+  .plansContainer{
+    flex-basis: 100%;
+    order: 1;
+    padding: 6px 12px 12px 12px;
+  }
+}
+
+@media (min-width: 921px){
+  /* On wide screens we mimic the previous lifted summary card without overlapping content */
+  .planSummaryWrapper{
+    transform: translateY(-90px);
+  }
+}

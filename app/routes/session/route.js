@@ -54,9 +54,7 @@ export const action = async ({ request }) => {
         },
       });
     }
-
-    // ✅ Default flow (normal login)
-    // const sessionData = encodeURIComponent(JSON.stringify(user));
+  
     const redirectUrl = `/app?session_data=${sessionData}&shop=${encodeURIComponent(
       shop
     )}`;

@@ -11,6 +11,7 @@ import {
   TextContainer,
   SkeletonDisplayText,
   Modal,
+  Badge,
 } from "@shopify/polaris";
 import { useNavigate } from "@remix-run/react";
 import React, { useState, useEffect, useRef } from "react";
@@ -146,12 +147,14 @@ export default function PlanPage() {
 
   // ✅ Handle Billing Status from callback
   useEffect(() => {
+    let interval = null;
+
     // 1. Read billing_id from URL
     const urlParams = new URLSearchParams(window.location.search);
     let billingId = urlParams.get("billing_id");
 
     try {
-      // Remove billing_id from the URL immediately
+      // Clean URL immediately
       const url = new URL(window.location.href);
       url.searchParams.delete("billing_id");
       window.history.replaceState({}, "", `${url.pathname}${url.search}`);
@@ -159,38 +162,72 @@ export default function PlanPage() {
       console.error("Error cleaning billing_id from URL:", error);
     }
 
-    // 2. If billing_id exists, store it in localStorage
+    // 2. If billing_id exists → save and reset everything
     if (billingId) {
       localStorage.setItem("billing_id", billingId);
+
+      // Reset flag for newly arrived billing id
+      localStorage.setItem("billing_modal_opened", "false");
+
+      // Reset API stop flag
+      localStorage.setItem("billing_api_stopped", "false");
     }
 
-    // 3. Get billing_id from localStorage if not found in URL
+    // 3. If there is no billing id even in storage → stop
     billingId = billingId || localStorage.getItem("billing_id");
-
     if (!billingId) return;
 
-    const fetchBillingStatus = async () => {
+    const pollBillingStatus = async () => {
+      const apiStopped = localStorage.getItem("billing_api_stopped") === "true";
+      if (apiStopped) return;
+
       try {
         const result = await api.getBillingStatus({ id: billingId });
 
         if (result.status === 200 && result.code === 0) {
-          // 4. Show payment screen
-          setPaymentModal({
-            open: true,
-            success: result.data.payment_status === 1,
-            data: result.data,
-          });
+          const paymentStatus = result.data.payment_status; // 1 = success, 2 = failure
+          const modalOpened =
+            localStorage.getItem("billing_modal_opened") === "true";
 
-          // 5. Clear billing_id after successful retrieval
-          // localStorage.removeItem("billing_id");
+          if (!modalOpened && (paymentStatus === 1 || paymentStatus === 0)) {
+            // 4. Show modal
+            setPaymentModal({
+              open: true,
+              success: paymentStatus === 1,
+              data: result.data,
+            });
+
+            // 5. Stop API calls
+            localStorage.setItem("billing_api_stopped", "true");
+            clearInterval(interval);
+
+            // 6. Mark modal as opened
+            localStorage.setItem("billing_modal_opened", "true");
+          }
         }
       } catch (err) {
-        console.error("Error fetching billing status:", err);
+        console.error("Error polling billing status:", err);
       }
     };
 
-    fetchBillingStatus();
+    // 7. Poll every 5 seconds
+    interval = setInterval(pollBillingStatus, 5000);
+    pollBillingStatus(); // immediate first call
+
+    // 8. Cleanup on unmount (stop polling)
+    return () => clearInterval(interval);
   }, []);
+
+  // 9. When user closes modal → stop API permanently
+  const handleModalClose = () => {
+    setPaymentModal({ open: false, success: false, data: null });
+
+    // Mark API as stopped so refresh won't start polling again
+    localStorage.setItem("billing_api_stopped", "true");
+
+    // Prevent modal opening again on refresh
+    localStorage.setItem("billing_modal_opened", "true");
+  };
 
   const handleFeatureChange = (feature) => {
     const flowCount = getFlowCount();
@@ -310,7 +347,45 @@ export default function PlanPage() {
   }
 
   return (
-    <Page title="Plans" fullWidth>
+    <Page
+      title={
+        <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          Plans
+          {(() => {
+            const boughtPlan = plans?.find((p) => p.bought);
+
+            return boughtPlan ? (
+              <span
+                style={{
+                  fontSize: "14px",
+                  padding: "6px 12px",
+                  backgroundColor: "#0B6CFF",
+                  color: "#fff",
+                  borderRadius: "12px",
+                  fontWeight: "600",
+                }}
+              >
+                Active Plan: {boughtPlan.name}
+              </span>
+            ) : (
+              <span
+                style={{
+                  fontSize: "14px",
+                  padding: "6px 12px",
+                  backgroundColor: "#ee492b",
+                  color: "#fff",
+                  borderRadius: "12px",
+                  fontWeight: "600",
+                }}
+              >
+                Expired
+              </span>
+            );
+          })()}
+        </span>
+      }
+      fullWidth
+    >
       <Layout>
         <Layout.Section>
           <BlockStack gap="300">
@@ -331,20 +406,7 @@ export default function PlanPage() {
 
         {/* Billing toggle */}
         <Layout.Section>
-          <div
-            style={{
-              marginBottom: 24,
-              display: "flex",
-              gap: 8,
-              alignItems: "center",
-              justifyContent: "center",
-              border: "1px solid #e1e1e1",
-              borderRadius: 4,
-              padding: "8px 12px",
-              width: "fit-content",
-              marginLeft: 200,
-            }}
-          >
+          <div className={styles.billingToggleWrapper}>
             <button
               onClick={() => setBillingCycle("monthly")}
               style={{
@@ -381,17 +443,8 @@ export default function PlanPage() {
           </div>
 
           {/* Plan Cards */}
-          <div style={{ display: "flex", gap: 24, alignItems: "flex-start" }}>
-            <div
-              style={{
-                flex: 1,
-                display: "flex",
-                gap: 16,
-                flexWrap: "nowrap",
-                justifyContent: "flex-start",
-                overflowX: "auto",
-              }}
-            >
+          <div className={styles.plansAndSummary}>
+            <div className={styles.plansContainer}>
               {plans.map((plan) => {
                 const price =
                   billingCycle === "monthly"
@@ -490,7 +543,7 @@ export default function PlanPage() {
 
             {/* ✅ Dynamic Plan Summary */}
             {currentPlan && planPriceInfo && (
-              <div style={{ width: 320, marginTop: -160 }}>
+              <div className={styles.planSummaryWrapper}>
                 <div style={{ marginBottom: 12, textAlign: "right" }}>
                   <button
                     type="button"
@@ -711,14 +764,7 @@ export default function PlanPage() {
           </div>
         </Modal.Section>
       </Modal>
-      <Modal
-        open={paymentModal.open}
-        onClose={() =>
-          setPaymentModal({ open: false, success: false, data: null })
-        }
-        title=""
-        large
-      >
+      <Modal open={paymentModal.open} onClose={handleModalClose} title="" large>
         <Modal.Section>
           {paymentModal.data && (
             <div
