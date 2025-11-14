@@ -11,11 +11,12 @@ import { toast } from "react-toastify";
 export const loader = async ({ request }) => {
   const url = new URL(request.url);
   const shop = url.searchParams.get("shop");
-  return { shop };
+  const billingId = url.searchParams.get("billing_id") || null;
+  return { shop, billingId };
 };
 
 export default function LoginPage() {
-  const { shop } = useLoaderData();
+  const { shop, billingId } = useLoaderData();
   const location = useLocation();
   const navigate = useNavigate();
   const formRef = useRef(null);
@@ -56,10 +57,14 @@ export default function LoginPage() {
       if (response.code === 0) {
         const userData = response.data;
 
-        // Submit to session route
+        // ✅ Preserve billing_id if present in the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const billingId = urlParams.get("billing_id");
+
+        // ✅ Submit to session route (conditionally include billing_id)
         const form = document.createElement("form");
         form.method = "POST";
-        form.action = "/session";
+        form.action = billingId ? `/session?billing_id=${billingId}` : "/session";
         form.style.display = "none";
 
         const userInput = document.createElement("input");
@@ -75,7 +80,7 @@ export default function LoginPage() {
         document.body.appendChild(form);
         form.submit();
       } else {
-        toast.error(response.msg);
+        toast.error(response.msg || "Login failed.");
         setIsSubmitting(false);
       }
     } catch (err) {
@@ -85,8 +90,7 @@ export default function LoginPage() {
     }
   };
 
-
-  // Auto-login effect
+  // ✅ Auto-login effect (for redirect after subscribe or setup)
   useEffect(() => {
     if (location.state?.autoLogin && location.state.email && location.state.password) {
       const autoData = {
@@ -100,10 +104,9 @@ export default function LoginPage() {
     }
   }, [location.state]);
 
-
   return (
     <div className={styles.pageContainer}>
-       <Page>
+      <Page>
         <Layout>
           <div className="mb-5">
             <img src="/images/company_logo.png" alt="Logo" className={styles.logo} />

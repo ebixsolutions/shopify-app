@@ -79,4 +79,55 @@ export default {
       data: obj,
     });
   },
+
+  // ✅ Shopify Plan APIs → use static baseURL + static token
+  async getPlanList(obj) {
+    return await request({
+      baseURL: "https://api.sup-uni.com", // ✅ override baseURL
+      url: "/shopify/getPlanList",
+      method: "post",
+      data: obj,
+      useStaticToken: true,
+    });
+  },
+
+  async getPlanPriceInfo(obj) {
+    return await request({
+      baseURL: "https://api.sup-uni.com",
+      url: "/shopify/getPlanPriceInfo",
+      method: "post",
+      data: obj,
+      useStaticToken: true,
+    });
+  },
+
+  async getBillingStatus(obj) {
+    return await request({
+      baseURL: "https://api.sup-uni.com",
+      url: "/shopify/getBillingStatus",
+      method: "post",
+      data: obj,
+      useStaticToken: true,
+    });
+  },
+
+  async getAddBilling(obj) {
+    return await request({
+      baseURL: "https://api.sup-uni.com",
+      url: "/shopify/addBilling",
+      method: "post",
+      data: obj,
+      useStaticToken: true,
+    });
+  },
+
+  async getAuthorization(obj) {
+    return await request({
+      baseURL: "https://api.sup-uni.com",
+      url: "/shopify/getAuthorizationUrl",
+      method: "post",
+      data: obj,
+      useStaticToken: true,
+    });
+  },
 };

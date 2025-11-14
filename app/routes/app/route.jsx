@@ -17,6 +17,7 @@ export const loader = async ({ request }) => {
   try {
     console.log("App loader starting...");
     const url = new URL(request.url);
+    const billingId = url.searchParams.get("billing_id");
     console.log("Request URL:", url.toString());
     
     // Check if this is a child route (not the main /app route)
@@ -40,7 +41,13 @@ export const loader = async ({ request }) => {
             // Extract shop from URL parameters or use user's shop data
             const shopFromUrl = url.searchParams.get("shop");
             const shop = shopFromUrl || user.shop_id || "unknown-shop.myshopify.com";
-            
+
+            if (billingId && !url.pathname.includes('/app/plan')) {
+              const session = encodeURIComponent(JSON.stringify(user));
+              const shopParams = encodeURIComponent(shop);
+              
+              return redirect(`/app/plan?&billing_id=${billingId}&session_data=${session}&shop=${shopParams}`);
+            }       
             return json({
               shop: shop,
               user,
@@ -70,6 +77,12 @@ export const loader = async ({ request }) => {
           const shopFromUrl = url.searchParams.get("shop");
           const shop = shopFromUrl || user.shop_id || "unknown-shop.myshopify.com";
 
+          if (billingId && !url.pathname.includes('/app/plan')) {
+            const session = encodeURIComponent(JSON.stringify(user));
+            const shopParams = encodeURIComponent(shop);
+            
+            return redirect(`/app/plan?&billing_id=${billingId}&session_data=${session}&shop=${shopParams}`);
+          }
           return json({
             user,
             shop: shop,
@@ -103,7 +116,13 @@ export const loader = async ({ request }) => {
           // Keep session_data in URL for child routes (iframe requirement)
           const cleanUrl = new URL(request.url);
           // Don't delete session_data - child routes need it for iframe context
-          
+
+          if (billingId && !url.pathname.includes('/app/plan')) {
+              const session = encodeURIComponent(JSON.stringify(user));
+              const shopParams = encodeURIComponent(shop);
+             
+              return redirect(`/app/plan?&billing_id=${billingId}&session_data=${session}&shop=${shopParams}`);
+          }
           return json({
             shop: shop,
             user,
@@ -133,7 +152,13 @@ export const loader = async ({ request }) => {
         // Clean up URL parameters
         const cleanUrl = new URL(request.url);
         cleanUrl.searchParams.delete('session_data');
-        
+
+        if (billingId && !url.pathname.includes('/app/plan')) {
+          const session = encodeURIComponent(JSON.stringify(user));
+          const shopParams = encodeURIComponent(shop);
+         
+          return redirect(`/app/plan?&billing_id=${billingId}&session_data=${session}&shop=${shopParams}`);
+        }
         return json({
           shop: shop,
           user,
@@ -165,7 +190,12 @@ export const loader = async ({ request }) => {
         // Keep session_data in URL for child routes
         const cleanUrl = new URL(request.url);
         // Don't delete session_data - child routes need it
-        
+
+        if (billingId && !url.pathname.includes('/app/plan')) {
+          const session = encodeURIComponent(JSON.stringify(user));
+          const shopParams = encodeURIComponent(shop);
+          return redirect(`/app/plan?&billing_id=${billingId}&session_data=${session}&shop=${shopParams}`);
+        }
         return json({
           shop: shop || null,
           user,
