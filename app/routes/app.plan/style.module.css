@@ -15,6 +15,7 @@
 }
 
 .billingToggleWrapper{
+  width: 70%;
   margin: 0 auto 24px auto;
   margin-left: 200px;
   display: inline-flex;
@@ -45,8 +46,9 @@
 }
 
 .planSummaryWrapper{
-  flex: 0 0 320px;
-  max-width: 320px;
+  /* flex: 0 0 320px;
+  max-width: 320px; */
+  width: 30%;
   align-self: flex-start;
   margin-top: -85px;
 }

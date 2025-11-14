@@ -19,6 +19,7 @@ import styles from "./style.module.css";
 import { useAppContext } from "../app/route";
 import { handleChildRouteSession } from "../../utils/sessionUtils";
 import api from "../../api/app";
+import config from "../../utils/config";
 
 export default function PlanPage() {
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ export default function PlanPage() {
   const context = typeof useAppContext === "function" ? useAppContext() : {};
   const user = context?.user || {};
   const shop = context?.shop || {};
+  const Iframe = config.IFRAME_URL;
 
   const [loading, setLoading] = useState(true);
   const [planData, setPlanData] = useState("");
@@ -393,7 +395,7 @@ export default function PlanPage() {
         <Layout.Section>
           <BlockStack gap="300">
             <Text as="h6">Select a plan that suits your needs</Text>
-            <div style={{ maxWidth: "720px" }}>
+            <div style={{ maxWidth: "68%"  }}>
               <Card>
                 <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
                   <div style={{ flex: 1 }}>
@@ -478,7 +480,7 @@ export default function PlanPage() {
                       borderRadius: 4,
                       padding: 12,
                       minWidth: 150,
-                      width: 160,
+                      width: 170,
                       boxShadow: isSelected
                         ? "0 2px 8px rgba(11,108,255,0.12)"
                         : "none",
@@ -554,7 +556,7 @@ export default function PlanPage() {
                       setIframeModal({
                         open: true,
                         title: "My Bill",
-                        url: "https://app.sup-uni.com/shopify/bill",
+                        url: `${Iframe}bill`
                       })
                     }
                     style={{
@@ -683,7 +685,7 @@ export default function PlanPage() {
                             setIframeModal({
                               open: true,
                               title: "Contract Conditions",
-                              url: "https://app.sup-uni.com/shopify/termsConditions",
+                              url: `${Iframe}termsConditions`,
                             })
                           }
                           style={{
@@ -704,7 +706,7 @@ export default function PlanPage() {
                             setIframeModal({
                               open: true,
                               title: "Privacy Policy",
-                              url: "https://app.sup-uni.com/shopify/privacyPolicy",
+                              url: `${Iframe}privacyPolicy`,
                             })
                           }
                           style={{
