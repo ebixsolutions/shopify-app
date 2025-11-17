@@ -16,13 +16,15 @@ export default function myAccount() {
   const [iframeSrc, setIframeSrc] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const Iframe = config.IFRAME_URL;
-  const { user } = useAppContext();
+  const { user, shop } = useAppContext();
+
+  useEffect(() => {
+    handleChildRouteSession(user, shop);
+  }, [user, shop]);
 
   useEffect(() => {
     if (user.shopify_code) {
-      setIframeSrc(
-        `${Iframe}myAccount?shopify_code=${user.shopify_code}`,
-      );
+      setIframeSrc(`${Iframe}myAccount?shopify_code=${user.shopify_code}`);
     }
     return () => setIframeSrc(null);
   }, []);
