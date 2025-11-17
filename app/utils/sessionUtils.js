@@ -28,7 +28,7 @@ export const updateUrlWithSessionData = (user, shop) => {
     if (!currentUrl.searchParams.get("session_data")) {
       const sessionData = encodeURIComponent(JSON.stringify(user));
       const shopParam = encodeURIComponent(shop || "unknown-shop.myshopify.com");
-      const newUrl = `${currentUrl.pathname}?session_data=${sessionData}&shop=${shopParam}`;
+      const newUrl = `${currentUrl.pathname}${currentUrl.search}&session_data=${sessionData}&shop=${shopParam}`;
       window.history.replaceState({}, '', newUrl);
       console.log("Updated URL with session data for private window compatibility");
     }
