@@ -7,7 +7,7 @@ const STATIC_TOKEN =
 
 const service = axios.create({
   baseURL: config.BASE_URL + "/api",
-  withCredentials: false, // Ensure cookies are included in requests
+  withCredentials: true, // Ensure cookies are included in requests
 });
 
 // Add a request interceptor to set the Authorization header with the token
@@ -54,12 +54,12 @@ service.interceptors.request.use(
         }
       }
 
-      // if (isSupUniAPI) {
-      //   // 🔒 Use static token for Sup-Uni APIs
-      //   config.headers["Authorization"] = STATIC_TOKEN;
-      //   config.baseURL = "https://api.sup-uni.com"; // override baseURL
-      //   console.log("🔗 Using Sup-Uni API with static token:", config.url);
-      // }
+      if (isSupUniAPI) {
+        // 🔒 Use static token for Sup-Uni APIs
+        config.headers["Authorization"] = STATIC_TOKEN;
+        config.baseURL = "https://api.sup-uni.com"; // override baseURL
+        console.log("🔗 Using Sup-Uni API with static token:", config.url);
+      }
 
       console.log("Request config:", config.url);
       return config;
