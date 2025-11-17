@@ -54,12 +54,12 @@ service.interceptors.request.use(
         }
       }
 
-      if (isSupUniAPI) {
-        // 🔒 Use static token for Sup-Uni APIs
-        config.headers["Authorization"] = STATIC_TOKEN;
-        config.baseURL = "https://api.sup-uni.com"; // override baseURL
-        console.log("🔗 Using Sup-Uni API with static token:", config.url);
-      }
+      // if (isSupUniAPI) {
+      //   // 🔒 Use static token for Sup-Uni APIs
+      //   config.headers["Authorization"] = STATIC_TOKEN;
+      //   config.baseURL = "https://api.sup-uni.com"; // override baseURL
+      //   console.log("🔗 Using Sup-Uni API with static token:", config.url);
+      // }
 
       console.log("Request config:", config.url);
       return config;
