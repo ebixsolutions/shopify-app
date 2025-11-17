@@ -21,8 +21,7 @@ export default function myAccount() {
   useEffect(() => {
     if (user.shopify_code) {
       setIframeSrc(
-        // `${Iframe}myAccount?shopify_code=${user.shopify_code}`,
-       `https://app.sup-uni.com/shopify/myAccount`,
+        `${Iframe}myAccount?shopify_code=${user.shopify_code}`,
       );
     }
     return () => setIframeSrc(null);

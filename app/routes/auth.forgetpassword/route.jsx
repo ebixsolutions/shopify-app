@@ -18,8 +18,7 @@ export default function forgotPassword() {
 
   useEffect(() => {
     setIframeSrc(
-       // `${Iframe}retrievePwd`,
-      `https://app.sup-uni.com/shopify/retrievePwd`,
+      `${Iframe}retrievePwd`,
     );
     return () => setIframeSrc(null);
   }, []);
