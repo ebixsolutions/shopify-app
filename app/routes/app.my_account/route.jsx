@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import styles from "../auth.success/style.module.css";
 import config from "../../utils/config";
 import { useAppContext } from "../app/route";
+import { handleChildRouteSession } from "../../utils/sessionUtils";
 import {
   SkeletonPage,
   LegacyCard,
