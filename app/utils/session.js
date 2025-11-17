@@ -7,6 +7,7 @@ export const sessionStorage = createCookieSessionStorage({
     path: "/",
     // domain: process.env.NODE_ENV === "production" ? ".sup-uni.com" : undefined, // Only set domain in production
     sameSite: "none",  // Changed from "None" to "Lax" for better private window compatibility
+    partitioned: true,
     secrets: ["G##th@CGS"], // Make sure this is a secure secret key
     secure: true, // Only secure in production
     maxAge: 60 * 60 * 24 * 365 * 10,  // Keep the session for 10 years
