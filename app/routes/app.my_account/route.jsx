@@ -24,7 +24,7 @@ export default function myAccount() {
   }, [user, shop]);
 
   useEffect(() => {
-    if (user.shopify_code) {
+    if (user?.shopify_code) {
       setIframeSrc(`${Iframe}myAccount?shopify_code=${user.shopify_code}`);
     }
     return () => setIframeSrc(null);
