@@ -40,3 +40,21 @@
 .Polaris-Modal__Body {
   overflow: hidden !important;
 }
+
+
+[data-lock-scrolling] {
+  overflow: visible !important;
+  height: auto !important;
+}
+
+[data-lock-scrolling-wrapper] {
+  height: auto !important;
+  overflow: visible !important;
+}
+
+.Polaris-Backdrop {
+  backdrop-filter: blur(4px);
+  background: rgba(0,0,0,0.3);
+}
+
+

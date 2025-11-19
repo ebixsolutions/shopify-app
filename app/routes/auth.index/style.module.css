@@ -20,8 +20,8 @@
 }
 
 .ForgetPassword {
-  text-align: right;
   color: #0086d1;
   cursor: pointer;
+  display: inline; 
 }
 

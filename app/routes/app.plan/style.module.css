@@ -16,16 +16,12 @@
 
 .billingToggleWrapper{
   width: 70%;
-  margin: 0 auto 24px auto;
-  margin-left: 200px;
   display: inline-flex;
   gap: 8px;
   align-items: center;
   justify-content: center;
-  border: 1px solid #e1e1e1;
   border-radius: 4px;
   padding: 8px 12px;
-  width: fit-content;
 }
 
 .plansAndSummary{
@@ -34,11 +30,15 @@
   align-items: flex-start;
   flex-wrap: wrap;
 }
+.billingToggleButtons {
+  border: 1px solid #e1e1e1;
+  padding: 5px;
+}
 
 .plansContainer{
   flex: 1 1 480px;
   display: flex;
-  gap: 16px;
+  gap: 20px;
   flex-wrap: nowrap;
   justify-content: flex-start;
   overflow-x: auto;
@@ -70,10 +70,6 @@
 }
 
 @media (max-width: 920px){
-  .billingToggleWrapper{
-    margin-left: 12px;
-    margin-right: 12px;
-  }
 
   .plansAndSummary{
     gap: 16px;
@@ -97,5 +93,23 @@
   /* On wide screens we mimic the previous lifted summary card without overlapping content */
   .planSummaryWrapper{
     transform: translateY(-90px);
+  }
+}
+
+@media (min-width: 1300px) {
+  .plansContainer {
+    flex-wrap: nowrap;
+    justify-content: center;
+    overflow-x: visible;
+    gap: 50px;
+  }
+
+  .billingToggleWrapper{
+    margin: 0 auto 24px auto;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    padding: 8px 12px;
   }
 }

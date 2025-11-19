@@ -141,9 +141,15 @@ export default function LoginPage() {
                 />
               </div>
 
-               {/* Forgot password link */}
-              <div className="mb-4">
-                <p onClick={handleForgetPassword} className={styles.ForgetPassword}>
+              {/* Forgot password link */}
+              <div className="mb-4" style={{ textAlign: "right" }}>
+                <p
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleForgetPassword();
+                  }}
+                  className={styles.ForgetPassword}
+                >
                   Forgot password?
                 </p>
               </div>

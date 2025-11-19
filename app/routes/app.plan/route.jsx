@@ -167,44 +167,64 @@ export default function PlanPage() {
     // 2. If billing_id exists → save and reset everything
     if (billingId) {
       localStorage.setItem("billing_id", billingId);
-
-      // Reset flag for newly arrived billing id
       localStorage.setItem("billing_modal_opened", "false");
-
-      // Reset API stop flag
       localStorage.setItem("billing_api_stopped", "false");
     }
 
-    // 3. If there is no billing id even in storage → stop
     billingId = billingId || localStorage.getItem("billing_id");
     if (!billingId) return;
 
     const pollBillingStatus = async () => {
       const apiStopped = localStorage.getItem("billing_api_stopped") === "true";
+
+      // Stop polling only for success/failure
       if (apiStopped) return;
 
       try {
         const result = await api.getBillingStatus({ id: billingId });
 
         if (result.status === 200 && result.code === 0) {
-          const paymentStatus = result.data.payment_status; // 1 = success, 2 = failure
+          const status = result.data.payment_status; // 0 fail, 1 success, 2 pending
           const modalOpened =
             localStorage.getItem("billing_modal_opened") === "true";
 
-          if (!modalOpened && (paymentStatus === 1 || paymentStatus === 0)) {
-            // 4. Show modal
+          // ======================
+          // 🔥 PENDING (2)
+          // ======================
+          if (status === 2) {
+            // Show pending popup ONLY ONCE
+            if (!modalOpened) {
+              setPaymentModal({
+                open: true,
+                success: false,
+                failure: false,
+                pending: true,
+                data: result.data,
+              });
+
+              // Mark modal opened so it does NOT show again
+              // But DO NOT stop API
+              localStorage.setItem("billing_modal_opened", "true");
+            }
+            return;
+          }
+
+          // ======================
+          // 🔥 SUCCESS (1) / FAILURE (0)
+          // ======================
+          if (status === 1 || status === 0) {
             setPaymentModal({
               open: true,
-              success: paymentStatus === 1,
+              success: status === 1,
+              failure: status === 0,
+              pending: false,
               data: result.data,
             });
 
-            // 5. Stop API calls
+            // Now stop API polling
             localStorage.setItem("billing_api_stopped", "true");
-            clearInterval(interval);
-
-            // 6. Mark modal as opened
             localStorage.setItem("billing_modal_opened", "true");
+            clearInterval(interval);
           }
         }
       } catch (err) {
@@ -212,19 +232,27 @@ export default function PlanPage() {
       }
     };
 
-    // 7. Poll every 5 seconds
     interval = setInterval(pollBillingStatus, 5000);
-    pollBillingStatus(); // immediate first call
+    pollBillingStatus();
 
-    // 8. Cleanup on unmount (stop polling)
     return () => clearInterval(interval);
   }, []);
 
   // 9. When user closes modal → stop API permanently
   const handleModalClose = () => {
-    setPaymentModal({ open: false, success: false, data: null });
+    const isPending = paymentModal.pending;
 
-    // Mark API as stopped so refresh won't start polling again
+    setPaymentModal({
+      open: false,
+      success: false,
+      failure: false,
+      pending: false,
+      data: null,
+    });
+
+    if (isPending) return;
+
+    // Success or Failure
     localStorage.setItem("billing_api_stopped", "true");
 
     // Prevent modal opening again on refresh
@@ -395,7 +423,7 @@ export default function PlanPage() {
         <Layout.Section>
           <BlockStack gap="300">
             <Text as="h6">Select a plan that suits your needs</Text>
-            <div style={{ maxWidth: "68%"  }}>
+            <div style={{ maxWidth: "68%" }}>
               <Card>
                 <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
                   <div style={{ flex: 1 }}>
@@ -412,39 +440,43 @@ export default function PlanPage() {
         {/* Billing toggle */}
         <Layout.Section>
           <div className={styles.billingToggleWrapper}>
-            <button
-              onClick={() => setBillingCycle("monthly")}
-              style={{
-                padding: "6px 16px",
-                border: "none",
-                borderRadius: 20,
-                background: billingCycle === "monthly" ? "#fff" : "transparent",
-                color: billingCycle === "monthly" ? "#000" : "#666",
-                cursor: "pointer",
-                fontWeight: billingCycle === "monthly" ? "600" : "400",
-                fontSize: "14px",
-              }}
-            >
-              Monthly
-            </button>
-            <button
-              onClick={() => setBillingCycle("yearly")}
-              style={{
-                padding: "6px 16px",
-                border: "none",
-                borderRadius: 20,
-                background: billingCycle === "yearly" ? "#fff" : "transparent",
-                color: billingCycle === "yearly" ? "#000" : "#666",
-                cursor: "pointer",
-                fontWeight: billingCycle === "yearly" ? "600" : "400",
-                fontSize: "14px",
-              }}
-            >
-              Annual{" "}
-              <span style={{ color: "#0b6cff", fontSize: "12px" }}>
-                (Save 15%)
-              </span>
-            </button>
+            <div className={styles.billingToggleButtons}>
+              <button
+                onClick={() => setBillingCycle("monthly")}
+                style={{
+                  padding: "6px 16px",
+                  border: "none",
+                  borderRadius: 20,
+                  background:
+                    billingCycle === "monthly" ? "#fff" : "transparent",
+                  color: billingCycle === "monthly" ? "#000" : "#666",
+                  cursor: "pointer",
+                  fontWeight: billingCycle === "monthly" ? "600" : "400",
+                  fontSize: "14px",
+                }}
+              >
+                Monthly
+              </button>
+              <button
+                onClick={() => setBillingCycle("yearly")}
+                style={{
+                  padding: "6px 16px",
+                  border: "none",
+                  borderRadius: 20,
+                  background:
+                    billingCycle === "yearly" ? "#fff" : "transparent",
+                  color: billingCycle === "yearly" ? "#000" : "#666",
+                  cursor: "pointer",
+                  fontWeight: billingCycle === "yearly" ? "600" : "400",
+                  fontSize: "14px",
+                }}
+              >
+                Annual{" "}
+                <span style={{ color: "#0b6cff", fontSize: "12px" }}>
+                  (Save 15%)
+                </span>
+              </button>
+            </div>
           </div>
 
           {/* Plan Cards */}
@@ -480,7 +512,9 @@ export default function PlanPage() {
                       borderRadius: 4,
                       padding: 12,
                       minWidth: 150,
-                      width: 170,
+                      width: 200,
+                      height: 200,
+                      minHeight: 150,
                       boxShadow: isSelected
                         ? "0 2px 8px rgba(11,108,255,0.12)"
                         : "none",
@@ -515,7 +549,7 @@ export default function PlanPage() {
                         textAlign: "center",
                         display: "flex",
                         flexDirection: "column",
-                        gap: 12,
+                        gap: 20,
                       }}
                     >
                       <Text as="h2" variant="headingLg" fontWeight="bold">
@@ -534,12 +568,14 @@ export default function PlanPage() {
                         <Button size="slim">{shortDesc}</Button>
                       </div>
 
-                      <Button
-                        variant="plain"
-                        onClick={() => handleDetailsClick(plan)}
-                      >
-                        Details
-                      </Button>
+                      <div onClick={(e) => e.stopPropagation()}>
+                        <Button
+                          variant="plain"
+                          onClick={() => handleDetailsClick(plan)}
+                        >
+                          Details
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 );
@@ -556,7 +592,7 @@ export default function PlanPage() {
                       setIframeModal({
                         open: true,
                         title: "My Bill",
-                        url: `${Iframe}bill`
+                        url: `${Iframe}bill`,
                       })
                     }
                     style={{
@@ -793,9 +829,43 @@ export default function PlanPage() {
         </Modal.Section>
       </Modal>
 
-      <Modal open={paymentModal.open} onClose={handleModalClose} title="" large>
+      <Modal
+        open={paymentModal.open}
+        onClose={handleModalClose}
+        title=""
+        large
+        instant
+      >
         <Modal.Section>
-          {paymentModal.data && (
+          {paymentModal.pending && (
+            <div style={{ textAlign: "center", padding: "20px" }}>
+              <div
+                style={{
+                  backgroundColor: "#FEF3C7",
+                  borderRadius: "50%",
+                  width: 60,
+                  height: 60,
+                  margin: "0 auto 20px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <span style={{ fontSize: 40, color: "#D97706" }}>!</span>
+              </div>
+
+              <Text as="h2" variant="headingLg">
+                Payment Processing
+              </Text>
+
+              <Text variant="bodyMd" tone="subdued">
+                Your payment is still being processed. This may take a few
+                minutes. Please wait — we're verifying your payment status. The
+                page will update automatically once completed.
+              </Text>
+            </div>
+          )}
+          {!paymentModal.pending && paymentModal.data && (
             <div
               style={{
                 textAlign: "center",
@@ -806,8 +876,8 @@ export default function PlanPage() {
                 style={{
                   backgroundColor: paymentModal.success ? "#E6F9EC" : "#FEECEC",
                   borderRadius: "50%",
-                  width: 80,
-                  height: 80,
+                  width: 60,
+                  height: 60,
                   margin: "0 auto 20px",
                   display: "flex",
                   alignItems: "center",
