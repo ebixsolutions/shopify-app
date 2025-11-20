@@ -651,10 +651,10 @@ export default function PlanPage() {
 
                         <Text tone="subdued" variant="bodyXs">
                           {currentPlan.name === "Starter" &&
-                            "Select any 1 option"}
+                            "Select Any 1 Option"}
                           {currentPlan.name === "Standard" &&
-                            "Select any 2 options"}
-                          {currentPlan.name === "Pro" && "Select any 3 options"}
+                            "Select Any 2 Options"}
+                          {currentPlan.name === "Pro" && "Select Any 3 Options"}
                           {currentPlan.name === "Premium" && "Full Features"}
                         </Text>
                       </div>
