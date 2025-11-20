@@ -10,11 +10,12 @@
   color: #1e913a;
 }
 
-:root{
-  --primary:#0b6cff;
+:root {
+  --primary: #0b6cff;
+  --primary1: #B8B8B8;
 }
 
-.billingToggleWrapper{
+.billingToggleWrapper {
   width: 70%;
   display: inline-flex;
   gap: 8px;
@@ -111,5 +112,54 @@
     justify-content: center;
     border-radius: 4px;
     padding: 8px 12px;
+  }
+}
+
+.spinningDots {
+  position: relative;
+  height: 50px;
+  width: 50px;
+}
+
+.spinningDots:before {
+  -webkit-animation: spin 1.5s infinite linear;
+
+  animation: spin 1.5s infinite linear;
+
+  border-radius: 10px;
+
+  -webkit-box-shadow:
+    25px 0px 0 0 var(--primary1),
+    15.58725px 19.54579px 0 0 var(--primary1),
+    -5.56302px 24.3732px 0 0 var(--primary1),
+    -22.52422px 10.84709px 0 0 var(--primary1),
+    -22.52422px -10.84709px 0 0 var(--primary1),
+    -5.56302px -24.3732px 0 0 var(--primary1),
+    15.58725px -19.54579px 0 0 var(--primary1);
+
+  box-shadow:
+    25px 0px 0 0 var(--primary1),
+    15.58725px 19.54579px 0 0 var(--primary1),
+    -5.56302px 24.3732px 0 0 var(--primary1),
+    -22.52422px 10.84709px 0 0 var(--primary1),
+    -22.52422px -10.84709px 0 0 var(--primary1),
+    -5.56302px -24.3732px 0 0 var(--primary1),
+    15.58725px -19.54579px 0 0 var(--primary1);
+
+  content: "";
+  height: 10px;
+  width: 10px;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
   }
 }

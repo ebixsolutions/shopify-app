@@ -34,6 +34,7 @@ export default function PlanPage() {
   const [plans, setPlans] = useState([]);
   const [billingCycle, setBillingCycle] = useState("monthly");
   const [selectedPlan, setSelectedPlan] = useState(null);
+  const [activePlan, setActivePlan] = useState("");
   const [checkedFeatures, setCheckedFeatures] = useState({});
   const [planPriceInfo, setPlanPriceInfo] = useState(null);
   const [agreeChecked, setAgreeChecked] = useState(false);
@@ -81,6 +82,7 @@ export default function PlanPage() {
             result.data.plan_status_msg || "Your free plan is expired",
           );
           setSelectedPlan(result.data.list[0]?.name || null);
+          setActivePlan(result.data.plan_name || "");
         }
       } catch (error) {
         console.error("Error fetching plan details:", error);
@@ -384,37 +386,33 @@ export default function PlanPage() {
       title={
         <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           Plans
-          {(() => {
-            const boughtPlan = plans?.find((p) => p.bought);
-
-            return boughtPlan ? (
-              <span
-                style={{
-                  fontSize: "14px",
-                  padding: "6px 12px",
-                  backgroundColor: "#0B6CFF",
-                  color: "#fff",
-                  borderRadius: "12px",
-                  fontWeight: "600",
-                }}
-              >
-                Active Plan: {boughtPlan.name}
-              </span>
-            ) : (
-              <span
-                style={{
-                  fontSize: "14px",
-                  padding: "6px 12px",
-                  backgroundColor: "#ee492b",
-                  color: "#fff",
-                  borderRadius: "12px",
-                  fontWeight: "600",
-                }}
-              >
-                Expired
-              </span>
-            );
-          })()}
+          {activePlan ? (
+            <span
+              style={{
+                fontSize: "14px",
+                padding: "6px 12px",
+                backgroundColor: "#0B6CFF",
+                color: "#fff",
+                borderRadius: "12px",
+                fontWeight: "600",
+              }}
+            >
+              {activePlan}
+            </span>
+          ) : (
+            <span
+              style={{
+                fontSize: "14px",
+                padding: "6px 12px",
+                backgroundColor: "#ee492b",
+                color: "#fff",
+                borderRadius: "12px",
+                fontWeight: "600",
+              }}
+            >
+              Expired
+            </span>
+          )}
         </span>
       }
       fullWidth
@@ -522,7 +520,7 @@ export default function PlanPage() {
                     }}
                   >
                     {/* Tick for already bought plans */}
-                    {plan.bought && (
+                    {activePlan && activePlan === plan.name && (
                       <div
                         style={{
                           position: "absolute",
@@ -536,7 +534,7 @@ export default function PlanPage() {
                           color: "#0b6cff",
                           background: "transparent",
                           fontWeight: 700,
-                          fontSize: 16,
+                          fontSize: 20,
                         }}
                         aria-hidden
                       >
@@ -841,7 +839,6 @@ export default function PlanPage() {
             <div style={{ textAlign: "center", padding: "20px" }}>
               <div
                 style={{
-                  backgroundColor: "#FEF3C7",
                   borderRadius: "50%",
                   width: 60,
                   height: 60,
@@ -851,7 +848,9 @@ export default function PlanPage() {
                   justifyContent: "center",
                 }}
               >
-                <span style={{ fontSize: 40, color: "#D97706" }}>!</span>
+                <div
+                  className={styles.spinningDots}
+                />
               </div>
 
               <Text as="h2" variant="headingLg">
