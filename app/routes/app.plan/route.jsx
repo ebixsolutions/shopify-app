@@ -57,6 +57,13 @@ export default function PlanPage() {
     data: null,
   });
 
+  const planDescriptionMap = {
+    Starter: "Select Any 1 Option",
+    Standard: "Select Any 2 Options",
+    Pro: "Select Any 3 Options",
+    Premium: "Full Features",
+  };
+
   useEffect(() => {
     handleChildRouteSession(user, shop);
   }, [user, shop]);
@@ -121,10 +128,19 @@ export default function PlanPage() {
 
   const getFlowCount = () => {
     if (!currentPlan) return 0;
-    const text = currentPlan.short_description;
-    if (text.toLowerCase().includes("full")) return 4;
-    const match = text.match(/(\d+)/);
-    return match ? parseInt(match[1]) : 0;
+
+    switch (currentPlan.name) {
+      case "Starter":
+        return 1;
+      case "Standard":
+        return 2;
+      case "Pro":
+        return 3;
+      case "Premium":
+        return 4;
+      default:
+        return 0;
+    }
   };
 
   const getCheckedCount = () =>
@@ -132,22 +148,14 @@ export default function PlanPage() {
 
   useEffect(() => {
     const flowCount = getFlowCount();
-    if (flowCount === 4) {
-      setCheckedFeatures({
-        traffic: true,
-        customers: true,
-        repeatCustomers: true,
-        purchaseVolume: true,
-      });
-    } else {
-      setCheckedFeatures({
-        traffic: false,
-        customers: false,
-        repeatCustomers: false,
-        purchaseVolume: false,
-      });
-    }
-  }, [selectedPlan]);
+
+    const newState = {};
+    planPriceInfo?.boost_data.forEach((item) => {
+      newState[item.value] = flowCount === 4 ? true : false;
+    });
+
+    setCheckedFeatures(newState);
+  }, [selectedPlan, planPriceInfo]);
 
   // ✅ Handle Billing Status from callback
   useEffect(() => {
@@ -274,11 +282,16 @@ export default function PlanPage() {
 
   const isFeatureDisabled = (feature) => {
     const flowCount = getFlowCount();
-    if (flowCount === 4) {
-      return true;
-    }
     const currentChecked = getCheckedCount();
-    return !checkedFeatures[feature] && currentChecked >= flowCount;
+
+    // Premium → always disabled
+    if (flowCount === 4) return true;
+
+    // Convert undefined → false
+    const isChecked = !!checkedFeatures[feature];
+
+    // If max selected, disable only unchecked ones
+    return !isChecked && currentChecked >= flowCount;
   };
 
   // ✅ Subscribe and create billing
@@ -302,11 +315,15 @@ export default function PlanPage() {
           ? currentPlan.yearly?.unit_id
           : currentPlan.monthly?.unit_id;
 
-      const boostLimit = planPriceInfo?.boost_limit || 1;
-      const ecosphere_process = Array.from(
-        { length: boostLimit },
-        (_, i) => i + 1,
-      );
+      // ✅ Collect selected ecosphere process (1–4)
+      const ecosphere_process = Object.keys(checkedFeatures)
+        .filter((key) => checkedFeatures[key]) // only checked
+        .map((key) => Number(key)); // convert "1" → 1
+
+      if (ecosphere_process.length === 0) {
+        alert("Please select at least one ecosystem process.");
+        return;
+      }
 
       // 🔹 Step 1: Create Billing
       const billingResult = await api.getAddBilling({
@@ -621,7 +638,7 @@ export default function PlanPage() {
                         <span style={{ color: "#DC2626", marginRight: 6 }}>
                           *
                         </span>
-                        {currentPlan.short_description}
+                        {planDescriptionMap[currentPlan.name] || currentPlan.short_description}
                       </Text>
                     </div>
 
@@ -644,7 +661,7 @@ export default function PlanPage() {
                             checked={
                               getFlowCount() === 4
                                 ? true
-                                : checkedFeatures[item.value]
+                                : !!checkedFeatures[item.value]
                             }
                             onChange={() => handleFeatureChange(item.value)}
                             disabled={isFeatureDisabled(item.value)}
@@ -848,9 +865,7 @@ export default function PlanPage() {
                   justifyContent: "center",
                 }}
               >
-                <div
-                  className={styles.spinningDots}
-                />
+                <div className={styles.spinningDots} />
               </div>
 
               <Text as="h2" variant="headingLg">
