@@ -590,7 +590,7 @@ export default function PlanPage() {
                       setIframeModal({
                         open: true,
                         title: "My Bill",
-                        url: `${Iframe}bill`,
+                        url: `${Iframe}bill?shopify_code=${user?.shopify_code}`,
                       })
                     }
                     style={{
@@ -719,7 +719,7 @@ export default function PlanPage() {
                             setIframeModal({
                               open: true,
                               title: "Contract Conditions",
-                              url: `${Iframe}termsConditions`,
+                              url: `${Iframe}termsConditions?shopify_code=${user?.shopify_code}`,
                             })
                           }
                           style={{
@@ -740,7 +740,7 @@ export default function PlanPage() {
                             setIframeModal({
                               open: true,
                               title: "Privacy Policy",
-                              url: `${Iframe}privacyPolicy`,
+                              url: `${Iframe}privacyPolicy?shopify_code=${user?.shopify_code}`,
                             })
                           }
                           style={{
