@@ -57,13 +57,6 @@ export default function PlanPage() {
     data: null,
   });
 
-  const planDescriptionMap = {
-    Starter: "Select Any 1 Option",
-    Standard: "Select Any 2 Options",
-    Pro: "Select Any 3 Options",
-    Premium: "Full Features",
-  };
-
   useEffect(() => {
     handleChildRouteSession(user, shop);
   }, [user, shop]);
@@ -145,6 +138,9 @@ export default function PlanPage() {
 
   const getCheckedCount = () =>
     Object.values(checkedFeatures).filter(Boolean).length;
+
+  const isSubscribeDisabled =
+    getCheckedCount() < getFlowCount() || !agreeChecked;
 
   useEffect(() => {
     const flowCount = getFlowCount();
@@ -633,13 +629,35 @@ export default function PlanPage() {
                       {planPriceInfo.name}
                     </Text>
 
-                    <div style={{ marginTop: 8 }}>
-                      <Text tone="subdued" variant="bodyXs">
-                        <span style={{ color: "#DC2626", marginRight: 6 }}>
-                          *
-                        </span>
-                        {planDescriptionMap[currentPlan.name] || currentPlan.short_description}
-                      </Text>
+                    {/* Description Text (hide when fully selected but keep space) */}
+                    <div style={{ marginTop: 8, minHeight: 20 }}>
+                      <div
+                        style={{
+                          visibility:
+                            getFlowCount() !== 4 &&
+                            getCheckedCount() >= getFlowCount()
+                              ? "hidden"
+                              : "visible",
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        {/* Hide * for Premium */}
+                        {getFlowCount() !== 4 && (
+                          <span style={{ color: "#DC2626", marginRight: 6 }}>
+                            *
+                          </span>
+                        )}
+
+                        <Text tone="subdued" variant="bodyXs">
+                          {currentPlan.name === "Starter" &&
+                            "Select any 1 option"}
+                          {currentPlan.name === "Standard" &&
+                            "Select any 2 options"}
+                          {currentPlan.name === "Pro" && "Select any 3 options"}
+                          {currentPlan.name === "Premium" && "Full Features"}
+                        </Text>
+                      </div>
                     </div>
 
                     {/* Features */}
@@ -774,15 +792,21 @@ export default function PlanPage() {
                         .
                       </label>
                     </div>
-
                     {/* Subscribe Button */}
                     <div
                       className={styles.customSubscribeButton}
-                      style={{ marginTop: 12, textAlign: "center" }}
+                      style={{
+                        marginTop: 12,
+                        textAlign: "center",
+                        cursor: isSubscribeDisabled ? "not-allowed" : "pointer"
+                      }}
                     >
                       <Button
                         onClick={handleSubscribe}
-                        disabled={!agreeChecked}
+                        disabled={isSubscribeDisabled}
+                        style={{
+                          opacity: isSubscribeDisabled ? 0.5 : 1,
+                        }}
                       >
                         Subscribe
                       </Button>
