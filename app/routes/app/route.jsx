@@ -36,7 +36,7 @@ export const loader = async ({ request }) => {
           let user = JSON.parse(decodeURIComponent(sessionData));
           console.log("User data from URL in child route:", user.user_id);
 
-          if(url.searchParams.get("shop") != user?.domain) {
+          if(user?.domain && (url.searchParams.get("shop") != user?.domain)) {
             user = null;
           }
 

@@ -49,7 +49,7 @@ export const validateSessionMiddleware = async (request, shop) => {
         }
       }
     }
-    if(shopName != user?.domain) {
+    if (user?.domain && (shopName !== user.domain)) {
       user = null;
     }
     
