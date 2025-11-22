@@ -49,6 +49,9 @@ export const validateSessionMiddleware = async (request, shop) => {
         }
       }
     }
+    if(shopName != user?.domain) {
+      user = null;
+    }
     
     if (user && user.user_id && user.token) {
       const v_user = { user_id: user.user_id, token: user.token, shop: shopName };

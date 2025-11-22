@@ -33,8 +33,12 @@ export const loader = async ({ request }) => {
       if (sessionData) {
         console.log("Found session_data in child route URL, processing...");
         try {
-          const user = JSON.parse(decodeURIComponent(sessionData));
+          let user = JSON.parse(decodeURIComponent(sessionData));
           console.log("User data from URL in child route:", user.user_id);
+
+          if(url.searchParams.get("shop") != user?.domain) {
+            user = null;
+          }
 
           if (user && user.user_id && user.token) {
             console.log("Valid user from URL in child route, returning app data");
