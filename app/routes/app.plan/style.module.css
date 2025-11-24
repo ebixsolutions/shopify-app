@@ -97,7 +97,7 @@
   }
 }
 
-@media (min-width: 1300px) {
+@media (min-width: 1500px) {
   .plansContainer {
     flex-wrap: nowrap;
     justify-content: center;
