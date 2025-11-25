@@ -994,9 +994,7 @@ export default function PlanPage() {
                   >
                     <div style={{ fontWeight: 700 }}>Date & Time:</div>
                     <div style={{ color: "#666" }}>
-                      {paymentModal.data.paid_at
-                        ? new Date(paymentModal.data.paid_at).toLocaleString()
-                        : "—"}
+                      {paymentModal.data.paid_at}
                     </div>
                   </div>
                 </div>
