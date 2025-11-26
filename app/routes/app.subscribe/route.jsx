@@ -19,9 +19,9 @@ export default function Subscribe() {
   const { user } = useAppContext();
 
   useEffect(() => {
-    if (user.shopify_code) {
+    if (user.shopify_code || user.token) {
       setIframeSrc(
-        `${Iframe}billing?shopify_code=${user.shopify_code}`,
+        `${Iframe}billing?shopify_code=${user.shopify_code}&token=${user.token}`,
       );
     }
     return () => setIframeSrc(null);

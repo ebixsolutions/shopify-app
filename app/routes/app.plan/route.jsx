@@ -603,7 +603,7 @@ export default function PlanPage() {
                       setIframeModal({
                         open: true,
                         title: "My Bill",
-                        url: `${Iframe}bill?shopify_code=${user?.shopify_code}`,
+                        url: `${Iframe}bill?shopify_code=${user?.shopify_code}&token=${user.token}`,
                       })
                     }
                     style={{
@@ -754,7 +754,7 @@ export default function PlanPage() {
                             setIframeModal({
                               open: true,
                               title: "Contract Conditions",
-                              url: `${Iframe}termsConditions?shopify_code=${user?.shopify_code}`,
+                              url: `${Iframe}termsConditions?shopify_code=${user?.shopify_code}&token=${user.token}`,
                             })
                           }
                           style={{
@@ -775,7 +775,7 @@ export default function PlanPage() {
                             setIframeModal({
                               open: true,
                               title: "Privacy Policy",
-                              url: `${Iframe}privacyPolicy?shopify_code=${user?.shopify_code}`,
+                              url: `${Iframe}privacyPolicy?shopify_code=${user?.shopify_code}&token=${user.token}`,
                             })
                           }
                           style={{

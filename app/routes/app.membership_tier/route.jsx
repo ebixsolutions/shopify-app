@@ -19,9 +19,9 @@ export default function MembershipTier() {
   const { user } = useAppContext();
 
   useEffect(() => {
-    if (user.shopify_code) {
+    if (user.shopify_code || user.token) {
       setIframeSrc(
-        `${Iframe}membershipTire?shopify_code=${user.shopify_code}`,
+        `${Iframe}membershipTire?shopify_code=${user.shopify_code}&token=${user.token}`,
       );
     }
     return () => setIframeSrc(null);

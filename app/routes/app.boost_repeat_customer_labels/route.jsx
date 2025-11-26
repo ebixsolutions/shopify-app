@@ -19,9 +19,9 @@ export default function BoostRepeatCustomerLabels() {
   const { user } = useAppContext();
 
   useEffect(() => {
-    if (user.shopify_code) {
+    if (user.shopify_code || user.token) {
       setIframeSrc(
-        `${Iframe}boostRepeatCustomers?shopify_code=${user.shopify_code}`,
+        `${Iframe}boostRepeatCustomers?shopify_code=${user.shopify_code}&token=${user.token}`,
       );
     }
     return () => setIframeSrc(null);

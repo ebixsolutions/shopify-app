@@ -25,9 +25,9 @@ export default function PointSettings() {
   }, [user, shop]);
 
   useEffect(() => {
-    if (user?.shopify_code) {
+    if (user?.shopify_code || user.token) {
       setIframeSrc(
-        `${Iframe}loyalty?shopify_code=${user.shopify_code}`,
+        `${Iframe}loyalty?shopify_code=${user.shopify_code}&token=${user.token}`,
       );
     }
     return () => setIframeSrc(null);

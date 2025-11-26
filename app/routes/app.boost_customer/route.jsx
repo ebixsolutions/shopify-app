@@ -19,9 +19,9 @@ export default function BoostCustomer() {
   const { user } = useAppContext();
 
   useEffect(() => {
-    if (user.shopify_code) {
+    if (user.shopify_code || user.token) {
       setIframeSrc(
-        `${Iframe}ecosphere?shopify_code=${user.shopify_code}&type=customer_count`,
+        `${Iframe}ecosphere?shopify_code=${user.shopify_code}&token=${user.token}&type=customer_count`,
       );
     }
     return () => setIframeSrc(null);

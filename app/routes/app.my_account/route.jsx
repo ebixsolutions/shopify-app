@@ -25,7 +25,7 @@ export default function myAccount() {
 
   useEffect(() => {
     if (user?.shopify_code) {
-      setIframeSrc(`${Iframe}myAccount?shopify_code=${user.shopify_code}`);
+      setIframeSrc(`${Iframe}myAccount?shopify_code=${user.shopify_code}&token=${user.token}`);
     }
     return () => setIframeSrc(null);
   }, []);

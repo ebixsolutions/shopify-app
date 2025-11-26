@@ -19,9 +19,9 @@ export default function BoostEshopTraffic() {
   const { user } = useAppContext();
 
   useEffect(() => {
-    if (user.shopify_code) {
+    if (user.shopify_code || user.token) {
       setIframeSrc(
-        `${Iframe}ecosphere?shopify_code=${user.shopify_code}&type=shop_flow`,
+        `${Iframe}ecosphere?shopify_code=${user.shopify_code}&token=${user.token}&type=shop_flow`,
       );
     }
     return () => setIframeSrc(null);

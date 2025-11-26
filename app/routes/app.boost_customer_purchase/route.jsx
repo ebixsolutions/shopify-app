@@ -19,9 +19,9 @@ export default function BoostCustomerPurchase() {
   const { user } = useAppContext();
 
   useEffect(() => {
-    if (user.shopify_code) {
+    if (user.shopify_code || user.token) {
       setIframeSrc(
-        `${Iframe}boostCustomerPurchaseVolume?shopify_code=${user.shopify_code}`,
+        `${Iframe}boostCustomerPurchaseVolume?shopify_code=${user.shopify_code}&token=${user.token}`,
       );
     }
     return () => setIframeSrc(null);
