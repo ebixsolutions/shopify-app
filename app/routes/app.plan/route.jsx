@@ -81,7 +81,8 @@ export default function PlanPage() {
           setPlanData(
             result.data.plan_status_msg || "Your free plan is expired",
           );
-          setSelectedPlan(result.data.plan_name || null);
+          const normalizedPlanName = result.data.plan_name.replace(/\(.*\)/, "");
+          setSelectedPlan(normalizedPlanName);
           setActivePlan(result.data.plan_name || "");
         }
       } catch (error) {
