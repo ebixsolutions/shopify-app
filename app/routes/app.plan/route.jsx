@@ -510,6 +510,25 @@ export default function PlanPage() {
                 const shortDesc =
                   planDescriptions[plan.name] || plan.short_description || "";
 
+                // Parse active plan only once per render
+                let apiPlanName = null;
+                let apiPlanCycle = "monthly";
+                if (activePlan) {
+                  const match = activePlan.match(
+                    /(Starter|Standard|Pro|Premium)(?:\((Month|Year)\))?/i,
+                  );
+                  if (match) {
+                    apiPlanName = match[1];
+                    apiPlanCycle = match[2] ? match[2].toLowerCase() : "month";
+                  }
+                }
+
+                // Tick logic
+                const isActive =
+                  apiPlanName === plan.name &&
+                  ((apiPlanCycle === "month" && billingCycle === "monthly") ||
+                    (apiPlanCycle === "year" && billingCycle === "yearly"));
+
                 return (
                   <div
                     key={plan.id}
@@ -532,8 +551,7 @@ export default function PlanPage() {
                       background: "#fff",
                     }}
                   >
-                    {/* Tick for already bought plans */}
-                    {activePlan && activePlan === plan.name && (
+                    {isActive && (
                       <div
                         style={{
                           position: "absolute",
