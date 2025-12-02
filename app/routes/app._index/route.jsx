@@ -524,10 +524,9 @@ export default function HomePage() {
               <Layout.Section>
                 <BlockStack gap="500">
                   <Banner title="Migration in progress">
-                    <p>
-                      You can leave this page in the meantime and access it from
-                      the app homepage.
-                    </p>
+                    <Text as="p" fontWeight="bold">
+                      Sync process is in progress. This may take some time to complete. Please do not close or reload the page.
+                    </Text>
                     <div
                       style={{
                         display: "flex",
