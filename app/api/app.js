@@ -46,6 +46,24 @@ export default {
     });
   },
 
+  // shopify product migration v2
+
+  async syncShopifyProduct2(obj) {
+    return await request({
+      url: "/shopify/product_migration2",
+      method: "POST",
+      data: obj,
+    });
+  },
+
+  async checkMigrationStatus(obj) {
+    return await request({
+      url: "/shopify/getMigratedCounts",
+      method: "POST",
+      data: obj,
+    });
+  },
+
   //get step record 
   async stepRecordGet(obj) {
     return await request({

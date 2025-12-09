@@ -40,6 +40,8 @@ export default function HomePage() {
     const [currentStepIndex, setCurrentStepIndex] = useState(0);
     const [migrationComplete, setMigrationComplete] = useState(false);
     const [progress, setProgress] = useState(0);
+    const [inprogressCount, setInprogressCount] = useState(0);
+    const [totalCount, setTotalCount] = useState(0);
     const isFetched = useRef(false);
     const { user, shop } = useAppContext();
 
@@ -174,7 +176,8 @@ export default function HomePage() {
         const apiMethods = {
           "Shop Update": api.syncShopifyUpdateShop,
           "Collection Migration": api.syncShopifyCollection,
-          "Product Migration": api.syncShopifyProduct,
+          // "Product Migration": api.syncShopifyProduct,
+          "Product Migration": api.syncShopifyProduct2,
           "Customer Migration": api.syncShopifyCustomer,
           "Order Migration": api.syncShopifyOrder,
         };
@@ -184,25 +187,64 @@ export default function HomePage() {
 
         if (response.status == 200 && response.code == 0) {
           toast.success(response.msg);
+          if (step.title === "Product Migration") {
+            const interval = setInterval(async () => {
+              const checkRes = await api.checkMigrationStatus(data);
 
-          setSteps((prevSteps) => {
-            const updatedSteps = [...prevSteps];
-            updatedSteps[index] = {
-              ...updatedSteps[index],
-              completed: true,
-              inProgress: false,
-            };
-            return updatedSteps;
-          });
-          setProgress(((index + 1) / stepsToUpdate.length) * 100);
+              if (checkRes.status === 200 && checkRes.code === 0) {
+                setInprogressCount(checkRes.data.processed);
+                setTotalCount(checkRes.data.job_total_count);
+                if (checkRes.data.completed === true) {
+                  toast.success("product migration completed");
+                  clearInterval(interval); // stop the interval
 
-          // Proceed to the next step if not the last step
-          if (index < stepsToUpdate.length - 1) {
-            setCurrentStepIndex(index + 1);
-            performMigrationStep(index + 1, stepsToUpdate);
+                  // Mark current step as completed
+                  setSteps((prevSteps) => {
+                    const updatedSteps = [...prevSteps];
+                    updatedSteps[index] = {
+                      ...updatedSteps[index],
+                      completed: true,
+                      inProgress: false,
+                    };
+                    return updatedSteps;
+                  });
+                  setProgress(((index + 1) / stepsToUpdate.length) * 100);
+
+                  // Proceed to the next step if not the last step
+                  if (index < stepsToUpdate.length - 1) {
+                    setCurrentStepIndex(index + 1);
+                    performMigrationStep(index + 1, stepsToUpdate);
+                  } else {
+                    console.log(
+                      "All steps completed. Triggering completeMigration.",
+                    );
+                    completeMigration();
+                  }
+                }
+              }
+
+              // else keep checking every 1 minute automatically
+            }, 6 * 1000); // 1 minute
           } else {
-            console.log("All steps completed. Triggering completeMigration.");
-            completeMigration();
+            setSteps((prevSteps) => {
+              const updatedSteps = [...prevSteps];
+              updatedSteps[index] = {
+                ...updatedSteps[index],
+                completed: true,
+                inProgress: false,
+              };
+              return updatedSteps;
+            });
+            setProgress(((index + 1) / stepsToUpdate.length) * 100);
+
+            // Proceed to the next step if not the last step
+            if (index < stepsToUpdate.length - 1) {
+              setCurrentStepIndex(index + 1);
+              performMigrationStep(index + 1, stepsToUpdate);
+            } else {
+              console.log("All steps completed. Triggering completeMigration.");
+              completeMigration();
+            }
           }
         } else {
           // Handle API error
@@ -525,7 +567,8 @@ export default function HomePage() {
                 <BlockStack gap="500">
                   <Banner title="Migration in progress">
                     <Text as="p" fontWeight="bold">
-                      Sync process is in progress. This may take some time to complete. Please do not close or reload the page.
+                      Sync process is in progress. This may take some time to
+                      complete. Please do not close or reload the page.
                     </Text>
                     <div
                       style={{
@@ -599,6 +642,13 @@ export default function HomePage() {
                               size="small"
                             />
                           </div>
+                          {step.title.toLowerCase().includes("product") && step.inProgress && (
+                            <div>
+                              Product migration is in progress…{" "}
+                              <b>{inprogressCount}</b> of <b>{totalCount}</b>{" "}
+                              products migrated.
+                            </div>
+                          )}
                         </Card>
                       ))}
                     </div>
