@@ -642,13 +642,16 @@ export default function HomePage() {
                               size="small"
                             />
                           </div>
-                          {step.title.toLowerCase().includes("product") && step.inProgress && (
-                            <div>
-                              Product migration is in progress…{" "}
-                              <b>{inprogressCount}</b> of <b>{totalCount}</b>{" "}
-                              products migrated.
-                            </div>
-                          )}
+                          {step.title === "Product Migration" &&
+                            !step.completed &&
+                            currentStepIndex === index &&
+                            step.inProgress && (
+                              <div>
+                                Product migration is in progress…{" "}
+                                <b>{inprogressCount}</b> of <b>{totalCount}</b>{" "}
+                                products migrated.
+                              </div>
+                            )}
                         </Card>
                       ))}
                     </div>
