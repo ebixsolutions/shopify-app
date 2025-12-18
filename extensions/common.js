@@ -324,7 +324,8 @@ export default {
                     if (effect.VT == 1) //fixed_amount
                         discountValue = {
                             fixedAmount: {
-                                amount: (effect.V * input.presentmentCurrencyRate).toString()
+                                amount: (effect.V * input.presentmentCurrencyRate).toString(),
+                                appliesToEachItem: true
                             }
                         }
                     else if (effect.VT == 2) //percentage
