@@ -18,11 +18,28 @@ export default {
       data: obj,
     });
   },
+  // shopify customer migration v2
+    async syncShopifyCustomer2(obj) {
+    return await request({
+      url: "/shopify/customer_migration2",
+      method: "POST",
+      data: obj,
+    });
+  },
 
   // shopify order migration
   async syncShopifyOrder(obj) {
     return await request({
       url: "/shopify/order_migration",
+      method: "POST",
+      data: obj,
+    });
+  },
+
+  // shopify order migration v2
+  async syncShopifyOrder2(obj) {
+    return await request({
+      url: "/shopify/order_migration2",
       method: "POST",
       data: obj,
     });

@@ -40,10 +40,22 @@ export default function HomePage() {
     const [currentStepIndex, setCurrentStepIndex] = useState(0);
     const [migrationComplete, setMigrationComplete] = useState(false);
     const [progress, setProgress] = useState(0);
-    const [inprogressCount, setInprogressCount] = useState(0);
-    const [totalCount, setTotalCount] = useState(0);
+    const PRODUCT_LIMIT = 100;
+    const [bgJobs, setBgJobs] = useState({
+      product: { active: false, processed: 0, total: 0 },
+      customer: { active: false, processed: 0, total: 0 },
+      order: { active: false, processed: 0, total: 0 },
+    });
+
+    const [bgRunner, setBgRunner] = useState(null);
+
     const isFetched = useRef(false);
     const { user, shop } = useAppContext();
+    const jobKeyMap = {
+      "Product Migration": "product",
+      "Customer Migration": "customer",
+      "Order Migration": "order",
+    };
 
     console.log(
       "HomePage component loaded with user:",
@@ -103,14 +115,6 @@ export default function HomePage() {
                 title: "Product Migration",
                 completed: migrationStatus.product_migrate,
               },
-              {
-                title: "Customer Migration",
-                completed: migrationStatus.customer_migrate,
-              },
-              {
-                title: "Order Migration",
-                completed: migrationStatus.order_migrate,
-              },
             ];
 
             setSteps(initialSteps);
@@ -148,116 +152,165 @@ export default function HomePage() {
       }
     }, []);
 
-    const performMigrationStep = async (index, stepsToUpdate) => {
-      const step = stepsToUpdate[index];
+    useEffect(() => {
+      if (!migrationComplete || !bgRunner) return;
 
-      if (step.completed) {
-        console.log(`${step.title} is already completed. Skipping.`);
-        return;
-      }
-      if (!user) {
-        console.error("User not found in context during migration step");
-        return;
-      }
-
-      let logs = user.logs;
       const data = {
-        company_id: logs ? logs.company_id : null,
+        company_id: user.logs?.company_id,
         shopify_id: user.shopify_id,
       };
 
-      try {
-        setSteps((prevSteps) => {
-          const updatedSteps = [...prevSteps];
-          updatedSteps[index] = { ...updatedSteps[index], inProgress: true };
-          return updatedSteps;
-        });
+      let interval;
 
-        const apiMethods = {
-          "Shop Update": api.syncShopifyUpdateShop,
-          "Collection Migration": api.syncShopifyCollection,
-          // "Product Migration": api.syncShopifyProduct,
-          "Product Migration": api.syncShopifyProduct2,
-          "Customer Migration": api.syncShopifyCustomer,
-          "Order Migration": api.syncShopifyOrder,
-        };
+      const startJob = async () => {
+        if (bgRunner === "product") await api.syncShopifyProduct2(data);
+        if (bgRunner === "customer") await api.syncShopifyCustomer2(data);
+        if (bgRunner === "order") await api.syncShopifyOrder2(data);
 
-        const apiFunction = apiMethods[step.title];
-        const response = await apiFunction(data);
+        interval = setInterval(async () => {
+          const res = await api.checkMigrationStatus(data);
+          const job = res.data?.[bgRunner];
+          if (!job) return;
 
-        if (response.status == 200 && response.code == 0) {
-          toast.success(response.msg);
-          if (step.title === "Product Migration") {
-            const interval = setInterval(async () => {
-              const checkRes = await api.checkMigrationStatus(data);
+          setBgJobs((prev) => ({
+            ...prev,
+            [bgRunner]: {
+              active: true,
+              processed: Number(job.processed),
+              total: Number(job.job_total_count),
+            },
+          }));
 
-              if (checkRes.status === 200 && checkRes.code === 0) {
-                setInprogressCount(checkRes.data.processed);
-                setTotalCount(checkRes.data.job_total_count);
-                if (checkRes.data.completed === true) {
-                  toast.success("product migration completed");
-                  clearInterval(interval); // stop the interval
+          if (job.completed) {
+            clearInterval(interval);
 
-                  // Mark current step as completed
-                  setSteps((prevSteps) => {
-                    const updatedSteps = [...prevSteps];
-                    updatedSteps[index] = {
-                      ...updatedSteps[index],
-                      completed: true,
-                      inProgress: false,
-                    };
-                    return updatedSteps;
-                  });
-                  setProgress(((index + 1) / stepsToUpdate.length) * 100);
+            toast.success(`${bgRunner} migration completed`);
 
-                  // Proceed to the next step if not the last step
-                  if (index < stepsToUpdate.length - 1) {
-                    setCurrentStepIndex(index + 1);
-                    performMigrationStep(index + 1, stepsToUpdate);
-                  } else {
-                    console.log(
-                      "All steps completed. Triggering completeMigration.",
-                    );
-                    completeMigration();
-                  }
-                }
-              }
-
-              // else keep checking every 1 minute automatically
-            }, 6 * 1000); // 1 minute
-          } else {
-            setSteps((prevSteps) => {
-              const updatedSteps = [...prevSteps];
-              updatedSteps[index] = {
-                ...updatedSteps[index],
-                completed: true,
-                inProgress: false,
-              };
-              return updatedSteps;
-            });
-            setProgress(((index + 1) / stepsToUpdate.length) * 100);
-
-            // Proceed to the next step if not the last step
-            if (index < stepsToUpdate.length - 1) {
-              setCurrentStepIndex(index + 1);
-              performMigrationStep(index + 1, stepsToUpdate);
-            } else {
-              console.log("All steps completed. Triggering completeMigration.");
-              completeMigration();
+            if (bgRunner === "product") setBgRunner("customer");
+            else if (bgRunner === "customer") setBgRunner("order");
+            else {
+              setBgRunner(null);
+              setBgJobs({
+                product: { active: false, processed: 0, total: 0 },
+                customer: { active: false, processed: 0, total: 0 },
+                order: { active: false, processed: 0, total: 0 },
+              });
             }
           }
-        } else {
-          // Handle API error
-          toast.error(response.msg);
-          throw new Error(`API responded with status ${response.status}`);
+        }, 3000);
+      };
+
+      startJob();
+      return () => interval && clearInterval(interval);
+    }, [bgRunner, migrationComplete]);
+
+    const performMigrationStep = async (index, stepsToUpdate) => {
+      const step = stepsToUpdate[index];
+      if (step.completed || !user) return;
+
+      const data = {
+        company_id: user.logs?.company_id ?? null,
+        shopify_id: user.shopify_id,
+      };
+
+      setSteps((prev) => {
+        const copy = [...prev];
+        copy[index] = { ...copy[index], inProgress: true };
+        return copy;
+      });
+
+      const apiMethods = {
+        "Shop Update": api.syncShopifyUpdateShop,
+        "Collection Migration": api.syncShopifyCollection,
+        "Product Migration": api.syncShopifyProduct2,
+      };
+
+      const response = await apiMethods[step.title](data);
+      if (response.status !== 200 || response.code !== 0) {
+        toast.error(response.msg);
+        return;
+      }
+      toast.success(response.msg);
+
+      const jobKey = jobKeyMap[step.title];
+      if (!jobKey) {
+        completeStep(index, stepsToUpdate);
+        return;
+      }
+
+      const interval = setInterval(async () => {
+        const res = await api.checkMigrationStatus(data);
+        const job = res.data?.[jobKey];
+        if (!job) return;
+
+        const processed = Number(job.processed || 0);
+        const total = Number(job.job_total_count || 0);
+
+        // UPDATE PROGRESS PER JOB
+        setBgJobs((prev) => ({
+          ...prev,
+          [jobKey]: {
+            active: true,
+            processed,
+            total,
+          },
+        }));
+
+        // PRODUCT SPECIAL RULE
+        if (jobKey === "product") {
+          if (total > PRODUCT_LIMIT && processed >= PRODUCT_LIMIT) {
+            toast.success(
+              "100 products migrated. Remaining will continue in background.",
+            );
+
+            clearInterval(interval);
+
+            setBgJobs({
+              product: { active: true, processed, total },
+              customer: { active: true, processed: 0, total: 0 },
+              order: { active: true, processed: 0, total: 0 },
+            });
+
+            setMigrationComplete(true);
+            setBgRunner("product");
+            return;
+          }
+
+          if (job.completed && total <= PRODUCT_LIMIT) {
+            toast.success("Product migration completed");
+
+            clearInterval(interval);
+
+            setBgJobs({
+              product: { active: true, processed: total, total },
+              customer: { active: true, processed: 0, total: 0 },
+              order: { active: true, processed: 0, total: 0 },
+            });
+
+            setMigrationComplete(true);
+            setBgRunner("customer");
+            return;
+          }
         }
-      } catch (error) {
-        console.error("Error during migration step:", error);
-        setSteps((prevSteps) => {
-          const updatedSteps = [...prevSteps];
-          updatedSteps[index] = { ...updatedSteps[index], inProgress: false };
-          return updatedSteps;
-        });
+
+        //DEFAULT COMPLETE
+        if (job.completed) {
+          clearInterval(interval);
+          completeStep(index, stepsToUpdate);
+        }
+      }, 3000);
+    };
+
+    const completeStep = (index, steps) => {
+      setSteps((prev) => {
+        const copy = [...prev];
+        copy[index] = { ...copy[index], completed: true, inProgress: false };
+        return copy;
+      });
+
+      if (index < steps.length - 1) {
+        setCurrentStepIndex(index + 1);
+        performMigrationStep(index + 1, steps);
       }
     };
 
@@ -568,7 +621,7 @@ export default function HomePage() {
                   <Banner title="Migration in progress">
                     <Text as="p" fontWeight="bold">
                       Sync process is in progress. This may take some time to
-                      complete. Please do not close or reload the page.
+                      complete.
                     </Text>
                     <div
                       style={{
@@ -577,8 +630,8 @@ export default function HomePage() {
                         gap: "8px",
                       }}
                     >
-                      <Text variant="headingMd">Progress</Text>
-                      <div className={styles.bar}>
+                      {/* <Text variant="headingMd">Progress</Text> */}
+                      {/* <div className={styles.bar}>
                         <ProgressBar progress={progress} size="medium" />
                         {steps[currentStepIndex]?.inProgress && (
                           <div
@@ -594,7 +647,7 @@ export default function HomePage() {
                             />
                           </div>
                         )}
-                      </div>
+                      </div> */}
                       <Text color="subdued">
                         Currently processing:{" "}
                         {steps[currentStepIndex]?.title ||
@@ -642,14 +695,21 @@ export default function HomePage() {
                               size="small"
                             />
                           </div>
-                          {step.title === "Product Migration" &&
+                          {["Product Migration"].includes(step.title) &&
                             !step.completed &&
                             currentStepIndex === index &&
                             step.inProgress && (
                               <div>
-                                Product migration is in progress…{" "}
-                                <b>{inprogressCount}</b> of <b>{totalCount}</b>{" "}
-                                products migrated.
+                                {step.title} is in progress…{" "}
+                                <b>
+                                  {bgJobs[jobKeyMap[step.title]]?.processed ||
+                                    0}
+                                </b>{" "}
+                                of{" "}
+                                <b>
+                                  {bgJobs[jobKeyMap[step.title]]?.total || 0}
+                                </b>{" "}
+                                migrated.
                               </div>
                             )}
                         </Card>
@@ -661,6 +721,60 @@ export default function HomePage() {
             )}
             {migrationComplete && (
               <>
+                {(bgJobs.product.active ||
+                  bgJobs.customer.active ||
+                  bgJobs.order.active) && (
+                  <Layout.Section>
+                    <Card title="Migration Processing">
+                      <BlockStack gap="300">
+                        <Text>
+                          Product Migration {bgJobs.product.processed}/
+                          {bgJobs.product.total}
+                        </Text>
+                        <ProgressBar
+                          progress={
+                            bgJobs.product.total
+                              ? (bgJobs.product.processed /
+                                  bgJobs.product.total) *
+                                100
+                              : 0
+                          }
+                          size="small"
+                        />
+
+                        <Text>
+                          Customer Migration {bgJobs.customer.processed}/
+                          {bgJobs.customer.total}
+                        </Text>
+                        <ProgressBar
+                          progress={
+                            bgJobs.customer.total
+                              ? (bgJobs.customer.processed /
+                                  bgJobs.customer.total) *
+                                100
+                              : 0
+                          }
+                          size="small"
+                        />
+
+                        <Text>
+                          Order Migration {bgJobs.order.processed}/
+                          {bgJobs.order.total}
+                        </Text>
+                        <ProgressBar
+                          progress={
+                            bgJobs.order.total
+                              ? (bgJobs.order.processed / bgJobs.order.total) *
+                                100
+                              : 0
+                          }
+                          size="small"
+                        />
+                      </BlockStack>
+                    </Card>
+                  </Layout.Section>
+                )}
+
                 <Layout.Section>
                   <Card roundedAbove="none">
                     <BlockStack gap="500">
