@@ -42,12 +42,18 @@ export default function HomePage() {
     const [progress, setProgress] = useState(0);
     const PRODUCT_LIMIT = 100;
     const [bgJobs, setBgJobs] = useState({
-      product: { active: false, processed: 0, total: 0 },
-      customer: { active: false, processed: 0, total: 0 },
-      order: { active: false, processed: 0, total: 0 },
+      product: { processed: 0, total: 0 },
+      customer: { processed: 0, total: 0 },
+      order: { processed: 0, total: 0 },
     });
 
     const [bgRunner, setBgRunner] = useState(null);
+    const [showMigrationProcessingCard, setShowMigrationProcessingCard] =
+      useState(false);
+    const [productDone, setProductDone] = useState(false);
+    const [customerDone, setCustomerDone] = useState(false);
+    const [orderStarted, setOrderStarted] = useState(false);
+    const [orderCompleted, setOrderCompleted] = useState(false);
 
     const isFetched = useRef(false);
     const { user, shop } = useAppContext();
@@ -56,6 +62,13 @@ export default function HomePage() {
       "Customer Migration": "customer",
       "Order Migration": "order",
     };
+
+    const isInProgress = (job) => job.total > 0 && job.processed < job.total;
+
+    const isCompleted = (job) => job.total > 0 && job.processed >= job.total;
+
+    const getProgress = (job) =>
+      job.total > 0 ? Math.min((job.processed / job.total) * 100, 100) : 0;
 
     console.log(
       "HomePage component loaded with user:",
@@ -175,7 +188,6 @@ export default function HomePage() {
           setBgJobs((prev) => ({
             ...prev,
             [bgRunner]: {
-              active: true,
               processed: Number(job.processed),
               total: Number(job.job_total_count),
             },
@@ -184,17 +196,21 @@ export default function HomePage() {
           if (job.completed) {
             clearInterval(interval);
 
-            toast.success(`${bgRunner} migration completed`);
+            if (bgRunner === "product") {
+              setProductDone(true);
+              toast.success("Product migration completed");
+            }
 
-            if (bgRunner === "product") setBgRunner("customer");
-            else if (bgRunner === "customer") setBgRunner("order");
-            else {
+            if (bgRunner === "customer") {
+              setCustomerDone(true);
+              toast.success("Customer migration completed");
+            }
+
+            if (bgRunner === "order") {
+              setOrderCompleted(true);
+              setOrderStarted(false);
               setBgRunner(null);
-              setBgJobs({
-                product: { active: false, processed: 0, total: 0 },
-                customer: { active: false, processed: 0, total: 0 },
-                order: { active: false, processed: 0, total: 0 },
-              });
+              toast.success("Order migration completed");
             }
           }
         }, 3000);
@@ -203,6 +219,25 @@ export default function HomePage() {
       startJob();
       return () => interval && clearInterval(interval);
     }, [bgRunner, migrationComplete]);
+
+    useEffect(() => {
+      if (
+        migrationComplete &&
+        productDone &&
+        customerDone &&
+        !orderStarted &&
+        !orderCompleted
+      ) {
+        setOrderStarted(true);
+        setBgRunner("order");
+      }
+    }, [
+      migrationComplete,
+      productDone,
+      customerDone,
+      orderStarted,
+      orderCompleted,
+    ]);
 
     const performMigrationStep = async (index, stepsToUpdate) => {
       const step = stepsToUpdate[index];
@@ -246,54 +281,44 @@ export default function HomePage() {
         const processed = Number(job.processed || 0);
         const total = Number(job.job_total_count || 0);
 
-        // UPDATE PROGRESS PER JOB
         setBgJobs((prev) => ({
           ...prev,
-          [jobKey]: {
-            active: true,
-            processed,
-            total,
-          },
+          [jobKey]: { processed, total },
         }));
 
-        // PRODUCT SPECIAL RULE
+        /** ---------------- PRODUCT LOGIC ---------------- */
         if (jobKey === "product") {
+          // 🚀 Product > 100 → background product + customer
           if (total > PRODUCT_LIMIT && processed >= PRODUCT_LIMIT) {
-            toast.success(
-              "100 products migrated. Remaining will continue in background.",
-            );
+            toast.success("100 products migrated. Remaining in background.");
 
             clearInterval(interval);
 
-            setBgJobs({
-              product: { active: true, processed, total },
-              customer: { active: true, processed: 0, total: 0 },
-              order: { active: true, processed: 0, total: 0 },
-            });
-
             setMigrationComplete(true);
+            setShowMigrationProcessingCard(true);
+
             setBgRunner("product");
+            setTimeout(() => setBgRunner("customer"), 500);
+
             return;
           }
 
+          // ✅ Product ≤ 100 → normal flow
           if (job.completed && total <= PRODUCT_LIMIT) {
             toast.success("Product migration completed");
 
             clearInterval(interval);
 
-            setBgJobs({
-              product: { active: true, processed: total, total },
-              customer: { active: true, processed: 0, total: 0 },
-              order: { active: true, processed: 0, total: 0 },
-            });
-
+            setProductDone(true); // 🔥 FIX
             setMigrationComplete(true);
+            setShowMigrationProcessingCard(true);
+
             setBgRunner("customer");
             return;
           }
         }
 
-        //DEFAULT COMPLETE
+        /** ---------------- DEFAULT COMPLETE ---------------- */
         if (job.completed) {
           clearInterval(interval);
           completeStep(index, stepsToUpdate);
@@ -721,55 +746,78 @@ export default function HomePage() {
             )}
             {migrationComplete && (
               <>
-                {(bgJobs.product.active ||
-                  bgJobs.customer.active ||
-                  bgJobs.order.active) && (
+                {showMigrationProcessingCard && (
                   <Layout.Section>
-                    <Card title="Migration Processing">
+                    <Card>
+                      <Text variant="headingMd">Migration Processing</Text>
+
                       <BlockStack gap="300">
-                        <Text>
-                          Product Migration {bgJobs.product.processed}/
-                          {bgJobs.product.total}
-                        </Text>
+                        {/* ---------------- PRODUCT ---------------- */}
+                        <Text>Product Migration</Text>
                         <ProgressBar
-                          progress={
-                            bgJobs.product.total
-                              ? (bgJobs.product.processed /
-                                  bgJobs.product.total) *
-                                100
-                              : 0
-                          }
+                          progress={getProgress(bgJobs.product)}
                           size="small"
                         />
 
-                        <Text>
-                          Customer Migration {bgJobs.customer.processed}/
-                          {bgJobs.customer.total}
-                        </Text>
+                        {isInProgress(bgJobs.product) && (
+                          <Text tone="subdued">
+                            Product Migration is in progress{" "}
+                            {bgJobs.product.processed} of {bgJobs.product.total}{" "}
+                            migrated
+                          </Text>
+                        )}
+
+                        {isCompleted(bgJobs.product) && (
+                          <Text tone="success">
+                            Product Migration completed ({bgJobs.product.total})
+                          </Text>
+                        )}
+
+                        {/* ---------------- CUSTOMER ---------------- */}
+                        <Text>Customer Migration</Text>
                         <ProgressBar
-                          progress={
-                            bgJobs.customer.total
-                              ? (bgJobs.customer.processed /
-                                  bgJobs.customer.total) *
-                                100
-                              : 0
-                          }
+                          progress={getProgress(bgJobs.customer)}
                           size="small"
                         />
 
+                        {isInProgress(bgJobs.customer) && (
+                          <Text tone="subdued">
+                            Customer Migration is in progress{" "}
+                            {bgJobs.customer.processed} of{" "}
+                            {bgJobs.customer.total} migrated
+                          </Text>
+                        )}
+
+                        {isCompleted(bgJobs.customer) && (
+                          <Text tone="success">
+                            Customer Migration completed (
+                            {bgJobs.customer.total})
+                          </Text>
+                        )}
+
+                        {/* ---------------- ORDER ---------------- */}
                         <Text>
-                          Order Migration {bgJobs.order.processed}/
-                          {bgJobs.order.total}
+                          Order Migration (Starts after Product & Customer
+                          complete)
                         </Text>
                         <ProgressBar
-                          progress={
-                            bgJobs.order.total
-                              ? (bgJobs.order.processed / bgJobs.order.total) *
-                                100
-                              : 0
-                          }
+                          progress={getProgress(bgJobs.order)}
                           size="small"
                         />
+
+                        {isInProgress(bgJobs.order) && (
+                          <Text tone="subdued">
+                            Order Migration is in progress{" "}
+                            {bgJobs.order.processed} of {bgJobs.order.total}{" "}
+                            migrated
+                          </Text>
+                        )}
+
+                        {isCompleted(bgJobs.order) && (
+                          <Text tone="success">
+                            Order Migration completed ({bgJobs.order.total})
+                          </Text>
+                        )}
                       </BlockStack>
                     </Card>
                   </Layout.Section>
