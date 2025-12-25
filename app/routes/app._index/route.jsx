@@ -41,7 +41,7 @@ export default function HomePage() {
     const [currentStepIndex, setCurrentStepIndex] = useState(0);
     const [migrationComplete, setMigrationComplete] = useState(false);
     const [progress, setProgress] = useState(0);
-    const PRODUCT_LIMIT = 10;
+    const PRODUCT_LIMIT = 100;
     const [bgJobs, setBgJobs] = useState({
       product: { processed: 0, total: 0 },
       customer: { processed: 0, total: 0 },
