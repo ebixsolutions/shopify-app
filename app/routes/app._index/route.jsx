@@ -116,7 +116,6 @@ export default function HomePage() {
           if (response.status === 200) {
             const migrationStatus = response.data;
 
-            // sync UI state with backend flags
             setProductDone(migrationStatus.product_migrate);
             setCustomerDone(migrationStatus.customer_migrate);
             setOrderCompleted(migrationStatus.order_migrate);
@@ -246,19 +245,16 @@ export default function HomePage() {
         const res = await api.checkMigrationStatus(data);
         const job = res.data?.[bgRunner];
 
-        // already completed → do nothing
         if (job?.completed) {
           setBgRunner(null);
           return;
         }
 
-        // already running → do NOT restart
         if (job?.job_total_count > 0) {
           startPolling();
           return;
         }
 
-        // start only once
         if (bgRunner === "product") await api.syncShopifyProduct2(data);
         if (bgRunner === "customer") await api.syncShopifyCustomer2(data);
         if (bgRunner === "order") await api.syncShopifyOrder2(data);
@@ -271,13 +267,11 @@ export default function HomePage() {
     }, [bgRunner, migrationComplete]);
 
     useEffect(() => {
-      // 1️⃣ if everything is done → hide card & stop
       if (productDone && customerDone && orderCompleted) {
         setShowMigrationProcessingCard(false);
         return;
       }
 
-      // 2️⃣ Start Order ONLY when product + customer finished
       if (
         migrationComplete &&
         productDone &&
@@ -345,7 +339,7 @@ export default function HomePage() {
 
         /** ---------------- PRODUCT LOGIC ---------------- */
         if (jobKey === "product") {
-          // 🚀 Product > 100 → background product + customer
+          // Product > 100 → background product + customer
           if (total > PRODUCT_LIMIT && processed >= PRODUCT_LIMIT) {
             toast.success("100 products migrated. Remaining in background.");
 
@@ -360,13 +354,13 @@ export default function HomePage() {
             return;
           }
 
-          // ✅ Product ≤ 100 → normal flow
+          // Product ≤ 100 → normal flow
           if (job.completed && total <= PRODUCT_LIMIT) {
             toast.success("Product migration completed");
 
             clearInterval(interval);
 
-            setProductDone(true); // 🔥 FIX
+            setProductDone(true);
             setMigrationComplete(true);
             setShowMigrationProcessingCard(true);
             setBgRunner("customer");
@@ -702,7 +696,7 @@ export default function HomePage() {
                   <Banner title="Migration in progress">
                     <Text as="p" fontWeight="bold">
                       Sync process is in progress. This may take some time to
-                      complete.
+                      complete. Please do not close or reload the page.
                     </Text>
                     <div
                       style={{
