@@ -222,9 +222,20 @@ export default function HomePage() {
           if (job.completed) {
             clearInterval(interval);
 
-            if (bgRunner === "product") setProductDone(true);
-            if (bgRunner === "customer") setCustomerDone(true);
-            if (bgRunner === "order") setOrderCompleted(true);
+            if (bgRunner === "product") {
+              setProductDone(true);
+              toast.success("Product migration completed");
+            }
+
+            if (bgRunner === "customer") {
+              setCustomerDone(true);
+              toast.success("Customer migration completed");
+            }
+
+            if (bgRunner === "order") {
+              setOrderCompleted(true);
+              toast.success("Order migration completed");
+            }
 
             setBgRunner(null);
           }
