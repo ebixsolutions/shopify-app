@@ -260,6 +260,13 @@ export default function HomePage() {
     }, [bgRunner, migrationComplete]);
 
     useEffect(() => {
+      // 1️⃣ if everything is done → hide card & stop
+      if (productDone && customerDone && orderCompleted) {
+        setShowMigrationProcessingCard(false);
+        return;
+      }
+
+      // 2️⃣ Start Order ONLY when product + customer finished
       if (
         migrationComplete &&
         productDone &&
@@ -337,7 +344,7 @@ export default function HomePage() {
             setShowMigrationProcessingCard(true);
 
             setBgRunner("product");
-              setTimeout(() => setBgRunner("customer"), 500);
+            setTimeout(() => setBgRunner("customer"), 500);
 
             return;
           }
@@ -351,7 +358,7 @@ export default function HomePage() {
             setProductDone(true); // 🔥 FIX
             setMigrationComplete(true);
             setShowMigrationProcessingCard(true);
-              setBgRunner("customer");
+            setBgRunner("customer");
             return;
           }
         }
