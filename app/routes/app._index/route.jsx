@@ -19,6 +19,7 @@ import {
   Icon,
   InlineGrid,
   Spinner,
+  Box
 } from "@shopify/polaris";
 import { ChevronUpIcon } from "@shopify/polaris-icons";
 import { useAppContext } from "../app/route"; // Import the hook from the parent route
@@ -137,7 +138,20 @@ export default function HomePage() {
             );
 
             if (allStepsCompleted) {
-              completeMigration();
+              // completeMigration();
+              setMigrationComplete(true);
+              setShowMigrationProcessingCard(true);
+
+              const productDone = migrationStatus.product_migrate;
+              const customerDone = migrationStatus.customer_migrate;
+              const orderDone = migrationStatus.order_migrate;
+
+              if (productDone && !customerDone) {
+                setBgRunner("customer");
+              } else if (productDone && customerDone && !orderDone) {
+                setBgRunner("order");
+              }
+              // setShowMigrationProcessingCard(false);
             } else {
               const firstIncompleteIndex = initialSteps.findIndex(
                 (step) => !step.completed,
@@ -751,9 +765,11 @@ export default function HomePage() {
                     <Card>
                       <Text variant="headingMd">Migration Processing</Text>
 
-                      <BlockStack gap="300">
+                      <BlockStack gap="100">
                         {/* ---------------- PRODUCT ---------------- */}
-                        <Text>Product Migration</Text>
+                        <Box paddingBlockStart="150">
+                          <Text>Product Migration</Text>
+                        </Box>
                         <ProgressBar
                           progress={getProgress(bgJobs.product)}
                           size="small"
@@ -774,7 +790,9 @@ export default function HomePage() {
                         )}
 
                         {/* ---------------- CUSTOMER ---------------- */}
-                        <Text>Customer Migration</Text>
+                        <Box paddingBlockStart="150">
+                          Customer Migration
+                        </Box>
                         <ProgressBar
                           progress={getProgress(bgJobs.customer)}
                           size="small"
@@ -796,10 +814,10 @@ export default function HomePage() {
                         )}
 
                         {/* ---------------- ORDER ---------------- */}
-                        <Text>
+                        <Box paddingBlockStart="150">
                           Order Migration (Starts after Product & Customer
                           complete)
-                        </Text>
+                        </Box >
                         <ProgressBar
                           progress={getProgress(bgJobs.order)}
                           size="small"
