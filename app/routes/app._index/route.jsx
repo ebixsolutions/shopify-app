@@ -19,7 +19,7 @@ import {
   Icon,
   InlineGrid,
   Spinner,
-  Box
+  Box,
 } from "@shopify/polaris";
 import { ChevronUpIcon } from "@shopify/polaris-icons";
 import { useAppContext } from "../app/route"; // Import the hook from the parent route
@@ -41,7 +41,7 @@ export default function HomePage() {
     const [currentStepIndex, setCurrentStepIndex] = useState(0);
     const [migrationComplete, setMigrationComplete] = useState(false);
     const [progress, setProgress] = useState(0);
-    const PRODUCT_LIMIT = 100;
+    const PRODUCT_LIMIT = 10;
     const [bgJobs, setBgJobs] = useState({
       product: { processed: 0, total: 0 },
       customer: { processed: 0, total: 0 },
@@ -116,6 +116,11 @@ export default function HomePage() {
           if (response.status === 200) {
             const migrationStatus = response.data;
 
+            // sync UI state with backend flags
+            setProductDone(migrationStatus.product_migrate);
+            setCustomerDone(migrationStatus.customer_migrate);
+            setOrderCompleted(migrationStatus.order_migrate);
+
             const initialSteps = [
               {
                 title: "Shop Update",
@@ -133,33 +138,44 @@ export default function HomePage() {
 
             setSteps(initialSteps);
 
-            const allStepsCompleted = initialSteps.every(
-              (step) => step.completed,
-            );
+            // load job statistics
+            const res = await api.checkMigrationStatus({
+              company_id: logs.company_id,
+              shopify_id: user.shopify_id,
+            });
+
+            setBgJobs({
+              product: {
+                processed: Number(res.data?.product?.processed || 0),
+                total: Number(res.data?.product?.job_total_count || 0),
+              },
+              customer: {
+                processed: Number(res.data?.customer?.processed || 0),
+                total: Number(res.data?.customer?.job_total_count || 0),
+              },
+              order: {
+                processed: Number(res.data?.order?.processed || 0),
+                total: Number(res.data?.order?.job_total_count || 0),
+              },
+            });
+
+            const allStepsCompleted = initialSteps.every((s) => s.completed);
 
             if (allStepsCompleted) {
-              // completeMigration();
               setMigrationComplete(true);
               setShowMigrationProcessingCard(true);
 
-              const productDone = migrationStatus.product_migrate;
-              const customerDone = migrationStatus.customer_migrate;
-              const orderDone = migrationStatus.order_migrate;
-
-              if (productDone && !customerDone) {
+              // restore bgRunner state
+              if (!migrationStatus.product_migrate) setBgRunner("product");
+              else if (!migrationStatus.customer_migrate)
                 setBgRunner("customer");
-              } else if (productDone && customerDone && !orderDone) {
-                setBgRunner("order");
-              }
-              // setShowMigrationProcessingCard(false);
+              else if (!migrationStatus.order_migrate) setBgRunner("order");
             } else {
               const firstIncompleteIndex = initialSteps.findIndex(
-                (step) => !step.completed,
+                (s) => !s.completed,
               );
-              if (firstIncompleteIndex >= 0) {
-                setCurrentStepIndex(firstIncompleteIndex);
-                performMigrationStep(firstIncompleteIndex, initialSteps);
-              }
+              setCurrentStepIndex(firstIncompleteIndex);
+              performMigrationStep(firstIncompleteIndex, initialSteps);
             }
           } else {
             console.error("Failed to fetch migration status:", response);
@@ -189,11 +205,7 @@ export default function HomePage() {
 
       let interval;
 
-      const startJob = async () => {
-        if (bgRunner === "product") await api.syncShopifyProduct2(data);
-        if (bgRunner === "customer") await api.syncShopifyCustomer2(data);
-        if (bgRunner === "order") await api.syncShopifyOrder2(data);
-
+      const startPolling = () => {
         interval = setInterval(async () => {
           const res = await api.checkMigrationStatus(data);
           const job = res.data?.[bgRunner];
@@ -210,24 +222,37 @@ export default function HomePage() {
           if (job.completed) {
             clearInterval(interval);
 
-            if (bgRunner === "product") {
-              setProductDone(true);
-              toast.success("Product migration completed");
-            }
+            if (bgRunner === "product") setProductDone(true);
+            if (bgRunner === "customer") setCustomerDone(true);
+            if (bgRunner === "order") setOrderCompleted(true);
 
-            if (bgRunner === "customer") {
-              setCustomerDone(true);
-              toast.success("Customer migration completed");
-            }
-
-            if (bgRunner === "order") {
-              setOrderCompleted(true);
-              setOrderStarted(false);
-              setBgRunner(null);
-              toast.success("Order migration completed");
-            }
+            setBgRunner(null);
           }
         }, 3000);
+      };
+
+      const startJob = async () => {
+        const res = await api.checkMigrationStatus(data);
+        const job = res.data?.[bgRunner];
+
+        // already completed → do nothing
+        if (job?.completed) {
+          setBgRunner(null);
+          return;
+        }
+
+        // already running → do NOT restart
+        if (job?.job_total_count > 0) {
+          startPolling();
+          return;
+        }
+
+        // start only once
+        if (bgRunner === "product") await api.syncShopifyProduct2(data);
+        if (bgRunner === "customer") await api.syncShopifyCustomer2(data);
+        if (bgRunner === "order") await api.syncShopifyOrder2(data);
+
+        startPolling();
       };
 
       startJob();
@@ -312,7 +337,7 @@ export default function HomePage() {
             setShowMigrationProcessingCard(true);
 
             setBgRunner("product");
-            setTimeout(() => setBgRunner("customer"), 500);
+              setTimeout(() => setBgRunner("customer"), 500);
 
             return;
           }
@@ -326,8 +351,7 @@ export default function HomePage() {
             setProductDone(true); // 🔥 FIX
             setMigrationComplete(true);
             setShowMigrationProcessingCard(true);
-
-            setBgRunner("customer");
+              setBgRunner("customer");
             return;
           }
         }
@@ -790,9 +814,7 @@ export default function HomePage() {
                         )}
 
                         {/* ---------------- CUSTOMER ---------------- */}
-                        <Box paddingBlockStart="150">
-                          Customer Migration
-                        </Box>
+                        <Box paddingBlockStart="150">Customer Migration</Box>
                         <ProgressBar
                           progress={getProgress(bgJobs.customer)}
                           size="small"
@@ -817,7 +839,7 @@ export default function HomePage() {
                         <Box paddingBlockStart="150">
                           Order Migration (Starts after Product & Customer
                           complete)
-                        </Box >
+                        </Box>
                         <ProgressBar
                           progress={getProgress(bgJobs.order)}
                           size="small"
