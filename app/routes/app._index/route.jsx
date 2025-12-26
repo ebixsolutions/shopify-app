@@ -341,7 +341,7 @@ export default function HomePage() {
         if (jobKey === "product") {
           // Product > 100 → background product + customer
           if (total > PRODUCT_LIMIT && processed >= PRODUCT_LIMIT) {
-            toast.success("100 products migrated. Remaining in background.");
+            toast.success("100 products migrated. Balance Migration Processing in the background.");
 
             clearInterval(interval);
 
