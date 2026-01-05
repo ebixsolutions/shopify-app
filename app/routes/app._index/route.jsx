@@ -68,8 +68,19 @@ export default function HomePage() {
 
     const isCompleted = (job) => job.total > 0 && job.processed >= job.total;
 
-    const getProgress = (job) =>
-      job.total > 0 ? Math.min((job.processed / job.total) * 100, 100) : 0;
+    // const getProgress = (job) =>
+    //   job.total > 0 ? Math.min((job.processed / job.total) * 100, 100) : 0;
+    const getProgress = (job, isDone) => {
+      if (!job) return 0;
+
+      // zero items but confirmed completed
+      if (job.total === 0) {
+        return isDone ? 100 : 0;
+      }
+
+      return Math.min((job.processed / job.total) * 100, 100);
+    };
+
 
     console.log(
       "HomePage component loaded with user:",
@@ -255,9 +266,64 @@ export default function HomePage() {
           return;
         }
 
-        if (bgRunner === "product") await api.syncShopifyProduct2(data);
-        if (bgRunner === "customer") await api.syncShopifyCustomer2(data);
-        if (bgRunner === "order") await api.syncShopifyOrder2(data);
+        if (bgRunner === "product") {
+          const res = await api.syncShopifyProduct2(data);
+
+          if (res?.data?.product_zero) {
+            setBgJobs((prev) => ({
+              ...prev,
+              product: { processed: 0, total: 0 },
+            }));
+
+            setProductDone(true);
+            setTimeout(() => {
+              setBgRunner(null);
+            }, 200);
+            toast.success("No products found. Product migration completed.");
+
+            return;
+          }
+        }
+
+        if (bgRunner === "customer") {
+          const res = await api.syncShopifyCustomer2(data);
+
+          if (res?.data?.customer_zero) {
+            setBgJobs((prev) => ({
+              ...prev,
+              customer: { processed: 0, total: 0 },
+            }));
+
+            setCustomerDone(true);
+            setTimeout(() => {
+              setBgRunner(null);
+            }, 200);
+            toast.success("No customer found. Customer migration completed.");
+
+            return;
+          }
+        }
+
+        if (bgRunner === "order") {
+          const res = await api.syncShopifyOrder2(data);
+
+          if (res?.data?.order_zero) {
+            setBgJobs((prev) => ({
+              ...prev,
+              order: { processed: 0, total: 0 },
+            }));
+
+            setOrderCompleted(true);
+            setMigrationComplete(true);
+            setTimeout(() => {
+              setBgRunner(null);
+            }, 200);
+            toast.success("No Order found. Order migration completed.");
+
+            return;
+          }
+        }
+
 
         startPolling();
       };
@@ -327,7 +393,18 @@ export default function HomePage() {
       const interval = setInterval(async () => {
         const res = await api.checkMigrationStatus(data);
         const job = res.data?.[jobKey];
-        if (!job) return;
+        if (!job) {
+          //Product count 0 then the data is empty array
+          toast.success("Product migration completed");
+
+          clearInterval(interval);
+
+          setProductDone(true);
+          setMigrationComplete(true);
+          setShowMigrationProcessingCard(true);
+          setBgRunner("customer");
+          return;
+        }
 
         const processed = Number(job.processed || 0);
         const total = Number(job.job_total_count || 0);
@@ -807,7 +884,7 @@ export default function HomePage() {
                           <Text>Product Migration</Text>
                         </Box>
                         <ProgressBar
-                          progress={getProgress(bgJobs.product)}
+                          progress={getProgress(bgJobs.product,productDone)}
                           size="small"
                         />
 
@@ -828,7 +905,7 @@ export default function HomePage() {
                         {/* ---------------- CUSTOMER ---------------- */}
                         <Box paddingBlockStart="150">Customer Migration</Box>
                         <ProgressBar
-                          progress={getProgress(bgJobs.customer)}
+                          progress={getProgress(bgJobs.customer,CustomerDone)}
                           size="small"
                         />
 
@@ -853,7 +930,7 @@ export default function HomePage() {
                           complete)
                         </Box>
                         <ProgressBar
-                          progress={getProgress(bgJobs.order)}
+                          progress={getProgress(bgJobs.order,orderCompleted)}
                           size="small"
                         />
 
