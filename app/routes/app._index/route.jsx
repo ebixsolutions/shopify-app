@@ -55,6 +55,8 @@ export default function HomePage() {
     const [customerDone, setCustomerDone] = useState(false);
     const [orderStarted, setOrderStarted] = useState(false);
     const [orderCompleted, setOrderCompleted] = useState(false);
+    const [isMigrationComplete, setIsMigrationComplete] = useState(false);
+
 
     const isFetched = useRef(false);
     const { user, shop } = useAppContext();
@@ -71,6 +73,7 @@ export default function HomePage() {
     // const getProgress = (job) =>
     //   job.total > 0 ? Math.min((job.processed / job.total) * 100, 100) : 0;
     const getProgress = (job, isDone) => {
+      toast.success(job);
       if (!job) return 0;
 
       // zero items but confirmed completed
@@ -276,6 +279,7 @@ export default function HomePage() {
             }));
 
             setProductDone(true);
+            setIsMigrationComplete(true);
             setTimeout(() => {
               setBgRunner(null);
             }, 200);
@@ -295,6 +299,7 @@ export default function HomePage() {
             }));
 
             setCustomerDone(true);
+            setIsMigrationComplete(true);
             setTimeout(() => {
               setBgRunner(null);
             }, 200);
@@ -315,11 +320,11 @@ export default function HomePage() {
 
             setOrderCompleted(true);
             setMigrationComplete(true);
+            setIsMigrationComplete(true);
+            toast.success("No Order found. Order migration completed.");
             setTimeout(() => {
               setBgRunner(null);
             }, 200);
-            toast.success("No Order found. Order migration completed.");
-
             return;
           }
         }
@@ -333,8 +338,17 @@ export default function HomePage() {
     }, [bgRunner, migrationComplete]);
 
     useEffect(() => {
+      if (isMigrationComplete) {
+        console.log("Migration complete!");
+        setBgRunner(null);  // Just as an example
+      }
+    }, [isMigrationComplete]);
+    useEffect(() => {
       if (productDone && customerDone && orderCompleted) {
-        setShowMigrationProcessingCard(false);
+        setShowMigrationProcessingCard(true);
+        setTimeout(() => {
+          setShowMigrationProcessingCard(false);
+        }, 2000);
         return;
       }
 
@@ -884,7 +898,7 @@ export default function HomePage() {
                           <Text>Product Migration</Text>
                         </Box>
                         <ProgressBar
-                          progress={getProgress(bgJobs.product,productDone)}
+                          progress={getProgress(bgJobs.product, isMigrationComplete)}
                           size="small"
                         />
 
@@ -905,7 +919,7 @@ export default function HomePage() {
                         {/* ---------------- CUSTOMER ---------------- */}
                         <Box paddingBlockStart="150">Customer Migration</Box>
                         <ProgressBar
-                          progress={getProgress(bgJobs.customer,CustomerDone)}
+                          progress={getProgress(bgJobs.customer, isMigrationComplete)}
                           size="small"
                         />
 
@@ -930,7 +944,7 @@ export default function HomePage() {
                           complete)
                         </Box>
                         <ProgressBar
-                          progress={getProgress(bgJobs.order,orderCompleted)}
+                          progress={getProgress(bgJobs.order, isMigrationComplete)}
                           size="small"
                         />
 
