@@ -279,7 +279,6 @@ export default function HomePage() {
             }));
 
             setProductDone(true);
-            setIsMigrationComplete(true);
             setTimeout(() => {
               setBgRunner(null);
             }, 200);
@@ -299,7 +298,6 @@ export default function HomePage() {
             }));
 
             setCustomerDone(true);
-            setIsMigrationComplete(true);
             setTimeout(() => {
               setBgRunner(null);
             }, 200);
@@ -320,7 +318,6 @@ export default function HomePage() {
 
             setOrderCompleted(true);
             setMigrationComplete(true);
-            setIsMigrationComplete(true);
             toast.success("No Order found. Order migration completed.");
             setTimeout(() => {
               setBgRunner(null);
@@ -338,11 +335,11 @@ export default function HomePage() {
     }, [bgRunner, migrationComplete]);
 
     useEffect(() => {
-      if (isMigrationComplete) {
+      if (orderCompleted) {
         console.log("Migration complete!");
         setBgRunner(null); 
       }
-    }, [isMigrationComplete]);
+    }, [orderCompleted]);
     useEffect(() => {
       if (productDone && customerDone && orderCompleted) {
         setShowMigrationProcessingCard(false);
@@ -895,7 +892,7 @@ export default function HomePage() {
                           <Text>Product Migration</Text>
                         </Box>
                         <ProgressBar
-                          progress={getProgress(bgJobs.product, isMigrationComplete)}
+                          progress={getProgress(bgJobs.product, productDone)}
                           size="small"
                         />
 
@@ -916,7 +913,7 @@ export default function HomePage() {
                         {/* ---------------- CUSTOMER ---------------- */}
                         <Box paddingBlockStart="150">Customer Migration</Box>
                         <ProgressBar
-                          progress={getProgress(bgJobs.customer, isMigrationComplete)}
+                          progress={getProgress(bgJobs.customer, customerDone)}
                           size="small"
                         />
 
@@ -941,7 +938,7 @@ export default function HomePage() {
                           complete)
                         </Box>
                         <ProgressBar
-                          progress={getProgress(bgJobs.order, isMigrationComplete)}
+                          progress={getProgress(bgJobs.order, orderCompleted)}
                           size="small"
                         />
 
