@@ -340,15 +340,12 @@ export default function HomePage() {
     useEffect(() => {
       if (isMigrationComplete) {
         console.log("Migration complete!");
-        setBgRunner(null);  // Just as an example
+        setBgRunner(null); 
       }
     }, [isMigrationComplete]);
     useEffect(() => {
       if (productDone && customerDone && orderCompleted) {
-        setShowMigrationProcessingCard(true);
-        setTimeout(() => {
-          setShowMigrationProcessingCard(false);
-        }, 2000);
+        setShowMigrationProcessingCard(false);
         return;
       }
 
