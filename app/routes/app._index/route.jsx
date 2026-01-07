@@ -252,7 +252,7 @@ export default function HomePage() {
 
             setBgRunner(null);
           }
-        }, 3000);
+        }, 5000);
       };
 
       const startJob = async () => {
@@ -458,7 +458,7 @@ export default function HomePage() {
           clearInterval(interval);
           completeStep(index, stepsToUpdate);
         }
-      }, 3000);
+      }, 5000);
     };
 
     const completeStep = (index, steps) => {
