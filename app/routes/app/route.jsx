@@ -320,6 +320,9 @@ export default function App() {
           <a href={createNavUrl('/app/loyalty')} onClick={handleNavClick('/app/loyalty')}>
             Loyalty
           </a>
+          <a href={createNavUrl('/app/member_points_record')} onClick={handleNavClick('/app/member_points_record')}>
+            Points Management
+          </a>
           <a href={createNavUrl('/app/my_account')} onClick={handleNavClick('/app/my_account')}>
             My Account
           </a>
