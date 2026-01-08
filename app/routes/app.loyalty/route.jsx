@@ -456,7 +456,7 @@ export default function Referral() {
           if (!allowCloseRef.current) return; // 🚫 ESC / backdrop ignored
           handlesubscribedClose();
         }}
-        title="Not Subscribed"
+        title=""
         instant
       >
 
@@ -464,12 +464,11 @@ export default function Referral() {
           <div style={{ textAlign: "center", padding: "20px" }}>
 
             <Text as="h2" variant="headingLg">
-              Not Subscribed
+              Your Subscription has Expired
             </Text>
             <br></br>
             <Text variant="bodyMd" tone="subdued">
-              You are not subscribed to this plan. Please subscribe to continue using
-              this feature.
+              Your plan subscription has expired. Please renew or subscribe to continue using this feature.
             </Text>
 
             <div
