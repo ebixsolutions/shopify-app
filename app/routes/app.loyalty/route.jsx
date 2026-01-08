@@ -288,7 +288,7 @@ export default function Referral() {
                       >
                         <div style={{ flex: "1" }}>
                           <Text as="h3" variant="headingMd">
-                            Member Points Record
+                            Points Management
                           </Text>
                           <Text>
                             View and manage customer point histories, including
@@ -304,7 +304,7 @@ export default function Referral() {
                               fullWidth
                               onClick={managePointsRecord}
                             >
-                              Member Points Record
+                              Points Management
                             </Button>
                           </div>
                         </div>
