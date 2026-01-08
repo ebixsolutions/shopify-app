@@ -20,6 +20,7 @@ import {
   InlineGrid,
   Spinner,
   Box,
+  Modal,
 } from "@shopify/polaris";
 import { ChevronUpIcon } from "@shopify/polaris-icons";
 import { useAppContext } from "../app/route"; // Import the hook from the parent route
@@ -337,7 +338,7 @@ export default function HomePage() {
     useEffect(() => {
       if (orderCompleted) {
         console.log("Migration complete!");
-        setBgRunner(null); 
+        setBgRunner(null);
       }
     }, [orderCompleted]);
     useEffect(() => {
@@ -502,6 +503,27 @@ export default function HomePage() {
     // const handleSocial = () => {
     //   navigate("/app/social_media");
     // };
+    const [subscribedModal, setsubscribedModal] = useState({
+      open: false,
+    });
+
+    const createNavUrl = (path) => {
+      const sessionData = encodeURIComponent(JSON.stringify(user));
+      const shopParam = encodeURIComponent(shop);
+      return `${path}?session_data=${sessionData}&shop=${shopParam}`;
+    };
+
+    const handleNavClick = (path) => (e) => {
+      e.preventDefault();
+      console.log(`${path} link clicked`);
+      const url = createNavUrl(path);
+      console.log("Navigating to:", url);
+      window.location.href = url;
+    };
+
+    const handlesubscribedClose = () => {
+      setsubscribedModal({ open: false });
+    };
 
     const handleBoostEshopTraffic = async () => {
       try {
@@ -517,6 +539,15 @@ export default function HomePage() {
         };
         const response = await api.getSubscribe(data);
 
+        const res = response.data?.ecosphere_process;
+
+        if (Array.isArray(res) && !res.includes(1)) {
+          setsubscribedModal(prev => ({
+            ...prev,
+            open: true,
+          }));
+          return false;
+        }
         // Create URL with session data for private window compatibility
         const sessionData = encodeURIComponent(JSON.stringify(user));
         const shopParam = encodeURIComponent(shop);
@@ -554,7 +585,15 @@ export default function HomePage() {
           user_id: user.user_id,
         };
         const response = await api.getSubscribe(data);
+        const res = response.data?.ecosphere_process;
 
+        if (Array.isArray(res) && !res.includes(2)) {
+          setsubscribedModal(prev => ({
+            ...prev,
+            open: true,
+          }));
+          return false;
+        }
         // Create URL with session data for private window compatibility
         const sessionData = encodeURIComponent(JSON.stringify(user));
         const shopParam = encodeURIComponent(shop);
@@ -571,12 +610,43 @@ export default function HomePage() {
       }
     };
 
-    const handleReferral = () => {
+    const handleReferral = async () => {
       // Create URL with session data for private window compatibility
-      const sessionData = encodeURIComponent(JSON.stringify(user));
-      const shopParam = encodeURIComponent(shop);
-      const url = `/app/referral_program?session_data=${sessionData}&shop=${shopParam}`;
-      window.location.href = url;
+      try {
+        if (!user) {
+          console.error("User not found in context");
+          return;
+        }
+
+        let logs = user.logs;
+        const data = {
+          company_id: logs ? logs.company_id : null,
+          user_id: user.user_id,
+        };
+        const response = await api.getSubscribe(data);
+        const res = response.data?.ecosphere_process;
+
+        if (Array.isArray(res) && !res.includes(2)) {
+          setsubscribedModal(prev => ({
+            ...prev,
+            open: true,
+          }));
+          return false;
+        }
+        const sessionData = encodeURIComponent(JSON.stringify(user));
+        const shopParam = encodeURIComponent(shop);
+        const url = `/app/referral_program?session_data=${sessionData}&shop=${shopParam}`;
+        if (Array.isArray(res) && !res.includes(2)) {
+          setsubscribedModal(prev => ({
+            ...prev,
+            open: true,
+          }));
+          return false;
+        }
+        window.location.href = url;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     };
 
     const handleBoostCustomerManagement = () => {
@@ -600,6 +670,15 @@ export default function HomePage() {
           user_id: user.user_id,
         };
         const response = await api.getSubscribe(data);
+        const res = response.data?.ecosphere_process;
+
+        if (Array.isArray(res) && !res.includes(3)) {
+          setsubscribedModal(prev => ({
+            ...prev,
+            open: true,
+          }));
+          return false;
+        }
 
         // Create URL with session data for private window compatibility
         const sessionData = encodeURIComponent(JSON.stringify(user));
@@ -625,12 +704,36 @@ export default function HomePage() {
       window.location.href = url;
     };
 
-    const handleLoyaltyProgram = () => {
+    const handleLoyaltyProgram = async () => {
       // Create URL with session data for private window compatibility
-      const sessionData = encodeURIComponent(JSON.stringify(user));
-      const shopParam = encodeURIComponent(shop);
-      const url = `/app/loyalty_program?session_data=${sessionData}&shop=${shopParam}`;
-      window.location.href = url;
+      try {
+        if (!user) {
+          console.error("User not found in context");
+          return;
+        }
+
+        let logs = user.logs;
+        const data = {
+          company_id: logs ? logs.company_id : null,
+          user_id: user.user_id,
+        };
+        const response = await api.getSubscribe(data);
+        const res = response.data?.ecosphere_process;
+
+        if (Array.isArray(res) && !res.includes(3)) {
+          setsubscribedModal(prev => ({
+            ...prev,
+            open: true,
+          }));
+          return false;
+        }
+        const sessionData = encodeURIComponent(JSON.stringify(user));
+        const shopParam = encodeURIComponent(shop);
+        const url = `/app/loyalty_program?session_data=${sessionData}&shop=${shopParam}`;
+        window.location.href = url;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     };
 
     const handleBoostRepeatCustomerTiers = async () => {
@@ -646,7 +749,15 @@ export default function HomePage() {
           user_id: user.user_id,
         };
         const response = await api.getSubscribe(data);
+        const res = response.data?.ecosphere_process;
 
+        if (Array.isArray(res) && !res.includes(3)) {
+          setsubscribedModal(prev => ({
+            ...prev,
+            open: true,
+          }));
+          return false;
+        }
         // Create URL with session data for private window compatibility
         const sessionData = encodeURIComponent(JSON.stringify(user));
         const shopParam = encodeURIComponent(shop);
@@ -676,7 +787,15 @@ export default function HomePage() {
           user_id: user.user_id,
         };
         const response = await api.getSubscribe(data);
+        const res = response.data?.ecosphere_process;
 
+        if (Array.isArray(res) && !res.includes(4)) {
+          setsubscribedModal(prev => ({
+            ...prev,
+            open: true,
+          }));
+          return false;
+        }
         // Create URL with session data for private window compatibility
         const sessionData = encodeURIComponent(JSON.stringify(user));
         const shopParam = encodeURIComponent(shop);
@@ -1866,6 +1985,53 @@ export default function HomePage() {
             )}
           </Layout>
         </BlockStack>
+        <Modal
+          open={subscribedModal.open}
+          onClose={handlesubscribedClose}
+          title=""
+          instant
+        >
+          <Modal.Section>
+            <div style={{ textAlign: "center", padding: "20px" }}>
+
+              <Text as="h2" variant="headingLg">
+                Not Subscribed
+              </Text>
+              <br></br>
+              <Text variant="bodyMd" tone="subdued">
+                You are not subscribed to this plan. Please subscribe to continue using
+                this feature.
+              </Text>
+
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: 12,
+                  marginTop: 24,
+                }}
+              >
+                <a
+                  href={createNavUrl('/app/plan')}
+                  onClick={handleNavClick('/app/plan')}
+                  style={{
+                    display: "inline-block",
+                    background: "#0086d1",
+                    color: "#fff",
+                    padding: "8px 16px",
+                    borderRadius: 20,
+                    textDecoration: "none",
+                    fontWeight: 600,
+                  }}
+                >
+                  Subscribe
+                </a>
+
+              </div>
+            </div>
+          </Modal.Section>
+        </Modal>
+
       </Page>
     );
   } catch (error) {

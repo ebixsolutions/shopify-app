@@ -10,9 +10,11 @@ import {
   BlockStack,
   List,
   Icon,
+  Modal,
   InlineGrid,
 } from "@shopify/polaris";
 import { useNavigate } from "@remix-run/react";
+import api from "../../api/app";
 import styles from "./style.module.css";
 import { ChevronUpIcon } from "@shopify/polaris-icons";
 import { useAppContext } from "../app/route";
@@ -39,6 +41,63 @@ export default function Referral() {
   const referral = () => {
     setReferralVisible((prev) => !prev);
   };
+
+  const [subscribedModal, setsubscribedModal] = useState({
+    open: false,
+  });
+
+  const createNavUrl = (path) => {
+    const sessionData = encodeURIComponent(JSON.stringify(user));
+    const shopParam = encodeURIComponent(shop);
+    return `${path}?session_data=${sessionData}&shop=${shopParam}`;
+  };
+
+  const handleNavClick = (path) => (e) => {
+    e.preventDefault();
+    console.log(`${path} link clicked`);
+    const url = createNavUrl(path);
+    console.log("Navigating to:", url);
+    window.location.href = url;
+  };
+
+  const handlesubscribedClose = () => {
+    // redirect to home
+    const url = createNavUrl('/app');
+    window.location.href = url;
+  };
+  if (!user) {
+    console.error("User not found in context");
+    return;
+  }
+  let logs = user.logs;
+
+  useEffect(() => {
+    if (!user || !user.logs) return;
+
+    const loadSubscription = async () => {
+      try {
+        const response = await api.getSubscribe({
+          company_id: user.logs.company_id,
+          user_id: user.user_id,
+        });
+
+        const res = response.data?.ecosphere_process;
+
+        if (Array.isArray(res) && !res.includes(2)) {
+          setsubscribedModal({ open: true });
+        }
+      } catch (error) {
+        console.error("Subscription API error:", error);
+
+        // Optional: show popup even on API failure
+        setsubscribedModal({ open: true });
+      }
+    };
+
+    loadSubscription();
+  }, [user]);
+
+
   const handlePoints = () => {
     // Create URL with session data for private window compatibility
     const sessionData = encodeURIComponent(JSON.stringify(user));
@@ -294,6 +353,57 @@ export default function Referral() {
           </Layout.Section>
         </Layout>
       </BlockStack>
+      <Modal
+        open={subscribedModal.open}
+        onClose={(event) => {
+          // Block ESC
+          if (event?.type === "keydown") return;
+          handlesubscribedClose();
+        }}
+        closeOnBackdropClick={false}
+        title=""
+        instant
+      >
+        <Modal.Section>
+          <div style={{ textAlign: "center", padding: "20px" }}>
+
+            <Text as="h2" variant="headingLg">
+              Not Subscribed
+            </Text>
+            <br></br>
+            <Text variant="bodyMd" tone="subdued">
+              You are not subscribed to this plan. Please subscribe to continue using
+              this feature.
+            </Text>
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                gap: 12,
+                marginTop: 24,
+              }}
+            >
+              <a
+                href={createNavUrl('/app/plan')}
+                onClick={handleNavClick('/app/plan')}
+                style={{
+                  display: "inline-block",
+                  background: "#0086d1",
+                  color: "#fff",
+                  padding: "8px 16px",
+                  borderRadius: 20,
+                  textDecoration: "none",
+                  fontWeight: 600,
+                }}
+              >
+                Subscribe
+              </a>
+
+            </div>
+          </div>
+        </Modal.Section>
+      </Modal>
     </Page>
   );
 }
