@@ -372,7 +372,7 @@ export default function Referral() {
             </Text>
             <br></br>
             <Text variant="bodyMd" tone="subdued">
-              Your plan subscription has expired. Please renew or subscribe to continue using this feature.
+              Your plan subscription has expired. Please renew or subscribe <br></br>to continue using this feature.
             </Text>
 
             <div
