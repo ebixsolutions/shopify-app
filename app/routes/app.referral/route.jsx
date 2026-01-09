@@ -365,16 +365,11 @@ export default function Referral() {
         instant
       >
         <Modal.Section>
-          <div style={{ textAlign: "center", padding: "20px" }}>
-
-            <Text as="h2" variant="headingLg">
-              Your Subscription has Expired
-            </Text>
+          <div style={{ textAlign: "center", padding: "20px",fontSize:"15px" }}>
             <br></br>
-            <Text variant="bodyMd" tone="subdued">
-              Your plan subscription has expired. Please renew or subscribe <br></br>to continue using this feature.
+            <Text variant="bodyMd" tone="subdued" fontWeight="bold">
+              Please subscribe or renew subscription to continue using this feature.
             </Text>
-
             <div
               style={{
                 display: "flex",
