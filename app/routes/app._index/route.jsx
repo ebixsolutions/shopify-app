@@ -1992,11 +1992,13 @@ export default function HomePage() {
           instant
         >
           <Modal.Section>
-            <div style={{ textAlign: "center", padding: "20px",fontSize:"15px" }}>
+            <div style={{ textAlign: "center", padding: "20px" }}>
+
               <br></br>
-              <Text variant="bodyMd" tone="subdued" fontWeight="bold">
-                Please subscribe or renew subscription to continue using this feature.
+              <Text variant="headingMd" tone="subdued">
+               Please subscribe or renew subscription to continue using this feature.
               </Text>
+
               <div
                 style={{
                   display: "flex",

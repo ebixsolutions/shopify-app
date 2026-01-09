@@ -365,9 +365,9 @@ export default function Referral() {
         instant
       >
         <Modal.Section>
-          <div style={{ textAlign: "center", padding: "20px",fontSize:"15px" }}>
+          <div style={{ textAlign: "center", padding: "20px" }}>
             <br></br>
-            <Text variant="bodyMd" tone="subdued" fontWeight="bold">
+            <Text variant="headingMd" tone="subdued">
               Please subscribe or renew subscription to continue using this feature.
             </Text>
             <div
