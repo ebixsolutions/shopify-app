@@ -33,10 +33,10 @@ export default {
                                     if (condition.VT == 1)   // amount
                                         value += cost.subtotalAmount.amount
                                     else if (condition.VT == 2) // count
-                                        if(isnotGift){
+                                        if (isnotGift) {
                                             value += line.quantity
                                         }
-                                        
+
                                 }
                             }
                         })
@@ -63,7 +63,7 @@ export default {
                 condFlag = this.ConditionCheck(totalAmount, condition.C, condition.V * input.presentmentCurrencyRate)
             } else if (condition.T == 5) {  // cart_item_count
                 var quantity = input.cart.lines.reduce((a, v) => {
-                    return (v.attribute == null ) ? a + v.quantity : a;
+                    return (v.attribute == null) ? a + v.quantity : a;
                 }, 0);
                 condFlag = this.ConditionCheck(quantity, condition.C, condition.V)
             } else if (condition.T == 6) {  // condition_flag
@@ -321,13 +321,22 @@ export default {
                 if ([1, 2, 3, 6].includes(parseInt(effect.T)) && targets.length > 0) {
 
                     var discountValue = {};
-                    if (effect.VT == 1) //fixed_amount
-                        discountValue = {
-                            fixedAmount: {
-                                amount: (effect.V * input.presentmentCurrencyRate).toString(),
-                                appliesToEachItem: true
+                    if (effect.VT == 1) { //fixed_amount
+                        if (effect.T == 2) {
+                            discountValue = {
+                                fixedAmount: {
+                                    amount: (effect.V * input.presentmentCurrencyRate).toString()
+                                }
+                            }
+                        } else if (effect.T == 1) { //Buy X Save Each (discount amount applies for each count)
+                            discountValue = {
+                                fixedAmount: {
+                                    amount: (effect.V * input.presentmentCurrencyRate).toString(),
+                                    appliesToEachItem: true
+                                }
                             }
                         }
+                    }
                     else if (effect.VT == 2) //percentage
                         discountValue = {
                             percentage: {
