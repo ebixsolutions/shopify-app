@@ -1,7 +1,7 @@
 import { json, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useState, useTransition } from "react";
-import { Page, Layout, Card, Button, TextField, Checkbox, InlineError } from "@shopify/polaris";
+import { Page, Layout, Card, Button, TextField, Checkbox, InlineError, Text } from "@shopify/polaris";
 import { toast } from 'react-toastify';
 import { authenticate } from "../../shopify.server";
 import api from "../../api/auth";
@@ -118,58 +118,73 @@ export default function RegisterPage() {
           </div>
         </Layout>
         <Layout>
-          <Card sectioned>
-            <form className={styles.registerCard} onSubmit={handleSubmit}>
-              <div className="mb-3">
-                <TextField
-                  label="Email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleChange("email")}
-                  autoComplete="email"
-                />
+          <Card>
+            <div style={{ padding: "2px", textAlign: "center" }}>
+              <Text as="h2" variant="headingMd">
+                New User Registration
+              </Text>
+
+              <div style={{ marginTop: "5px" }}>
+                <form className={styles.registerCard} onSubmit={handleSubmit}>
+                  <div className="mb-3">
+                    <TextField
+                      label="Email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleChange("email")}
+                      autoComplete="email"
+                      error={errors.email}
+                    />
+                  </div>
+
+                  <div className="mb-3">
+                    <TextField
+                      label="Password"
+                      type="password"
+                      value={formData.password}
+                      onChange={handleChange("password")}
+                      autoComplete="new-password"
+                      error={errors.password}
+                    />
+                  </div>
+
+                  <div className="mb-3">
+                    <TextField
+                      label="Confirm Password"
+                      type="password"
+                      value={formData.confirmPassword}
+                      onChange={handleChange("confirmPassword")}
+                      autoComplete="new-password"
+                      error={errors.confirmPassword}
+                    />
+                  </div>
+
+                  <div className="mb-3">
+                    <Checkbox
+                      label="I agree to the terms and privacy policy"
+                      checked={formData.termsPrivacy}
+                      onChange={handleChange("termsPrivacy")}
+                      error={errors.termsPrivacy}
+                    />
+                  </div>
+
+                  <div>
+                    <Button
+                      submit
+                      variant="primary"
+                      fullWidth
+                      disabled={
+                        transition.state === "submitting" || isSubmitting
+                      }
+                    >
+                      {transition.state === "submitting" || isSubmitting
+                        ? "Registering..."
+                        : "Register"}
+                    </Button>
+                  </div>
+                </form>
               </div>
-              <div className="mb-3">
-                <TextField
-                  label="Password"
-                  type="password"
-                  value={formData.password}
-                  onChange={handleChange("password")}
-                  autoComplete="new-password"
-				  error={errors.password}
-                />
-              </div>
-              <div className="mb-3">
-                <TextField
-                  label="Confirm Password"
-                  type="password"
-                  value={formData.confirmPassword}
-                  onChange={handleChange("confirmPassword")}
-                  autoComplete="new-password"
-				  error={errors.confirmPassword}
-                />
-              </div>
-              <div className="mb-3">
-                <Checkbox
-                  label="I agree to the terms and privacy policy"
-                  checked={formData.termsPrivacy}
-                  onChange={handleChange("termsPrivacy")}
-				  error={errors.termsPrivacy}
-                />
-              </div>
-              <div>
-                <Button
-                  submit
-                  variant="primary"
-                  fullWidth
-                  disabled={transition.state === "submitting" || isSubmitting}
-                >
-                  {transition.state === "submitting" || isSubmitting
-                    ? "Registering..."
-                    : "Submit"}
-                </Button>
-              </div>
-            </form>
+            </div>
           </Card>
         </Layout>
       </Page>

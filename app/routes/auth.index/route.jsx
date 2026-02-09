@@ -1,6 +1,6 @@
 import { json, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { Page, Card, TextField, Button, Layout } from "@shopify/polaris";
+import { Page, Card, TextField, Button, Layout, Text } from "@shopify/polaris";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import api from "../../api/auth";
@@ -64,7 +64,9 @@ export default function LoginPage() {
         // ✅ Submit to session route (conditionally include billing_id)
         const form = document.createElement("form");
         form.method = "POST";
-        form.action = billingId ? `/session?billing_id=${billingId}` : "/session";
+        form.action = billingId
+          ? `/session?billing_id=${billingId}`
+          : "/session";
         form.style.display = "none";
 
         const userInput = document.createElement("input");
@@ -95,7 +97,11 @@ export default function LoginPage() {
   };
   // Auto-login effect
   useEffect(() => {
-    if (location.state?.autoLogin && location.state.email && location.state.password) {
+    if (
+      location.state?.autoLogin &&
+      location.state.email &&
+      location.state.password
+    ) {
       const autoData = {
         email: location.state.email,
         password: location.state.password,
@@ -112,54 +118,74 @@ export default function LoginPage() {
       <Page>
         <Layout>
           <div className="mb-5">
-            <img src="/images/company_logo.png" alt="Logo" className={styles.logo} />
+            <img
+              src="/images/company_logo.png"
+              alt="Logo"
+              className={styles.logo}
+            />
           </div>
         </Layout>
         <Layout>
-          <Card sectioned>
-            <form ref={formRef} className={styles.loginCard} onSubmit={handleSubmit}>
-              <div className="mb-4">
-                <TextField
-                  label="Email address"
-                  type="email"
-                  placeholder="Please enter email address"
-                  value={formData.email}
-                  onChange={handleChange("email")}
-                  autoComplete="email"
-                  error={errors.email}
-                />
-              </div>
-              <div className="mb-4">
-                <TextField
-                  label="Password"
-                  type="password"
-                  placeholder="Please enter a password"
-                  value={formData.password}
-                  onChange={handleChange("password")}
-                  autoComplete="current-password"
-                  error={errors.password}
-                />
-              </div>
-
-              {/* Forgot password link */}
-              <div className="mb-4" style={{ textAlign: "right" }}>
-                <p
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleForgetPassword();
-                  }}
-                  className={styles.ForgetPassword}
+          <Card>
+            <div style={{ padding: "2px", textAlign: "center" }}>
+              <Text as="h2" variant="headingMd">
+                User Login
+              </Text>
+              <div style={{ marginTop: "5px" }}>
+                <form
+                  ref={formRef}
+                  className={styles.loginCard}
+                  onSubmit={handleSubmit}
                 >
-                  Forgot password?
-                </p>
+                  <div className="mb-4">
+                    <TextField
+                      label="Email address"
+                      type="email"
+                      placeholder="Please enter email address"
+                      value={formData.email}
+                      onChange={handleChange("email")}
+                      autoComplete="email"
+                      error={errors.email}
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <TextField
+                      label="Password"
+                      type="password"
+                      placeholder="Please enter a password"
+                      value={formData.password}
+                      onChange={handleChange("password")}
+                      autoComplete="current-password"
+                      error={errors.password}
+                    />
+                  </div>
+
+                  {/* Forgot password link */}
+                  <div className="mb-4" style={{ textAlign: "right" }}>
+                    <p
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleForgetPassword();
+                      }}
+                      className={styles.ForgetPassword}
+                    >
+                      Forgot password?
+                    </p>
+                  </div>
+
+                  <div className={styles.loginButton}>
+                    <Button
+                      submit
+                      variant="primary"
+                      fullWidth
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? "Logging in..." : "Login"}
+                    </Button>
+                  </div>
+                </form>
               </div>
-              
-              <div className={styles.loginButton}>
-                <Button submit variant="primary" fullWidth disabled={isSubmitting}>
-                  {isSubmitting ? "Logging in..." : "Login"}
-                </Button>
-              </div>
-            </form>
+            </div>
           </Card>
         </Layout>
       </Page>
