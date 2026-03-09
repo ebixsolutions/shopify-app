@@ -165,4 +165,12 @@ export default {
       // useStaticToken: true,
     });
   },
+
+  async getTheme(obj) {
+    return await request({
+      url: "/shopify/themeApi",
+      method: "post",
+      data: obj,
+    });
+  },
 };

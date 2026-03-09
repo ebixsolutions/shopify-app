@@ -118,11 +118,14 @@ export default function HomePage() {
 
           const logs = user.logs || {};
           const data = { company_id: logs.company_id || null };
+          const theme = {shop: shop };
 
           let response;
+          let token;
 
           try {
             response = await api.stepRecordGet(data);
+            token = await api.getTheme(theme);
           } catch (error) {
             console.error("Error during API call to stepRecordGet:", error);
             setError("Something went wrong. Please try again later.");
