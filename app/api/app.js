@@ -168,7 +168,7 @@ export default {
 
   async getTheme(obj) {
     return await request({
-      url: "/shopify/themeApi",
+      url: "/shopify/themeSetup",
       method: "post",
       data: obj,
     });
