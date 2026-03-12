@@ -41,6 +41,10 @@ export default function PlanPage() {
   const [agreeChecked, setAgreeChecked] = useState(false);
   const isFetched = useRef(false);
 
+  // Validation error states
+  const [featureSelectionError, setFeatureSelectionError] = useState("");
+  const [agreeCheckboxError, setAgreeCheckboxError] = useState("");
+
   // Modals
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState({
@@ -156,15 +160,40 @@ export default function PlanPage() {
   const getCheckedCount = () =>
     Object.values(checkedFeatures).filter(Boolean).length;
 
+  // Only show validation errors on button click, not immediately
   const currentActivePlanName = activePlan
     ? activePlan.replace(/\(.*\)/, "")
     : null;
   const isSamePlan = currentActivePlanName === selectedPlan;
 
-  const isSubscribeDisabled =
-    getCheckedCount() < getFlowCount() ||
-    !agreeChecked ||
-    isSamePlan;
+  const isSubscribeDisabled = isSamePlan;
+
+  // Validation function
+  const validateSubscription = () => {
+    let isValid = true;
+
+    // Reset errors
+    setFeatureSelectionError("");
+    setAgreeCheckboxError("");
+
+    // Check feature selection
+    if (getCheckedCount() < getFlowCount()) {
+      setFeatureSelectionError(
+        `Please choose ${getFlowCount()} process${getFlowCount() > 1 ? "es" : ""} to continue.`,
+      );
+      isValid = false;
+    }
+
+    // Check agreement checkbox
+    if (!agreeChecked) {
+      setAgreeCheckboxError(
+        "Please agree to the Contract Conditions and Privacy Policy to continue.",
+      );
+      isValid = false;
+    }
+
+    return isValid;
+  };
 
   useEffect(() => {
     const flowCount = getFlowCount();
@@ -298,6 +327,16 @@ export default function PlanPage() {
     } else if (currentChecked < flowCount) {
       setCheckedFeatures((prev) => ({ ...prev, [feature]: true }));
     }
+
+    // Clear feature selection error if user has selected enough features
+    if (featureSelectionError) {
+      const newCheckedCount = checkedFeatures[feature]
+        ? currentChecked - 1
+        : currentChecked + 1;
+      if (newCheckedCount >= flowCount) {
+        setFeatureSelectionError("");
+      }
+    }
   };
 
   const isFeatureDisabled = (feature) => {
@@ -318,15 +357,6 @@ export default function PlanPage() {
   const [confirmModal, setConfirmModal] = useState(false);
   const handleConfirmSubscribe = async () => {
     setConfirmModal(false);
-    await handleSubscribe();
-  };
-  const handleSubscribe = async () => {
-    if (!agreeChecked) {
-      alert(
-        "Please agree to the Contract Conditions & Privacy Policy before subscribing.",
-      );
-      return;
-    }
 
     if (!selectedPlan || !planPriceInfo || !currentPlan) {
       alert("Please select a valid plan.");
@@ -381,7 +411,7 @@ export default function PlanPage() {
       } else {
         alert(
           "❌ Failed to create subscription: " +
-          (billingResult.msg || "Unknown error"),
+            (billingResult.msg || "Unknown error"),
         );
         console.error("Billing API error:", billingResult);
       }
@@ -389,6 +419,19 @@ export default function PlanPage() {
       console.error("Subscription error:", error);
       alert("⚠️ Something went wrong while processing your subscription.");
     }
+  };
+  const handleSubscribe = async () => {
+    if (!validateSubscription()) {
+      return;
+    }
+
+    if (!selectedPlan || !planPriceInfo || !currentPlan) {
+      alert("Please select a valid plan.");
+      return;
+    }
+
+    // Open confirmation modal instead of directly processing
+    setConfirmModal(true);
   };
 
   const handleDetailsClick = (plan) => {
@@ -581,7 +624,9 @@ export default function PlanPage() {
                       width: 278,
                       height: 250,
                       minHeight: 150,
-                      boxShadow: isSelected ? "0 2px 8px rgba(11,108,255,0.12)" : "none",
+                      boxShadow: isSelected
+                        ? "0 2px 8px rgba(11,108,255,0.12)"
+                        : "none",
                       background: "#fff",
                       opacity: isActive ? 0.85 : 1,
                     }}
@@ -686,35 +731,48 @@ export default function PlanPage() {
                       {planPriceInfo.name}
                     </Text>
 
-                    {/* Description Text (hide when fully selected but keep space) */}
+                    {/* Description Text with Error Message */}
                     <div style={{ marginTop: 8, minHeight: 20 }}>
-                      <div
-                        style={{
-                          visibility:
-                            getFlowCount() !== 4 &&
+                      {featureSelectionError ? (
+                        <div
+                          style={{
+                            color: "#DC2626",
+                            fontSize: "14px",
+                            fontWeight: "500",
+                          }}
+                        >
+                          {featureSelectionError}
+                        </div>
+                      ) : (
+                        <div
+                          style={{
+                            visibility:
+                              getFlowCount() !== 4 &&
                               getCheckedCount() >= getFlowCount()
-                              ? "hidden"
-                              : "visible",
-                          display: "flex",
-                          alignItems: "center",
-                        }}
-                      >
-                        {/* Hide * for Premium */}
-                        {getFlowCount() !== 4 && (
-                          <span style={{ color: "#DC2626", marginRight: 6 }}>
-                            *
-                          </span>
-                        )}
+                                ? "hidden"
+                                : "visible",
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          {/* Hide * for Premium */}
+                          {getFlowCount() !== 4 && (
+                            <span style={{ color: "#DC2626", marginRight: 6 }}>
+                              *
+                            </span>
+                          )}
 
-                        <Text tone="subdued" variant="bodyXs">
-                          {currentPlan.name === "Starter" &&
-                            "Select Any 1 Option"}
-                          {currentPlan.name === "Standard" &&
-                            "Select Any 2 Options"}
-                          {currentPlan.name === "Pro" && "Select Any 3 Options"}
-                          {currentPlan.name === "Premium" && "Full Features"}
-                        </Text>
-                      </div>
+                          <Text tone="subdued" variant="bodyXs">
+                            {currentPlan.name === "Starter" &&
+                              "Select Any 1 Option"}
+                            {currentPlan.name === "Standard" &&
+                              "Select Any 2 Options"}
+                            {currentPlan.name === "Pro" &&
+                              "Select Any 3 Options"}
+                            {currentPlan.name === "Premium" && "Full Features"}
+                          </Text>
+                        </div>
+                      )}
                     </div>
 
                     {/* Features */}
@@ -743,7 +801,9 @@ export default function PlanPage() {
                             disabled={isFeatureDisabled(item.value)}
                             style={{
                               marginRight: 8,
-                              cursor: isFeatureDisabled(item.value) ? "not-allowed" : "pointer",
+                              cursor: isFeatureDisabled(item.value)
+                                ? "not-allowed"
+                                : "pointer",
                               opacity: isFeatureDisabled(item.value) ? 0.6 : 1,
                             }}
                           />
@@ -817,7 +877,10 @@ export default function PlanPage() {
                           marginRight: 6,
                           fontSize: "16px",
                           fontWeight: "bold",
-                          visibility: agreeChecked ? "hidden" : "visible",
+                          visibility:
+                            agreeChecked || agreeCheckboxError
+                              ? "hidden"
+                              : "visible",
                         }}
                       >
                         *
@@ -826,7 +889,12 @@ export default function PlanPage() {
                         type="checkbox"
                         id="agree"
                         checked={agreeChecked}
-                        onChange={(e) => setAgreeChecked(e.target.checked)}
+                        onChange={(e) => {
+                          setAgreeChecked(e.target.checked);
+                          if (e.target.checked) {
+                            setAgreeCheckboxError("");
+                          }
+                        }}
                       />{" "}
                       <label htmlFor="agree">
                         I have read and agree to the{" "}
@@ -873,6 +941,18 @@ export default function PlanPage() {
                         </button>
                         .
                       </label>
+                      {agreeCheckboxError && (
+                        <div
+                          style={{
+                            color: "#DC2626",
+                            fontSize: "14px",
+                            fontWeight: "500",
+                            marginTop: 8,
+                          }}
+                        >
+                          {agreeCheckboxError}
+                        </div>
+                      )}
                     </div>
                     {/* Subscribe Button */}
                     <div
@@ -884,14 +964,12 @@ export default function PlanPage() {
                       }}
                     >
                       <Button
-                        onClick={() => setConfirmModal(true)}
+                        onClick={handleSubscribe}
                         disabled={isSubscribeDisabled}
                         fullWidth
                       >
                         {isSamePlan ? "Continue to Billing" : "Switch Plan"}
                       </Button>
-
-
                     </div>
 
                     <div
@@ -931,26 +1009,28 @@ export default function PlanPage() {
 
       {/* ✅ Modal for Subscription confirmation */}
       <Modal
-  open={confirmModal}
-  onClose={() => setConfirmModal(false)}
-  title="Confirm Plan Change"
-  primaryAction={{
-    content: "Continue to Billing",
-    onAction: handleConfirmSubscribe,
-    variant: "primary",
-  }}
-  secondaryActions={[
-    {
-      content: "Cancel",
-      onAction: () => setConfirmModal(false),
-    },
-  ]}
+        open={confirmModal}
+        onClose={() => setConfirmModal(false)}
+        title="Confirm Plan Change"
+        primaryAction={{
+          content: "Continue to Billing",
+          onAction: handleConfirmSubscribe,
+          variant: "primary",
+        }}
+        secondaryActions={[
+          {
+            content: "Cancel",
+            onAction: () => setConfirmModal(false),
+          },
+        ]}
       >
         <Modal.Section>
           <Text>
-            You're switching from <b>{activePlan || "Free Plan"}</b> to <b>{selectedPlan}</b>.
+            You're switching from <b>{activePlan || "Free Plan"}</b> to{" "}
+            <b>{selectedPlan}</b>.
             <br />
-            Shopify will automatically apply any eligible prorated credit for the unused portion of your current plan.
+            Shopify will automatically apply any eligible prorated credit for
+            the unused portion of your current plan.
             <br />
             Your new plan charges will be billed by Shopify under the new plan.
           </Text>
@@ -1046,6 +1126,11 @@ export default function PlanPage() {
                 {paymentModal.success ? "Payment Successful" : "Payment Failed"}
               </Text>
 
+              {paymentModal.success && (
+                <Text variant="bodyMd" tone="subdued">
+                  Your subscription is now active
+                </Text>
+              )}
 
               <div
                 style={{
@@ -1120,8 +1205,9 @@ export default function PlanPage() {
                   </Text>
 
                   <Text variant="bodyMd" tone="subdued">
-                    Your plan has been updated to <b>{paymentModal.data.plan_name}</b>. Future
-                    charges will be billed according to <b>{paymentModal.data.plan_name}</b>.
+                    Your plan has been updated to{" "}
+                    <b>{paymentModal.data.plan_name}</b>. Future charges will be
+                    billed according to <b>{paymentModal.data.plan_name}</b>.
                   </Text>
                 </div>
               )}
@@ -1140,13 +1226,7 @@ export default function PlanPage() {
                     marginTop: 24,
                   }}
                 >
-
-
-                  <Button
-                    onClick={handleModalClose}
-                  >
-                    Back to Plans
-                  </Button>
+                  <Button onClick={handleModalClose}>Back to Plans</Button>
                   <div className={styles.bluePrimaryModal}>
                     <Button
                       variant="primary"
