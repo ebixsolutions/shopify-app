@@ -61,19 +61,19 @@ export default function PlanPage() {
     success: false,
     data: null,
   });
-  useEffect(() => {
-    setPaymentModal({
-      open: true,
-      success: true,
-      failure: false,
-      pending: false,
-      data: {
-        amount_paid: "$29",
-        plan_name: "Pro (Month)",
-        paid_at: "2026-03-12 10:30 AM",
-      },
-    });
-  }, []);
+  // useEffect(() => {
+  //   setPaymentModal({
+  //     open: true,
+  //     success: true,
+  //     failure: false,
+  //     pending: false,
+  //     data: {
+  //       amount_paid: "$29",
+  //       plan_name: "Pro (Month)",
+  //       paid_at: "2026-03-12 10:30 AM",
+  //     },
+  //   });
+  // }, []);
   useEffect(() => {
     handleChildRouteSession(user, shop);
   }, [user, shop]);
@@ -166,7 +166,7 @@ export default function PlanPage() {
     : null;
   const isSamePlan = currentActivePlanName === selectedPlan;
 
-  const isSubscribeDisabled = isSamePlan;
+  const isSubscribeDisabled = !agreeChecked;
 
   // Validation function
   const validateSubscription = () => {
@@ -430,7 +430,13 @@ export default function PlanPage() {
       return;
     }
 
-    // Open confirmation modal instead of directly processing
+    // ✅ If same plan → go directly to billing
+    if (isSamePlan) {
+      handleConfirmSubscribe();
+      return;
+    }
+
+    // ✅ If switching plan → show confirmation modal
     setConfirmModal(true);
   };
 
@@ -547,7 +553,7 @@ export default function PlanPage() {
                   border: "none",
                   borderRadius: 20,
                   background:
-                    billingCycle === "yearly" ? "#0b6cff" : "transparent",
+                    billingCycle === "yearly" ? "#2e9cf0" : "transparent",
                   color: billingCycle === "yearly" ? "#fff" : "#575758",
                   cursor: "pointer",
                   fontWeight: billingCycle === "yearly" ? "600" : "400",
@@ -678,13 +684,19 @@ export default function PlanPage() {
                       </Text>
 
                       <div className={styles.customSubscribeButton}>
-                        <Button size="slim">{shortDesc}</Button>
+                        <Button
+                          size="slim"
+                          disabled={isActive}
+                        >
+                          {shortDesc}
+                        </Button>
                       </div>
 
                       <div onClick={(e) => e.stopPropagation()}>
                         <Button
                           variant="plain"
-                          onClick={() => handleDetailsClick(plan)}
+                          disabled={isActive}
+                          onClick={() => !isActive && handleDetailsClick(plan)}
                         >
                           Details
                         </Button>
@@ -711,7 +723,7 @@ export default function PlanPage() {
                     style={{
                       background: "none",
                       border: "none",
-                      color: "#0b6cff",
+                      color: "#2e9cf0",
                       cursor: "pointer",
                       padding: 0,
                       fontSize: "14px",
@@ -764,11 +776,11 @@ export default function PlanPage() {
 
                           <Text tone="subdued" variant="bodyXs">
                             {currentPlan.name === "Starter" &&
-                              "Select Any 1 Option"}
+                              "Select Any 1 Processes"}
                             {currentPlan.name === "Standard" &&
-                              "Select Any 2 Options"}
+                              "Select Any 2 Processes"}
                             {currentPlan.name === "Pro" &&
-                              "Select Any 3 Options"}
+                              "Select Any 3 Processes"}
                             {currentPlan.name === "Premium" && "Full Features"}
                           </Text>
                         </div>
@@ -910,7 +922,7 @@ export default function PlanPage() {
                           style={{
                             background: "none",
                             border: "none",
-                            color: "#0b6cff",
+                            color: "#2e9cf0",
                             cursor: "pointer",
                             padding: 0,
                             fontSize: "inherit",
@@ -931,7 +943,7 @@ export default function PlanPage() {
                           style={{
                             background: "none",
                             border: "none",
-                            color: "#0b6cff",
+                            color: "#2e9cf0",
                             cursor: "pointer",
                             padding: 0,
                             fontSize: "inherit",
@@ -968,7 +980,7 @@ export default function PlanPage() {
                         disabled={isSubscribeDisabled}
                         fullWidth
                       >
-                        {isSamePlan ? "Switch Plan" : "Switch Plan"}
+                        {isSamePlan ? "Continue to Billing" : "Switch Plan"}
                       </Button>
                     </div>
 
