@@ -464,8 +464,8 @@ export default function PlanPage() {
                   border: "none",
                   borderRadius: 20,
                   background:
-                    billingCycle === "monthly" ? "#fff" : "transparent",
-                  color: billingCycle === "monthly" ? "#000" : "#666",
+                    billingCycle === "monthly" ? "#0b6cff" : "transparent",
+                  color: billingCycle === "monthly" ? "#fff" : "#575758",
                   cursor: "pointer",
                   fontWeight: billingCycle === "monthly" ? "600" : "400",
                   fontSize: "14px",
@@ -480,16 +480,21 @@ export default function PlanPage() {
                   border: "none",
                   borderRadius: 20,
                   background:
-                    billingCycle === "yearly" ? "#fff" : "transparent",
-                  color: billingCycle === "yearly" ? "#000" : "#666",
+                    billingCycle === "yearly" ? "#0b6cff" : "transparent",
+                  color: billingCycle === "yearly" ? "#fff" : "#575758",
                   cursor: "pointer",
                   fontWeight: billingCycle === "yearly" ? "600" : "400",
                   fontSize: "14px",
                 }}
               >
                 Annual{" "}
-                <span style={{ color: "#0b6cff", fontSize: "12px" }}>
-                  (Save 15%)
+                <span
+                  style={{
+                    color: billingCycle === "yearly" ? "#fff" : "#ee492b",
+                    fontSize: "12px",
+                  }}
+                >
+                  Save 15%
                 </span>
               </button>
             </div>
@@ -507,9 +512,9 @@ export default function PlanPage() {
                 const isSelected = selectedPlan === plan.name;
 
                 const planDescriptions = {
-                  Starter: "Any 1 flow",
-                  Standard: "Any 2 flows",
-                  Pro: "Any 3 flows",
+                  Starter: "Any 1 process",
+                  Standard: "Any 2 process",
+                  Pro: "Any 3 process",
                   Premium: "Full Features",
                 };
                 const shortDesc =
