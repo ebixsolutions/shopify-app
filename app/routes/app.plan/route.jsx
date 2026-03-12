@@ -411,7 +411,7 @@ export default function PlanPage() {
       } else {
         alert(
           "❌ Failed to create subscription: " +
-            (billingResult.msg || "Unknown error"),
+          (billingResult.msg || "Unknown error"),
         );
         console.error("Billing API error:", billingResult);
       }
@@ -748,7 +748,7 @@ export default function PlanPage() {
                           style={{
                             visibility:
                               getFlowCount() !== 4 &&
-                              getCheckedCount() >= getFlowCount()
+                                getCheckedCount() >= getFlowCount()
                                 ? "hidden"
                                 : "visible",
                             display: "flex",
@@ -968,7 +968,7 @@ export default function PlanPage() {
                         disabled={isSubscribeDisabled}
                         fullWidth
                       >
-                        {isSamePlan ? "Continue to Billing" : "Switch Plan"}
+                        {isSamePlan ? "Switch Plan" : "Switch Plan"}
                       </Button>
                     </div>
 
@@ -1062,7 +1062,6 @@ export default function PlanPage() {
         open={paymentModal.open}
         onClose={handleModalClose}
         title=""
-        large
         instant
       >
         <Modal.Section>
@@ -1138,7 +1137,7 @@ export default function PlanPage() {
                   border: "1px solid #E5E7EB",
                   borderRadius: 12,
                   padding: 20,
-                  width: 370,
+                  width: 425,
                   maxWidth: "90%",
                   margin: "24px auto 0",
                   background: "#fff",
@@ -1226,10 +1225,14 @@ export default function PlanPage() {
                     marginTop: 24,
                   }}
                 >
-                  <Button onClick={handleModalClose}>Back to Plans</Button>
+                  <Button size="large" onClick={handleModalClose}>
+                    Back to Plans
+                  </Button>
+
                   <div className={styles.bluePrimaryModal}>
                     <Button
                       variant="primary"
+                      size="large"
                       onClick={() => {
                         handleModalClose();
                       }}
