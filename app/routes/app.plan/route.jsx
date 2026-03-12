@@ -57,7 +57,19 @@ export default function PlanPage() {
     success: false,
     data: null,
   });
-
+  useEffect(() => {
+    setPaymentModal({
+      open: true,
+      success: true,
+      failure: false,
+      pending: false,
+      data: {
+        amount_paid: "$29",
+        plan_name: "Pro (Month)",
+        paid_at: "2026-03-12 10:30 AM",
+      },
+    });
+  }, []);
   useEffect(() => {
     handleChildRouteSession(user, shop);
   }, [user, shop]);
@@ -144,8 +156,15 @@ export default function PlanPage() {
   const getCheckedCount = () =>
     Object.values(checkedFeatures).filter(Boolean).length;
 
+  const currentActivePlanName = activePlan
+    ? activePlan.replace(/\(.*\)/, "")
+    : null;
+  const isSamePlan = currentActivePlanName === selectedPlan;
+
   const isSubscribeDisabled =
-    getCheckedCount() < getFlowCount() || !agreeChecked;
+    getCheckedCount() < getFlowCount() ||
+    !agreeChecked ||
+    isSamePlan;
 
   useEffect(() => {
     const flowCount = getFlowCount();
@@ -296,6 +315,11 @@ export default function PlanPage() {
   };
 
   // ✅ Subscribe and create billing
+  const [confirmModal, setConfirmModal] = useState(false);
+  const handleConfirmSubscribe = async () => {
+    setConfirmModal(false);
+    await handleSubscribe();
+  };
   const handleSubscribe = async () => {
     if (!agreeChecked) {
       alert(
@@ -357,7 +381,7 @@ export default function PlanPage() {
       } else {
         alert(
           "❌ Failed to create subscription: " +
-            (billingResult.msg || "Unknown error"),
+          (billingResult.msg || "Unknown error"),
         );
         console.error("Billing API error:", billingResult);
       }
@@ -409,7 +433,7 @@ export default function PlanPage() {
               style={{
                 fontSize: "14px",
                 padding: "6px 12px",
-                backgroundColor: "#0B6CFF",
+                backgroundColor: "#2e9cf0",
                 color: "#fff",
                 borderRadius: "12px",
                 fontWeight: "600",
@@ -464,7 +488,7 @@ export default function PlanPage() {
                   border: "none",
                   borderRadius: 20,
                   background:
-                    billingCycle === "monthly" ? "#0b6cff" : "transparent",
+                    billingCycle === "monthly" ? "#2e9cf0" : "transparent",
                   color: billingCycle === "monthly" ? "#fff" : "#575758",
                   cursor: "pointer",
                   fontWeight: billingCycle === "monthly" ? "600" : "400",
@@ -508,7 +532,7 @@ export default function PlanPage() {
                   billingCycle === "monthly"
                     ? plan.monthly.discount_price
                     : plan.yearly.discount_price;
-                const sub = billingCycle === "monthly" ? "/m" : "/year";
+                const sub = billingCycle === "monthly" ? "month" : "year";
                 const isSelected = selectedPlan === plan.name;
 
                 const planDescriptions = {
@@ -542,46 +566,51 @@ export default function PlanPage() {
                 return (
                   <div
                     key={plan.id}
-                    onClick={() => setSelectedPlan(plan.name)}
+                    onClick={() => !isActive && setSelectedPlan(plan.name)}
                     style={{
                       position: "relative",
-                      cursor: "pointer",
-                      border: isSelected
-                        ? "3px solid #0b6cff"
-                        : "1px solid #e1e1e1",
-                      borderRadius: 4,
+                      cursor: isActive ? "not-allowed" : "pointer",
+                      border: isActive
+                        ? "3px solid #2e9cf0"
+                        : isSelected
+                          ? "3px solid #2e9cf0"
+                          : "1px solid #ffffff",
+                      borderRadius: 20,
                       padding: 12,
                       minWidth: 150,
-                      width: 200,
-                      height: 200,
+                      width: 278,
+                      height: 250,
                       minHeight: 150,
-                      boxShadow: isSelected
-                        ? "0 2px 8px rgba(11,108,255,0.12)"
-                        : "none",
+                      boxShadow: isSelected ? "0 2px 8px rgba(11,108,255,0.12)" : "none",
                       background: "#fff",
+                      opacity: isActive ? 0.85 : 1,
                     }}
                   >
-                    {isActive && (
-                      <div
-                        style={{
-                          position: "absolute",
-                          top: 8,
-                          right: 8,
-                          width: 20,
-                          height: 20,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          color: "#0b6cff",
-                          background: "transparent",
-                          fontWeight: 700,
-                          fontSize: 20,
-                        }}
-                        aria-hidden
-                      >
-                        ✓
-                      </div>
-                    )}
+                    <div
+                      style={{
+                        height: 24, // reserve space for badge
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        marginBottom: 10,
+                      }}
+                    >
+                      {isActive && (
+                        <div
+                          style={{
+                            padding: "4px 10px",
+                            borderRadius: "6px",
+                            background: "#dff4f8",
+                            color: "#2e9cf0",
+                            fontSize: "12px",
+                            fontWeight: 600,
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          Current Plan
+                        </div>
+                      )}
+                    </div>
 
                     <div
                       style={{
@@ -598,8 +627,8 @@ export default function PlanPage() {
                         <Text as="span" variant="headingLg" tone="subdued">
                           ${price}
                         </Text>{" "}
-                        <Text as="span" variant="headingXs" fontWeight="bold">
-                          {sub}
+                        <Text as="span">
+                          / <br /> {sub}
                         </Text>
                       </Text>
 
@@ -663,7 +692,7 @@ export default function PlanPage() {
                         style={{
                           visibility:
                             getFlowCount() !== 4 &&
-                            getCheckedCount() >= getFlowCount()
+                              getCheckedCount() >= getFlowCount()
                               ? "hidden"
                               : "visible",
                           display: "flex",
@@ -704,6 +733,7 @@ export default function PlanPage() {
                         >
                           <input
                             type="checkbox"
+                            className={styles.blueCheckbox}
                             checked={
                               getFlowCount() === 4
                                 ? true
@@ -713,9 +743,7 @@ export default function PlanPage() {
                             disabled={isFeatureDisabled(item.value)}
                             style={{
                               marginRight: 8,
-                              cursor: isFeatureDisabled(item.value)
-                                ? "not-allowed"
-                                : "pointer",
+                              cursor: isFeatureDisabled(item.value) ? "not-allowed" : "pointer",
                               opacity: isFeatureDisabled(item.value) ? 0.6 : 1,
                             }}
                           />
@@ -856,15 +884,14 @@ export default function PlanPage() {
                       }}
                     >
                       <Button
-                        onClick={handleSubscribe}
+                        onClick={() => setConfirmModal(true)}
                         disabled={isSubscribeDisabled}
-                        style={{
-                          opacity: isSubscribeDisabled ? 0.5 : 1,
-                        }}
                         fullWidth
                       >
-                        Continue to Billing
+                        {isSamePlan ? "Continue to Billing" : "Switch Plan"}
                       </Button>
+
+
                     </div>
 
                     <div
@@ -899,6 +926,34 @@ export default function PlanPage() {
               dangerouslySetInnerHTML={{ __html: modalContent.description }}
             />
           </TextContainer>
+        </Modal.Section>
+      </Modal>
+
+      {/* ✅ Modal for Subscription confirmation */}
+      <Modal
+  open={confirmModal}
+  onClose={() => setConfirmModal(false)}
+  title="Confirm Plan Change"
+  primaryAction={{
+    content: "Continue to Billing",
+    onAction: handleConfirmSubscribe,
+    variant: "primary",
+  }}
+  secondaryActions={[
+    {
+      content: "Cancel",
+      onAction: () => setConfirmModal(false),
+    },
+  ]}
+      >
+        <Modal.Section>
+          <Text>
+            You're switching from <b>{activePlan || "Free Plan"}</b> to <b>{selectedPlan}</b>.
+            <br />
+            Shopify will automatically apply any eligible prorated credit for the unused portion of your current plan.
+            <br />
+            Your new plan charges will be billed by Shopify under the new plan.
+          </Text>
         </Modal.Section>
       </Modal>
 
@@ -991,11 +1046,6 @@ export default function PlanPage() {
                 {paymentModal.success ? "Payment Successful" : "Payment Failed"}
               </Text>
 
-              <Text variant="bodyMd" tone="subdued">
-                {paymentModal.success
-                  ? "Thank you for your subscription!"
-                  : "Your payment was not successful. Please try again."}
-              </Text>
 
               <div
                 style={{
@@ -1054,6 +1104,61 @@ export default function PlanPage() {
                   </div>
                 </div>
               </div>
+              {/* ✅ NEW TEXT */}
+              {paymentModal.success && (
+                <div
+                  style={{
+                    marginTop: 8,
+                    textAlign: "left",
+                    maxWidth: 420,
+                    marginLeft: "auto",
+                    marginRight: "auto",
+                  }}
+                >
+                  <Text as="h3" variant="headingMd">
+                    Plan updated
+                  </Text>
+
+                  <Text variant="bodyMd" tone="subdued">
+                    Your plan has been updated to <b>{paymentModal.data.plan_name}</b>. Future
+                    charges will be billed according to <b>{paymentModal.data.plan_name}</b>.
+                  </Text>
+                </div>
+              )}
+
+              {!paymentModal.success && (
+                <Text variant="bodyMd" tone="subdued">
+                  Your payment was not successful. Please try again.
+                </Text>
+              )}
+              {paymentModal.success && (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: 12,
+                    marginTop: 24,
+                  }}
+                >
+
+
+                  <Button
+                    onClick={handleModalClose}
+                  >
+                    Back to Plans
+                  </Button>
+                  <div className={styles.bluePrimaryModal}>
+                    <Button
+                      variant="primary"
+                      onClick={() => {
+                        handleModalClose();
+                      }}
+                    >
+                      Done
+                    </Button>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </Modal.Section>

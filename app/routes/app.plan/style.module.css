@@ -3,7 +3,7 @@
   color: white;
   background: #2d9bf0;
   box-shadow: none !important;
-  border-radius: 20px;
+  border-radius: 10px;
 }
 .textColor {
   font-size: smaller;
@@ -23,6 +23,7 @@
   justify-content: center;
   border-radius: 4px;
   padding: 8px 12px;
+  margin-bottom: 10px;
 }
 
 .plansAndSummary{
@@ -32,8 +33,10 @@
   flex-wrap: wrap;
 }
 .billingToggleButtons {
-  border: 1px solid #e1e1e1;
+  border: 1px solid #ffffff;
   padding: 5px;
+  background: #ffffff;
+  border-radius: 5px;
 }
 
 .plansContainer{
@@ -162,4 +165,63 @@
   100% {
     transform: rotate(360deg);
   }
+}
+
+.blueCheckbox {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  appearance: none;
+  border: 2px solid #2e9cf0;
+  border-radius: 4px;
+  background: #fff;
+  position: relative;
+}
+
+/* Checked state */
+.blueCheckbox:checked {
+  background-color: #2e9cf0;
+  border-color: #2e9cf0;
+}
+
+/* Check mark */
+.blueCheckbox:checked::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 0px;
+  width: 4px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Disabled but still blue */
+.blueCheckbox:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+:global(.Polaris-Button--toneSuccess.Polaris-Button--variantPrimary) {
+  background-color: #2e9cf0 !important;
+  border-color: #2e9cf0 !important;
+  color: #ffffff !important;
+}
+
+:global(.Polaris-Button--toneSuccess.Polaris-Button--variantPrimary:hover) {
+  background-color: #1b86d6 !important;
+  border-color: #1b86d6 !important;
+}
+
+/* style.module.css */
+
+:global(.Polaris-Button--variantPrimary) {
+  background-color: #2e9cf0 !important;
+  border-color: #2e9cf0 !important;
+  color: #ffffff !important;
+}
+
+:global(.Polaris-Button--variantPrimary:hover) {
+  background-color: #1b86d6 !important;
+  border-color: #1b86d6 !important;
 }
