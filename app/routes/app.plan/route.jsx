@@ -639,12 +639,12 @@ export default function PlanPage() {
                       fontWeight: "500",
                     }}
                   >
-                    View my bill
+                    Subscription History
                   </button>
                 </div>
                 <Card sectioned>
                   <Text as="h3" variant="headingMd">
-                    Plan Summary
+                    Order Summary
                   </Text>
 
                   <div style={{ marginTop: 12 }}>
@@ -721,9 +721,9 @@ export default function PlanPage() {
                     </div>
 
                     {/* Divider */}
-                    {/* <div style={{ marginTop: 16 }}>
+                    <div style={{ marginTop: 16 }}>
                       <Divider />
-                    </div> */}
+                    </div>
 
                     {/* Price Breakdown */}
                     <div style={{ marginTop: 12 }}>
@@ -759,9 +759,15 @@ export default function PlanPage() {
                     {/* Total */}
                     <div
                       style={{
-                        marginTop: 18
+                        marginTop: 18,
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
                       }}
                     >
+                      <Text as="h1" variant="headingLg">
+                        Total
+                      </Text>
                       <Text as="h1" variant="headingLg">
                         ${planPriceInfo[billingCycle]?.total_price}{" "}
                         <span style={{ fontSize: "12px", color: "#666" }}>
@@ -772,6 +778,17 @@ export default function PlanPage() {
 
                     {/* ✅ Checkbox with clickable terms */}
                     <div style={{ marginTop: 12 }}>
+                      <span
+                        style={{
+                          color: "#DC2626",
+                          marginRight: 6,
+                          fontSize: "16px",
+                          fontWeight: "bold",
+                          visibility: agreeChecked ? "hidden" : "visible",
+                        }}
+                      >
+                        *
+                      </span>
                       <input
                         type="checkbox"
                         id="agree"
@@ -839,8 +856,9 @@ export default function PlanPage() {
                         style={{
                           opacity: isSubscribeDisabled ? 0.5 : 1,
                         }}
+                        fullWidth
                       >
-                        Subscribe
+                        Continue to Billing
                       </Button>
                     </div>
 
