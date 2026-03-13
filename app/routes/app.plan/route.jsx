@@ -166,7 +166,7 @@ export default function PlanPage() {
     : null;
   const isSamePlan = currentActivePlanName === selectedPlan;
 
-  const isSubscribeDisabled = !agreeChecked;
+  const isSubscribeDisabled = false;
 
   // Validation function
   const validateSubscription = () => {
@@ -972,7 +972,7 @@ export default function PlanPage() {
                       style={{
                         marginTop: 12,
                         textAlign: "center",
-                        cursor: isSubscribeDisabled ? "not-allowed" : "pointer",
+                        cursor: "pointer",
                       }}
                     >
                       <Button
