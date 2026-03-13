@@ -5,6 +5,7 @@
   box-shadow: none !important;
   border-radius: 10px;
 }
+
 .textColor {
   font-size: smaller;
   color: #1e913a;
@@ -26,12 +27,13 @@
   margin-bottom: 10px;
 }
 
-.plansAndSummary{
+.plansAndSummary {
   display: flex;
   gap: 24px;
   align-items: flex-start;
   flex-wrap: wrap;
 }
+
 .billingToggleButtons {
   border: 1px solid #ffffff;
   padding: 5px;
@@ -39,7 +41,7 @@
   border-radius: 5px;
 }
 
-.plansContainer{
+.plansContainer {
   flex: 1 1 480px;
   display: flex;
   gap: 20px;
@@ -49,7 +51,7 @@
   padding-bottom: 8px;
 }
 
-.planSummaryWrapper{
+.planSummaryWrapper {
   /* flex: 0 0 320px;
   max-width: 320px; */
   width: 30%;
@@ -57,45 +59,46 @@
   margin-top: -85px;
 }
 
-.customSubscribeButton{
+.customSubscribeButton {
   display: flex;
   justify-content: center;
 }
 
-.plansContainer > div{
+.plansContainer>div {
   min-width: 150px;
   width: 160px;
   box-sizing: border-box;
 }
 
 .plansContainer button,
-.billingToggleWrapper button{
+.billingToggleWrapper button {
   touch-action: manipulation;
 }
 
-@media (max-width: 920px){
+@media (max-width: 920px) {
 
-  .plansAndSummary{
+  .plansAndSummary {
     gap: 16px;
   }
 
-  .planSummaryWrapper{
+  .planSummaryWrapper {
     flex-basis: 100%;
     max-width: 100%;
     order: 2;
     margin-top: 12px;
   }
 
-  .plansContainer{
+  .plansContainer {
     flex-basis: 100%;
     order: 1;
     padding: 6px 12px 12px 12px;
   }
 }
 
-@media (min-width: 921px){
+@media (min-width: 921px) {
+
   /* On wide screens we mimic the previous lifted summary card without overlapping content */
-  .planSummaryWrapper{
+  .planSummaryWrapper {
     transform: translateY(-90px);
   }
 }
@@ -105,16 +108,35 @@
     flex-wrap: nowrap;
     justify-content: center;
     overflow-x: visible;
-    gap: 50px;
+    gap: 10px;
   }
 
-  .billingToggleWrapper{
+  .plansContainer > div {
+    width: 268px !important;
+  }
+
+  .plansAndSummary {
+    display: flex;
+    gap: 24px;
+    flex-wrap: nowrap;
+  }
+
+  .billingToggleWrapper {
     margin: 0 auto 24px auto;
     gap: 8px;
     align-items: center;
     justify-content: center;
     border-radius: 4px;
     padding: 8px 12px;
+  }
+}
+
+@media (min-width: 2000px) {
+  .plansContainer {
+    flex-wrap: nowrap;
+    justify-content: center;
+    overflow-x: visible;
+    gap: 50px;
   }
 }
 
@@ -165,6 +187,8 @@
   100% {
     transform: rotate(360deg);
   }
+
+
 }
 
 .blueCheckbox {
@@ -202,6 +226,7 @@
   cursor: not-allowed;
   opacity: 0.7;
 }
+
 :global(.Polaris-Button--toneSuccess.Polaris-Button--variantPrimary) {
   background-color: #2e9cf0 !important;
   border-color: #2e9cf0 !important;
