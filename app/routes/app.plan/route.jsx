@@ -775,7 +775,7 @@ export default function PlanPage() {
 
                           <Text tone="subdued" variant="bodyXs">
                             {currentPlan.name === "Starter" &&
-                              "Select Any 1 Processes"}
+                              "Select Any 1 Process"}
                             {currentPlan.name === "Standard" &&
                               "Select Any 2 Processes"}
                             {currentPlan.name === "Pro" &&
