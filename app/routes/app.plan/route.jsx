@@ -586,8 +586,8 @@ export default function PlanPage() {
 
                 const planDescriptions = {
                   Starter: "Any 1 process",
-                  Standard: "Any 2 process",
-                  Pro: "Any 3 process",
+                  Standard: "Any 2 processes",
+                  Pro: "Any 3 processes",
                   Premium: "Full Features",
                 };
                 const shortDesc =
@@ -695,8 +695,7 @@ export default function PlanPage() {
                       <div onClick={(e) => e.stopPropagation()}>
                         <Button
                           variant="plain"
-                          disabled={isActive}
-                          onClick={() => !isActive && handleDetailsClick(plan)}
+                          onClick={() => handleDetailsClick(plan)}
                         >
                           Details
                         </Button>
@@ -891,7 +890,7 @@ export default function PlanPage() {
                           fontWeight: "bold",
                           visibility:
                             agreeChecked || agreeCheckboxError
-                              ? "hidden"
+                              ? "visible"
                               : "visible",
                         }}
                       >
@@ -972,12 +971,12 @@ export default function PlanPage() {
                       style={{
                         marginTop: 12,
                         textAlign: "center",
-                        cursor: "pointer",
+                        cursor: isSamePlan ? "not-allowed" : "pointer",
                       }}
                     >
                       <Button
                         onClick={handleSubscribe}
-                        disabled={isSubscribeDisabled}
+                        disabled={isSamePlan}
                         fullWidth
                       >
                         {isSamePlan ? "Continue to Billing" : "Switch Plan"}
@@ -993,7 +992,7 @@ export default function PlanPage() {
                     >
                       <Text as="h6">
                         Charges are billed in USD. Recurring charges billed
-                        monthly/yearly.
+                        monthly or yearly.
                       </Text>
                     </div>
                   </div>
@@ -1041,10 +1040,10 @@ export default function PlanPage() {
             You're switching from <b>{activePlan || "Free Plan"}</b> to{" "}
             <b>{selectedPlan}</b>.
             <br />
-            Shopify will automatically apply any eligible prorated credit for
-            the unused portion of your current plan.
+            <b>We will automatically apply any eligible prorated credit 
+            for the unused portion of your current plan.</b>
             <br />
-            Your new plan charges will be billed by Shopify under the new plan.
+            Your new plan charges will be billed under the new plan.
           </Text>
         </Modal.Section>
       </Modal>
@@ -1218,7 +1217,7 @@ export default function PlanPage() {
                   <Text variant="bodyMd" tone="subdued">
                     Your plan has been updated to{" "}
                     <b>{paymentModal.data.plan_name}</b>. Future charges will be
-                    billed according to <b>{paymentModal.data.plan_name}</b>.
+                    billed according to <b>{paymentModal.data.plan_name}</b> plan.
                   </Text>
                 </div>
               )}
