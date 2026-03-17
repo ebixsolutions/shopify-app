@@ -61,19 +61,19 @@ export default function PlanPage() {
     success: false,
     data: null,
   });
-  // useEffect(() => {
-  //   setPaymentModal({
-  //     open: true,
-  //     success: true,
-  //     failure: false,
-  //     pending: false,
-  //     data: {
-  //       amount_paid: "$29",
-  //       plan_name: "Pro (Month)",
-  //       paid_at: "2026-03-12 10:30 AM",
-  //     },
-  //   });
-  // }, []);
+  useEffect(() => {
+    setPaymentModal({
+      open: true,
+      success: true,
+      failure: false,
+      pending: false,
+      data: {
+        amount_paid: "$29",
+        plan_name: "Pro (Month)",
+        paid_at: "2026-03-12 10:30 AM",
+      },
+    });
+  }, []);
   useEffect(() => {
     handleChildRouteSession(user, shop);
   }, [user, shop]);
@@ -94,16 +94,40 @@ export default function PlanPage() {
         });
 
         if (result.status === 200 && result.data?.list) {
-          setPlans(result.data.list);
+          const plansList = result.data.list || [];
+
+          setPlans(plansList);
           setPlanData(
             result.data.plan_status_msg || "Your free plan is expired",
           );
-          const normalizedPlanName = result.data.plan_name.replace(
-            /\(.*\)/,
-            "",
-          );
-          setSelectedPlan(normalizedPlanName);
-          setActivePlan(result.data.plan_name || "");
+
+          // ✅ Find active plan
+          const activePlanData = plansList.find((p) => p.bought === true);
+
+          if (activePlanData) {
+            const planName = activePlanData.name;
+
+            const unitId =
+              activePlanData.yearly?.unit_id === 1
+                ? 1
+                : activePlanData.monthly?.unit_id === 2
+                  ? 2
+                  : null;
+
+            const cycle = unitId === 1 ? "yearly" : "monthly";
+
+            setSelectedPlan(planName);
+            setBillingCycle(cycle);
+
+            setActivePlan({
+              name: planName,
+              cycle: cycle,
+              raw: `${planName}(${cycle === "yearly" ? "Annually" : "Monthly"})`,
+            });
+          } else if (plansList.length > 0) {
+            // ✅ 🔥 NEW: fallback to first plan
+            setSelectedPlan(plansList[0].name);
+          }
         }
       } catch (error) {
         console.error("Error fetching plan details:", error);
@@ -117,6 +141,7 @@ export default function PlanPage() {
       fetchPlanDetails();
     }
   }, []);
+
 
   // ✅ Fetch Plan Price Info when plan changes
   useEffect(() => {
@@ -161,10 +186,11 @@ export default function PlanPage() {
     Object.values(checkedFeatures).filter(Boolean).length;
 
   // Only show validation errors on button click, not immediately
-  const currentActivePlanName = activePlan
-    ? activePlan.replace(/\(.*\)/, "")
-    : null;
-  const isSamePlan = currentActivePlanName === selectedPlan;
+  const currentActivePlanName = activePlan?.name || null;
+  const currentActivePlanCycle = activePlan?.cycle || "monthly";
+  const isSamePlan =
+    currentActivePlanName === selectedPlan &&
+    currentActivePlanCycle === billingCycle;
 
   const isSubscribeDisabled = false;
 
@@ -194,6 +220,21 @@ export default function PlanPage() {
 
     return isValid;
   };
+
+  useEffect(() => {
+    if (!featureSelectionError) return;
+
+    const flowCount = getFlowCount();
+    const checkedCount = getCheckedCount();
+
+    if (checkedCount < flowCount) {
+      setFeatureSelectionError(
+        `Please choose ${flowCount} process${flowCount > 1 ? "es" : ""} to continue.`,
+      );
+    } else {
+      setFeatureSelectionError("");
+    }
+  }, [selectedPlan, billingCycle]);
 
   useEffect(() => {
     const flowCount = getFlowCount();
@@ -488,7 +529,7 @@ export default function PlanPage() {
                 fontWeight: "600",
               }}
             >
-              {activePlan}
+              {activePlan?.raw}
             </span>
           ) : (
             <span
@@ -594,23 +635,11 @@ export default function PlanPage() {
                   planDescriptions[plan.name] || plan.short_description || "";
 
                 // Parse active plan only once per render
-                let apiPlanName = null;
-                let apiPlanCycle = "monthly";
-                if (activePlan) {
-                  const match = activePlan.match(
-                    /(Starter|Standard|Pro|Premium)(?:\((Month|Year)\))?/i,
-                  );
-                  if (match) {
-                    apiPlanName = match[1];
-                    apiPlanCycle = match[2] ? match[2].toLowerCase() : "month";
-                  }
-                }
 
                 // Tick logic
                 const isActive =
-                  apiPlanName === plan.name &&
-                  ((apiPlanCycle === "month" && billingCycle === "monthly") ||
-                    (apiPlanCycle === "year" && billingCycle === "yearly"));
+                  activePlan?.name === plan.name &&
+                  activePlan?.cycle === billingCycle;
 
                 return (
                   <div
@@ -619,11 +648,9 @@ export default function PlanPage() {
                     style={{
                       position: "relative",
                       cursor: isActive ? "not-allowed" : "pointer",
-                      border: isActive
+                      border: (isActive || isSelected)
                         ? "3px solid #2e9cf0"
-                        : isSelected
-                          ? "3px solid #2e9cf0"
-                          : "1px solid #ffffff",
+                        : "1px solid #ffffff",
                       borderRadius: 20,
                       padding: 12,
                       minWidth: 150,
@@ -1040,8 +1067,8 @@ export default function PlanPage() {
             You're switching from <b>{activePlan || "Free Plan"}</b> to{" "}
             <b>{selectedPlan}</b>.
             <br />
-            <b>We will automatically apply any eligible prorated credit 
-            for the unused portion of your current plan.</b>
+            <b>We will automatically apply any eligible prorated credit
+              for the unused portion of your current plan.</b>
             <br />
             Your new plan charges will be billed under the new plan.
           </Text>
@@ -1056,7 +1083,7 @@ export default function PlanPage() {
         size="large"
       >
         <Modal.Section>
-          <div style={{ height: "75vh" }}>
+          <div style={{ height: "90vh" }}>
             <iframe
               src={iframeModal.url}
               title={iframeModal.title}
@@ -1144,13 +1171,13 @@ export default function PlanPage() {
 
               <div
                 style={{
-                  marginTop: 24,
+                  marginTop: 15,
                   border: "1px solid #E5E7EB",
                   borderRadius: 12,
                   padding: 20,
                   width: 425,
                   maxWidth: "90%",
-                  margin: "24px auto 0",
+                  margin: "15px auto 0",
                   background: "#fff",
                   boxShadow: "0 6px 18px rgba(15,23,42,0.06)",
                   textAlign: "left",
@@ -1232,8 +1259,10 @@ export default function PlanPage() {
                   style={{
                     display: "flex",
                     justifyContent: "center",
-                    gap: 12,
-                    marginTop: 24,
+                    alignItems: "center",
+                    gap: "12px",
+                    padding: "16px 0",
+                    flexWrap: "wrap",
                   }}
                 >
                   <Button size="large" onClick={handleModalClose}>
