@@ -61,19 +61,7 @@ export default function PlanPage() {
     success: false,
     data: null,
   });
-  useEffect(() => {
-    setPaymentModal({
-      open: true,
-      success: true,
-      failure: false,
-      pending: false,
-      data: {
-        amount_paid: "$29",
-        plan_name: "Pro (Month)",
-        paid_at: "2026-03-12 10:30 AM",
-      },
-    });
-  }, []);
+  
   useEffect(() => {
     handleChildRouteSession(user, shop);
   }, [user, shop]);
