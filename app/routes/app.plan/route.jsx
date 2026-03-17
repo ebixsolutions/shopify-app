@@ -61,7 +61,7 @@ export default function PlanPage() {
     success: false,
     data: null,
   });
-  
+
   useEffect(() => {
     handleChildRouteSession(user, shop);
   }, [user, shop]);
@@ -191,9 +191,11 @@ export default function PlanPage() {
     setAgreeCheckboxError("");
 
     // Check feature selection
-    if (getCheckedCount() < getFlowCount()) {
+    const flowCount = getFlowCount();
+
+    if (flowCount !== 4 && getCheckedCount() < flowCount) {
       setFeatureSelectionError(
-        `Please choose ${getFlowCount()} process${getFlowCount() > 1 ? "es" : ""} to continue.`,
+        `Please choose ${flowCount} process${flowCount > 1 ? "es" : ""} to continue.`,
       );
       isValid = false;
     }
@@ -215,7 +217,7 @@ export default function PlanPage() {
     const flowCount = getFlowCount();
     const checkedCount = getCheckedCount();
 
-    if (checkedCount < flowCount) {
+    if (flowCount !== 4 && checkedCount < flowCount) {
       setFeatureSelectionError(
         `Please choose ${flowCount} process${flowCount > 1 ? "es" : ""} to continue.`,
       );
