@@ -1054,7 +1054,7 @@ export default function PlanPage() {
       >
         <Modal.Section>
           <Text>
-            You're switching from <b>{activePlan || "Free Plan"}</b> to{" "}
+            You're switching from <b>{activePlan?.raw || "Free Plan"}</b> to{" "}
             <b>{selectedPlan}</b>.
             <br />
             <b>We will automatically apply any eligible prorated credit
