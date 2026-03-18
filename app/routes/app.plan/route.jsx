@@ -93,24 +93,23 @@ export default function PlanPage() {
           const activePlanData = plansList.find((p) => p.bought === true);
 
           if (activePlanData) {
-            const planName = activePlanData.name;
+            const planName = result.data.plan_name;
 
             const unitId =
-              activePlanData.yearly?.unit_id === 1
+              plansList.find((p) => p.unit_id === 1)
                 ? 1
-                : activePlanData.monthly?.unit_id === 2
+                : plansList.find((p) => p.unit_id === 2)
                   ? 2
                   : null;
 
             const cycle = unitId === 1 ? "yearly" : "monthly";
-
             setSelectedPlan(planName);
             setBillingCycle(cycle);
 
             setActivePlan({
               name: planName,
               cycle: cycle,
-              raw: `${planName}(${cycle === "yearly" ? "Annually" : "Monthly"})`,
+              raw: `${planName}`,
             });
           } else if (plansList.length > 0) {
             // ✅ 🔥 NEW: fallback to first plan
@@ -175,7 +174,12 @@ export default function PlanPage() {
 
   // Only show validation errors on button click, not immediately
   const currentActivePlanName = activePlan?.name || null;
-  const currentActivePlanCycle = activePlan?.cycle || "monthly";
+  const currentActivePlanCycle =
+  activePlan?.unit_id === 1
+    ? "yearly"
+    : activePlan?.unit_id === 2
+    ? "monthly"
+    : null;
   const isSamePlan =
     currentActivePlanName === selectedPlan &&
     currentActivePlanCycle === billingCycle;
@@ -398,8 +402,8 @@ export default function PlanPage() {
       const id = currentPlan.id;
       const unit_id =
         billingCycle === "yearly"
-          ? currentPlan.yearly?.unit_id
-          : currentPlan.monthly?.unit_id;
+          ? currentPlan.unit_id
+          : currentPlan.unit_id;
 
       // ✅ Collect selected ecosphere process (1–4)
       const ecosphere_process = Object.keys(checkedFeatures)
