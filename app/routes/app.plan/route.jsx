@@ -104,7 +104,7 @@ export default function PlanPage() {
               name: activePlanData.name,
               cycle: cycle,
               unit_id: unitId, // ✅ IMPORTANT
-              raw: `${activePlanData.name} (${cycle})`,
+              raw: result.data.plan_name,
             });
           } else if (plansList.length > 0) {
             // ✅ 🔥 NEW: fallback to first plan
