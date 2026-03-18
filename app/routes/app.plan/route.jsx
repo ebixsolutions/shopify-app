@@ -391,9 +391,9 @@ export default function PlanPage() {
     try {
       const id = currentPlan.id;
       const unit_id =
-        billingCycle === "yearly"
-          ? currentPlan.unit_id
-          : currentPlan.unit_id;
+        billingCycle === "monthly"
+          ? currentPlan.monthly.unit_id
+          : currentPlan.yearly.unit_id;
 
       // ✅ Collect selected ecosphere process (1–4)
       const ecosphere_process = Object.keys(checkedFeatures)
