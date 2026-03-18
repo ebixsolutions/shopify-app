@@ -93,23 +93,18 @@ export default function PlanPage() {
           const activePlanData = plansList.find((p) => p.bought === true);
 
           if (activePlanData) {
-            const planName = result.data.plan_name;
-
-            const unitId =
-              plansList.find((p) => p.unit_id === 1)
-                ? 1
-                : plansList.find((p) => p.unit_id === 2)
-                  ? 2
-                  : null;
+            const unitId = activePlanData.unit_id;
 
             const cycle = unitId === 1 ? "yearly" : "monthly";
-            setSelectedPlan(planName);
+
+            setSelectedPlan(activePlanData.name);
             setBillingCycle(cycle);
 
             setActivePlan({
-              name: planName,
+              name: activePlanData.name,
               cycle: cycle,
-              raw: `${planName}`,
+              unit_id: unitId, // ✅ IMPORTANT
+              raw: `${activePlanData.name} (${cycle})`,
             });
           } else if (plansList.length > 0) {
             // ✅ 🔥 NEW: fallback to first plan
@@ -174,12 +169,7 @@ export default function PlanPage() {
 
   // Only show validation errors on button click, not immediately
   const currentActivePlanName = activePlan?.name || null;
-  const currentActivePlanCycle =
-  activePlan?.unit_id === 1
-    ? "yearly"
-    : activePlan?.unit_id === 2
-    ? "monthly"
-    : null;
+  const currentActivePlanCycle = activePlan?.cycle;
   const isSamePlan =
     currentActivePlanName === selectedPlan &&
     currentActivePlanCycle === billingCycle;
