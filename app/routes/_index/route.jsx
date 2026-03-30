@@ -30,7 +30,7 @@ export const loader = async ({ request }) => {
   if (sessionValidation.error === "Unauthorized") {
     return redirect(`/auth/logout?${url.searchParams.toString()}`);
   }
-if(domain && !sessionValidation.valid)
+if(shop && !sessionValidation.valid)
   console.log("enterning")
 
 
