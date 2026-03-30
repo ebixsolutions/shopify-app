@@ -8,7 +8,7 @@ import { validateSessionMiddleware } from "../../utils/auth";
 
 export const loader = async ({ request }) => {
   const url = new URL(request.url);
-  const domain = url.searchParams.get("shop");
+  const shop = url.searchParams.get("shop");
 
   if (!domain) {
     return json({ error: "Missing shop parameter" }, { status: 400 });
@@ -42,7 +42,7 @@ if(domain && !sessionValidation.valid)
     const shopDetails = await admin.rest.get({ path: "shop.json" });
     const data = await shopDetails.json();
     const shopId = data.shop?.id || null;
-    const shop = data.shop?.domain || null;
+    const domain = data.shop?.domain || null;
     const shopData = { shop, accessToken, shopId, domain };
 
     const response = await api.createShop(shopData);
