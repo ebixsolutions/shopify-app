@@ -173,4 +173,22 @@ export default {
       data: obj,
     });
   },
+
+  async webhookUpdate(obj) {
+    return await request({
+      url: "/shopify/webhook_update",
+      method: "post",
+      data: obj,
+    });
+  },
+
+
+  async domainUpdate(obj) {
+    return await request({
+      url: "/shopify/domain_update",
+      method: "post",
+      data: obj,
+    });
+  },
+
 };

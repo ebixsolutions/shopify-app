@@ -70,7 +70,7 @@ export default function RegisterPage() {
 	}
   
 	const shopData = {
-	  shop: shopDetails.domain,
+	  shop: shopDetails.myshopify_domain,
 	  name: shopDetails.name,
     shopify_session_id: shopDetails.id,
 	  email: formData.email,
