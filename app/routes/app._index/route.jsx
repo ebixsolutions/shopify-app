@@ -32,13 +32,13 @@ import { authenticate } from "../../shopify.server";
 export const loader = async ({ request }) => {
   const url = new URL(request.url);
   const { admin } = await authenticate.admin(request);
-  
+
   // Fetch shop details
   const shopDetails = await admin.rest.get({ path: "shop.json" });
   // Parse the response body
   const data = await shopDetails.json();
 
-  return json({ 
+  return json({
     apiKey: process.env.SHOPIFY_API_KEY || "",
     shopDetails: data.shop,
     url: url,
@@ -139,7 +139,7 @@ export default function HomePage() {
           const logs = user.logs || {};
           const data = { company_id: logs.company_id || null };
           const theme = { domain: shop };
-         
+
           let response;
           let theme_response;
           let webhook_response;
@@ -148,7 +148,7 @@ export default function HomePage() {
           try {
             response = await api.stepRecordGet(data);
             theme_response = await api.getTheme(theme);
-            // webhook_response = await api.webhookUpdate(user);
+            webhook_response = await api.webhookUpdate(user);
             domain_response = await api.domainUpdate(shopDetails);
           } catch (error) {
             console.error("Error during API call to stepRecordGet:", error);
