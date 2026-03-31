@@ -108,6 +108,30 @@ export default function HomePage() {
     }, [user]);
 
     useEffect(() => {
+      const runWebhookOnce = async () => {
+        if (!user || typeof window === "undefined") return;
+
+        const key = `webhook_executed_user_${user.user_id}`;
+
+        const alreadyExecuted = localStorage.getItem(key);
+
+        if (alreadyExecuted) {
+          console.log("Webhook already executed for this user");
+          return;
+        }
+        try {
+          await api.webhookUpdate(user);
+          localStorage.setItem(key, "true");
+          console.log("Webhook executed FIRST TIME for user");
+        } catch (error) {
+          console.error("Webhook error:", error);
+        }
+      };
+
+      runWebhookOnce();
+    }, [user]);
+
+    useEffect(() => {
       const fetchMigrationStatus = async () => {
         try {
           // Check if user exists before accessing its properties
@@ -124,12 +148,12 @@ export default function HomePage() {
 
           let response;
           let theme_response;
-          let webhook_response;
+          //let webhook_response;
 
           try {
             response = await api.stepRecordGet(data);
             theme_response = await api.getTheme(theme);
-            webhook_response = await api.webhookUpdate(user);
+            //webhook_response = await api.webhookUpdate(user);
           } catch (error) {
             console.error("Error during API call to stepRecordGet:", error);
             setError("Something went wrong. Please try again later.");
