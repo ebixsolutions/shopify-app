@@ -27,24 +27,7 @@ import { ChevronUpIcon } from "@shopify/polaris-icons";
 import { useAppContext } from "../app/route"; // Import the hook from the parent route
 import styles from "./style.module.css";
 import { useLoaderData } from "@remix-run/react";
-import { authenticate } from "../../shopify.server";
 
-export const loader = async ({ request }) => {
-  const url = new URL(request.url);
-  const { admin } = await authenticate.admin(request);
-
-  // Fetch shop details
-  const shopDetails = await admin.rest.get({ path: "shop.json" });
-  // Parse the response body
-  const data = await shopDetails.json();
-
-  return json({
-    apiKey: process.env.SHOPIFY_API_KEY || "",
-    shopDetails: data.shop,
-    url: url,
-    params: url.href
-  });
-};
 
 export default function HomePage() {
   try {
@@ -77,7 +60,6 @@ export default function HomePage() {
     const [orderStarted, setOrderStarted] = useState(false);
     const [orderCompleted, setOrderCompleted] = useState(false);
     const [isMigrationComplete, setIsMigrationComplete] = useState(false);
-    const { shopDetails } = useLoaderData();
 
     const isFetched = useRef(false);
     const { user, shop } = useAppContext();
@@ -143,13 +125,11 @@ export default function HomePage() {
           let response;
           let theme_response;
           let webhook_response;
-          let domain_response;
 
           try {
             response = await api.stepRecordGet(data);
             theme_response = await api.getTheme(theme);
             webhook_response = await api.webhookUpdate(user);
-            domain_response = await api.domainUpdate(shopDetails);
           } catch (error) {
             console.error("Error during API call to stepRecordGet:", error);
             setError("Something went wrong. Please try again later.");
