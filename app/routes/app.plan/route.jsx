@@ -70,19 +70,34 @@ export default function PlanPage() {
   useEffect(() => {
     const fetchPlanDetails = async () => {
       try {
-        const tempUserData = JSON.parse(localStorage.getItem("tempUserData"));
-        if (!tempUserData?.token) {
-          console.error("Missing user token in localStorage");
+        console.log("fetchPlanDetails called with user:", user);
+
+        if (!user?.shopify_code || !user?.shop_id) {
+          console.error("Missing user context for plan fetch", {
+            hasToken: !!user?.token,
+            hasShopifyCode: !!user?.shopify_code,
+            hasShopId: !!user?.shop_id,
+          });
+          setLoading(false);
           return;
         }
 
-        const result = await api.getPlanList({
-          shopify_code: tempUserData.shopify_code,
-          shop_id: tempUserData.shop_id,
+        console.log("Calling api.getPlanList with:", {
+          shopify_code: user.shopify_code,
+          shop_id: user.shop_id,
         });
+
+        const result = await api.getPlanList({
+          shopify_code: user.shopify_code,
+          shop_id: user.shop_id,
+        });
+
+        console.log("getPlanList result:", result);
 
         if (result.status === 200 && result.data?.list) {
           const plansList = result.data.list || [];
+
+          console.log("Plans list from API:", plansList);
 
           setPlans(plansList);
           setPlanData(
@@ -107,9 +122,13 @@ export default function PlanPage() {
               raw: result.data.plan_name,
             });
           } else if (plansList.length > 0) {
-            // ✅ 🔥 NEW: fallback to first plan
             setSelectedPlan(plansList[0].name);
           }
+        } else {
+          console.warn(
+            "getPlanList did not return a 200 with a list. Full result:",
+            result,
+          );
         }
       } catch (error) {
         console.error("Error fetching plan details:", error);
@@ -118,12 +137,11 @@ export default function PlanPage() {
       }
     };
 
-    if (!isFetched.current) {
+    if (!isFetched.current && user?.shopify_code && user?.shop_id) {
       isFetched.current = true;
       fetchPlanDetails();
     }
-  }, []);
-
+  }, [user]);
 
   // ✅ Fetch Plan Price Info when plan changes
   useEffect(() => {
@@ -436,7 +454,7 @@ export default function PlanPage() {
       } else {
         alert(
           "❌ Failed to create subscription: " +
-          (billingResult.msg || "Unknown error"),
+            (billingResult.msg || "Unknown error"),
         );
         console.error("Billing API error:", billingResult);
       }
@@ -632,9 +650,10 @@ export default function PlanPage() {
                     style={{
                       position: "relative",
                       cursor: isActive ? "not-allowed" : "pointer",
-                      border: (isActive || isSelected)
-                        ? "3px solid #2e9cf0"
-                        : "1px solid #ffffff",
+                      border:
+                        isActive || isSelected
+                          ? "3px solid #2e9cf0"
+                          : "1px solid #ffffff",
                       borderRadius: 20,
                       padding: 12,
                       minWidth: 150,
@@ -695,10 +714,7 @@ export default function PlanPage() {
                       </Text>
 
                       <div className={styles.customSubscribeButton}>
-                        <Button
-                          size="slim"
-                          disabled={isActive}
-                        >
+                        <Button size="slim" disabled={isActive}>
                           {shortDesc}
                         </Button>
                       </div>
@@ -770,7 +786,7 @@ export default function PlanPage() {
                           style={{
                             visibility:
                               getFlowCount() !== 4 &&
-                                getCheckedCount() >= getFlowCount()
+                              getCheckedCount() >= getFlowCount()
                                 ? "hidden"
                                 : "visible",
                             display: "flex",
@@ -1051,8 +1067,10 @@ export default function PlanPage() {
             You're switching from <b>{activePlan?.raw || "Free Plan"}</b> to{" "}
             <b>{selectedPlan}</b>.
             <br />
-            <b>We will automatically apply any eligible prorated credit
-              for the unused portion of your current plan.</b>
+            <b>
+              We will automatically apply any eligible prorated credit for the
+              unused portion of your current plan.
+            </b>
             <br />
             Your new plan charges will be billed under the new plan.
           </Text>
@@ -1228,7 +1246,8 @@ export default function PlanPage() {
                   <Text variant="bodyMd" tone="subdued">
                     Your plan has been updated to{" "}
                     <b>{paymentModal.data.plan_name}</b>. Future charges will be
-                    billed according to <b>{paymentModal.data.plan_name}</b> plan.
+                    billed according to <b>{paymentModal.data.plan_name}</b>{" "}
+                    plan.
                   </Text>
                 </div>
               )}

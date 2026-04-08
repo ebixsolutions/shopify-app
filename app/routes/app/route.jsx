@@ -18,203 +18,218 @@ export const loader = async ({ request }) => {
     console.log("App loader starting...");
     const url = new URL(request.url);
     const billingId = url.searchParams.get("billing_id");
+    const pathname = url.pathname;
+
+    const isAppRoute = pathname === "/app" || pathname.startsWith("/app/");
+    const isPlanRoute = pathname === "/app/plan";
+
     console.log("Request URL:", url.toString());
-    
-    // Check if this is a child route (not the main /app route)
-    const isChildRoute = url.pathname !== '/app' && url.pathname.startsWith('/app/');
-    console.log("Is child route:", isChildRoute, "Pathname:", url.pathname);
-    
-    // For child routes, try to get session from URL first, then fall back to session validation
-    if (isChildRoute) {
-      console.log("Child route detected, checking for session data...");
-      
-      // Check if we have session data in URL first
-      const sessionData = url.searchParams.get("session_data");
-      if (sessionData) {
-        console.log("Found session_data in child route URL, processing...");
-        try {
-          let user = JSON.parse(decodeURIComponent(sessionData));
-          console.log("User data from URL in child route:", user.user_id);
+    console.log("Pathname:", pathname);
 
-          if(user?.shop && (url.searchParams.get("shop") != user?.shop)) {
-            user = null;
-          }
-
-          if (user && user.user_id && user.token) {
-            console.log("Valid user from URL in child route, returning app data");
-            // Extract shop from URL parameters or use user's shop data
-            const shopFromUrl = url.searchParams.get("shop");
-            const shop = shopFromUrl || user.shop_id || "unknown-shop.myshopify.com";
-
-            if (billingId && !url.pathname.includes('/app/plan')) {
-              const session = encodeURIComponent(JSON.stringify(user));
-              const shopParams = encodeURIComponent(shop);
-              
-              return redirect(`/app/plan?&billing_id=${billingId}&session_data=${session}&shop=${shopParams}`);
-            }       
-            return json({
-              shop: shop,
-              user,
-              apiKey: process.env.SHOPIFY_API_KEY || "",
-              token: user.token,
-              cleanUrl: `${url.pathname}${url.search}`
-            });
-          }
-        } catch (parseError) {
-          console.error("Error parsing session data from URL in child route:", parseError);
-        }
-      }
-      
-      // If no session data in URL, try session validation
-      console.log("No session data in URL, trying session validation for child route...");
-      
-      // Try to validate session using the middleware
-      try {
-        const sessionValidation = await validateSessionMiddleware(request);
-        console.log("Child route session validation result:", sessionValidation);
-
-        if (sessionValidation && sessionValidation.valid && sessionValidation.user) {
-          const user = sessionValidation.user;
-          console.log("Valid session found in child route for user:", user.user_id);
-          
-          // Extract shop from URL parameters or use user's shop data
-          const shopFromUrl = url.searchParams.get("shop");
-          const shop = shopFromUrl || user.shop_id || "unknown-shop.myshopify.com";
-
-          if (billingId && !url.pathname.includes('/app/plan')) {
-            const session = encodeURIComponent(JSON.stringify(user));
-            const shopParams = encodeURIComponent(shop);
-            
-            return redirect(`/app/plan?&billing_id=${billingId}&session_data=${session}&shop=${shopParams}`);
-          }
-          return json({
-            user,
-            shop: shop,
-            token: user.token,
-            cleanUrl: `${url.pathname}${url.search}`
-          });
-        }
-      } catch (authError) {
-        console.log("Session validation failed in child route:", authError);
-      }
-      
-      // If all else fails, redirect to login
-      console.log("No valid session found in child route, redirecting to login");
-      return redirect(`/auth/index?${url.searchParams.toString()}`);
+    if (!isAppRoute) {
+      // This route file is only meant for /app and /app/*
+      return redirect("/app");
     }
 
-    // For main /app route, check session_data in URL first (iframe compatibility)
-    const sessionData = url.searchParams.get("session_data");
-    if (sessionData) {
+    // =========================
+    // 1) URL session_data (your own propagation)
+    // =========================
+    const urlSessionData = url.searchParams.get("session_data");
+    if (urlSessionData) {
       console.log("Found session_data in URL, processing...");
       try {
-        const user = JSON.parse(decodeURIComponent(sessionData));
-        console.log("User data from URL:", user.user_id);
-        
-        if (user && user.user_id && user.token) {
-          console.log("Valid user from URL, returning app data");
-          // Extract shop from URL parameters or use user's shop data
-          const shopFromUrl = url.searchParams.get("shop");
-          const shop = shopFromUrl || user.shop_id || "unknown-shop.myshopify.com";
-          
-          // Keep session_data in URL for child routes (iframe requirement)
-          const cleanUrl = new URL(request.url);
-          // Don't delete session_data - child routes need it for iframe context
+        let user = JSON.parse(decodeURIComponent(urlSessionData));
+        console.log("User from URL session_data:", user?.user_id);
 
-          if (billingId && !url.pathname.includes('/app/plan')) {
-              const session = encodeURIComponent(JSON.stringify(user));
-              const shopParams = encodeURIComponent(shop);
-             
-              return redirect(`/app/plan?&billing_id=${billingId}&session_data=${session}&shop=${shopParams}`);
+        const shopFromUrl = url.searchParams.get("shop");
+        // Optional safety: match user.shop if you store shop on user
+        if (user?.shop && shopFromUrl && shopFromUrl !== user.shop) {
+          console.log(
+            "Shop mismatch between URL and user.session_data; ignoring URL user",
+          );
+          user = null;
+        }
+
+        if (user && user.user_id && user.token) {
+          const shop =
+            shopFromUrl || user.shop_id || "unknown-shop.myshopify.com";
+
+          if (billingId && !isPlanRoute) {
+            const encoded = encodeURIComponent(JSON.stringify(user));
+            const shopParam = encodeURIComponent(shop);
+
+            const params = new URLSearchParams(url.search);
+            params.set("billing_id", billingId);
+            params.set("session_data", encoded);
+            params.set("shop", shopParam);
+
+            return redirect(`/app/plan?${params.toString()}`);
           }
+
+          const cleanUrl = new URL(request.url);
           return json({
-            shop: shop,
+            shop,
             user,
             apiKey: process.env.SHOPIFY_API_KEY || "",
             token: user.token,
-            cleanUrl: cleanUrl.toString()
+            cleanUrl: cleanUrl.toString(),
           });
         }
-      } catch (parseError) {
-        console.error("Error parsing session data from URL:", parseError);
+      } catch (e) {
+        console.error("Error parsing session_data from URL:", e);
       }
     }
 
-    // Fallback: Try to get session from cookies (for non-iframe contexts)
+    // =========================
+    // 2) Shopify-managed auth (authenticate.admin) — ALWAYS for /app & /app/*
+    // =========================
+    try {
+      const { session } = await authenticate.admin(request);
+      console.log("Shopify session shop:", session?.shop);
+
+      if (session?.shop) {
+        const shop = session.shop;
+
+        const chargeId = url.searchParams.get("charge_id");
+        const isBillingCallback = billingId && chargeId;
+
+        if (isBillingCallback && pathname === "/app") {
+          const params = new URLSearchParams();
+          params.set("billing_id", billingId);
+          params.set("charge_id", chargeId);
+
+          if (shop) params.set("shop", shop);
+
+          return redirect(`/app/plan?${params.toString()}`);
+        }
+
+        // Try to map Shopify shop to your own user, but don't treat failure as fatal
+        let user = null;
+        try {
+          const sessionValidation = await validateSessionMiddleware(
+            request,
+            shop,
+          );
+          console.log(
+            "Session validation (with shop) result:",
+            sessionValidation,
+          );
+          user = sessionValidation?.user ?? null;
+        } catch (sessionError) {
+          console.log(
+            "Session validation failed after Shopify auth:",
+            sessionError,
+          );
+        }
+
+        if (!user) {
+          user = {
+            user_id: null,
+            token: null,
+            shopify_code: shop,
+            shop_id: shop,
+          };
+        }
+
+        const token = user?.token ?? null;
+
+        if (billingId && !isPlanRoute) {
+          const encoded = encodeURIComponent(JSON.stringify(user));
+          const shopParam = encodeURIComponent(shop);
+
+          const params = new URLSearchParams(url.search);
+          params.set("billing_id", billingId);
+          params.set("session_data", encoded);
+          params.set("shop", shopParam);
+
+          const chargeId = url.searchParams.get("charge_id");
+          if (chargeId) params.set("charge_id", chargeId);
+
+          return redirect(`/app/plan?${params.toString()}`);
+        }
+
+        const cleanUrl = new URL(request.url);
+        return json({
+          shop,
+          user,
+          apiKey: process.env.SHOPIFY_API_KEY || "",
+          token,
+          cleanUrl: cleanUrl.toString(),
+        });
+      }
+    } catch (authError) {
+      console.log(
+        "Shopify authenticate.admin failed; falling back to cookie-only session",
+        authError,
+      );
+    }
+
+    // =========================
+    // 3) Cookie-only fallback (non-embedded / rare edge cases)
+    // =========================
     try {
       const sessionValidation = await validateSessionMiddleware(request);
       console.log("Session validation result:", sessionValidation);
 
-      if (sessionValidation && sessionValidation.valid && sessionValidation.user) {
+      if (sessionValidation?.valid && sessionValidation.user) {
         const user = sessionValidation.user;
-        console.log("Valid session found for user:", user.user_id);
-        
-        // Extract shop from URL parameters or use user's shop data
         const shopFromUrl = url.searchParams.get("shop");
-        const shop = shopFromUrl || user.shop_id || "unknown-shop.myshopify.com";
-        
-        // Clean up URL parameters
-        const cleanUrl = new URL(request.url);
-        cleanUrl.searchParams.delete('session_data');
+        const shop =
+          shopFromUrl || user.shop_id || "unknown-shop.myshopify.com";
 
-        if (billingId && !url.pathname.includes('/app/plan')) {
-          const session = encodeURIComponent(JSON.stringify(user));
-          const shopParams = encodeURIComponent(shop);
-         
-          return redirect(`/app/plan?&billing_id=${billingId}&session_data=${session}&shop=${shopParams}`);
+        if (billingId && !isPlanRoute) {
+          const encoded = encodeURIComponent(JSON.stringify(user));
+          const shopParam = encodeURIComponent(shop);
+
+          const params = new URLSearchParams(url.search);
+          params.set("billing_id", billingId);
+          params.set("session_data", encoded);
+          params.set("shop", shopParam);
+
+          return redirect(`/app/plan?${params.toString()}`);
         }
+
+        const cleanUrl = new URL(request.url);
+        cleanUrl.searchParams.delete("session_data");
+
         return json({
-          shop: shop,
+          shop,
           user,
           apiKey: process.env.SHOPIFY_API_KEY || "",
           token: user.token,
-          cleanUrl: cleanUrl.toString()
+          cleanUrl: cleanUrl.toString(),
         });
       }
     } catch (sessionError) {
-      console.log("Session validation failed:", sessionError);
+      console.log("Cookie session validation failed:", sessionError);
     }
-    
-    // Try Shopify authentication
-    try {
-      const { session } = await authenticate.admin(request);
-      console.log("Shopify session:", session?.shop);
-      
-      const sessionValidation = await validateSessionMiddleware(request, session?.shop);
-      console.log("Session Validation Result:", sessionValidation);
-      
-      // If user session is valid, retrieve user data
-      if (sessionValidation && sessionValidation.user) {   
-        const user = sessionValidation.user;
-        const shop = session.shop;
-        const token = user.token;
-        
-        console.log("Valid session found for user:", user.user_id);
-        
-        // Keep session_data in URL for child routes
-        const cleanUrl = new URL(request.url);
-        // Don't delete session_data - child routes need it
 
-        if (billingId && !url.pathname.includes('/app/plan')) {
-          const session = encodeURIComponent(JSON.stringify(user));
-          const shopParams = encodeURIComponent(shop);
-          return redirect(`/app/plan?&billing_id=${billingId}&session_data=${session}&shop=${shopParams}`);
-        }
-        return json({
-          shop: shop || null,
-          user,
-          apiKey: process.env.SHOPIFY_API_KEY || "",
-          token,
-          cleanUrl: cleanUrl.toString()
-        });
-      }
-    } catch (authError) {
-      console.log("Shopify authentication failed, checking URL session data");
-      // If Shopify auth fails, we already checked URL data above
+    // =========================
+    // 4) Billing callback with no session: force plan page with minimal params
+    // =========================
+    const chargeId = url.searchParams.get("charge_id");
+    const shopParam = url.searchParams.get("shop");
+    const host = url.searchParams.get("host");
+
+    if (billingId && chargeId && !isPlanRoute) {
+      console.log(
+        "Billing callback on /app without session → forcing plan page",
+      );
+
+      const params = new URLSearchParams();
+      params.set("billing_id", billingId);
+      params.set("charge_id", chargeId);
+      if (shopParam) params.set("shop", shopParam);
+      if (host) params.set("host", host);
+      params.set("embedded", "1");
+
+      return redirect(`/app/plan?${params.toString()}`);
     }
-    
-    console.log("No valid session found, redirecting to login");
-    // Fallback in case of missing session or user
+
+    // =========================
+    // 5) Nothing worked → go to your auth index
+    // =========================
+    console.log("No valid session found at all, redirecting to /auth/index");
     return redirect(`/auth/index?${url.searchParams.toString()}`);
   } catch (error) {
     console.error("Error in app loader:", error);
@@ -227,57 +242,77 @@ export default function App() {
   try {
     const loaderData = useLoaderData();
     console.log("App component loaded with data:", loaderData);
-    
+
     // Handle potential errors in loader data
     if (loaderData.error) {
       console.error("Loader data error:", loaderData.error);
       return (
-        <div style={{ padding: '20px', textAlign: 'center' }}>
+        <div style={{ padding: "20px", textAlign: "center" }}>
           <h2>Error</h2>
           <p>{loaderData.error}</p>
         </div>
       );
     }
-    
+
     const { apiKey, shop, user, token, cleanUrl } = loaderData;
-    console.log("App component props:", { apiKey: !!apiKey, shop, user: user?.user_id, token: !!token, cleanUrl });
-    
-      // Clean up URL parameters after session is established
-  useEffect(() => {
-    if (cleanUrl && window.location.href !== cleanUrl) {
-      try {
-        console.log("Cleaning URL from:", window.location.href, "to:", cleanUrl);
-        // Use setTimeout to ensure this happens after the component is fully rendered
-        setTimeout(() => {
-          try {
-            const current = new URL(window.location.href);
-            const target = new URL(cleanUrl, current.origin);
-            // If origins differ or protocols mismatch, use a relative URL to avoid SecurityError
-            const sameOrigin = current.origin === target.origin;
-            const relative = `${target.pathname}${target.search}${target.hash}`;
-            window.history.replaceState({}, '', sameOrigin ? target.toString() : relative);
-          } catch (innerErr) {
-            console.error("Inner error cleaning URL, falling back to relative:", innerErr);
-            try {
-              const fallback = new URL(cleanUrl, window.location.origin);
-              const relative = `${fallback.pathname}${fallback.search}${fallback.hash}`;
-              window.history.replaceState({}, '', relative);
-            } catch (fallbackErr) {
-              console.error("Fallback error cleaning URL:", fallbackErr);
-            }
-          }
-        }, 100);
-      } catch (error) {
-        console.error("Error cleaning URL:", error);
-      }
-    }
-  }, [cleanUrl]);
-    
+    console.log("App component props:", {
+      apiKey: !!apiKey,
+      shop,
+      user: user?.user_id,
+      token: !!token,
+      cleanUrl,
+    });
+
+    // Clean up URL parameters after session is established
+    // useEffect(() => {
+    //   if (!cleanUrl) return;
+
+    //   try {
+    //     const current = new URL(window.location.href);
+    //     const pathname = current.pathname;
+
+    //     // Only clean on safe routes
+    //     const shouldClean =
+    //       pathname === "/app" || pathname === "/app/plan";
+
+    //     if (!shouldClean) {
+    //       console.log("Skipping URL cleanup for submenu route:", pathname);
+    //       return;
+    //     }
+
+    //     const target = new URL(cleanUrl, current.origin);
+    //     const sameOrigin = current.origin === target.origin;
+    //     const relative = `${target.pathname}${target.search}${target.hash}`;
+
+    //     console.log(
+    //       "Cleaning URL from:",
+    //       window.location.href,
+    //       "to:",
+    //       sameOrigin ? target.toString() : relative
+    //     );
+
+    //     window.history.replaceState(
+    //       {},
+    //       "",
+    //       sameOrigin ? target.toString() : relative
+    //     );
+    //   } catch (error) {
+    //     console.error("Error cleaning URL:", error);
+    //   }
+    // }, [cleanUrl]);
+
     // Helper function to create navigation URLs with session data
     const createNavUrl = (path) => {
-      const sessionData = encodeURIComponent(JSON.stringify(user));
-      const shopParam = encodeURIComponent(shop);
-      return `${path}?session_data=${sessionData}&shop=${shopParam}`;
+      const params = new URLSearchParams();
+
+      if (shop) params.set("shop", shop);
+
+      // ONLY pass session_data if full user exists
+      if (user?.user_id && user?.token) {
+        params.set("session_data", JSON.stringify(user));
+      }
+
+      return `${path}?${params.toString()}`;
     };
 
     // Helper function to handle navigation clicks
