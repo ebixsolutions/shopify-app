@@ -158,6 +158,7 @@ export const loader = async ({ request }) => {
         });
       }
     } catch (authError) {
+      if (authError instanceof Response) throw authError; // ✅ re-throw Shopify redirects
       console.log(
         "Shopify authenticate.admin failed; falling back to cookie-only session",
         authError,
@@ -232,6 +233,7 @@ export const loader = async ({ request }) => {
     console.log("No valid session found at all, redirecting to /auth/index");
     return redirect(`/auth/index?${url.searchParams.toString()}`);
   } catch (error) {
+    if (error instanceof Response) throw error; // ✅ re-throw Shopify redirects
     console.error("Error in app loader:", error);
     console.error("Error stack:", error.stack);
     return json({ error: "Internal server error" }, { status: 500 });
