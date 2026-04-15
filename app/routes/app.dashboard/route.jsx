@@ -286,9 +286,23 @@ export default function DashboardPage() {
     },
   };
 
+  const createNavUrl = (path) => {
+    const sessionData = encodeURIComponent(JSON.stringify(user));
+    const shopParam = encodeURIComponent(shop);
+    return `${path}?session_data=${sessionData}&shop=${shopParam}`;
+  };
+
+  const handleNavClick = (path) => (e) => {
+    e.preventDefault();
+    console.log(`${path} link clicked`);
+    const url = createNavUrl(path);
+    console.log("Navigating to:", url);
+    window.location.href = url;
+  };
+
 
   const handleSubscribe = () => {
-    navigate("/app/subscribe");
+    navigate("/app/plan");
   };
 
   const renderStatusButton = (status) => {
@@ -451,7 +465,7 @@ export default function DashboardPage() {
             ...Object.values(data),
             data.Status === "Inactive" ? (
               <div className={styles.customSubscribeButton}>
-                <Button size="micro" onClick={handleSubscribe}>
+                <Button size="micro" onClick={handleNavClick('/app/plan')}>
                   Subscribe
                 </Button>
               </div>
