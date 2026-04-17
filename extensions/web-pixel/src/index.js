@@ -99,4 +99,39 @@ register(({ settings, analytics, init }) => {
       sendData(payload);
     }
   });
+
+  analytics.subscribe('fastbuy_product_view', (event) => {
+    const customer = init.data.customer;
+    const cart = init.data.cart;
+
+    const variantId = event.data.variant_id;
+    const productId = event.data.product_id;
+
+    const Params = new URLSearchParams(event.context.window.location.search);
+
+    const payload = {
+      event_name: "product_viewed", 
+      customer_id: customer ? customer.id : null,
+      company_id: settings.company_id,
+      cart: cart ? {
+        totalPrice: cart.cost.totalAmount.amount,
+        totalQuantity: cart.totalQuantity,
+        lineItems: cart.lines.map(v => {
+          return {
+            id: v.merchandise.id,
+            price: v.merchandise.price.amount,
+            quantity: v.quantity
+          }
+        })
+      } : null,
+      event_data: {
+        variantId: variantId,
+        productId: productId
+      },
+      ecosphere_id: Params.get("ebix_ecosphere_id"),
+      auto_label: Params.get("ebix_auto_label")
+    };
+
+    sendData(payload);
+  });
 });
