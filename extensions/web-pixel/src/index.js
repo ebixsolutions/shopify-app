@@ -101,28 +101,36 @@ register(({ settings, analytics, init }) => {
   });
 
   analytics.subscribe('fastbuy_product_view', (event) => {
+    console.log("EVENT DEBUG", event);
+
     const customer = init.data.customer;
     const cart = init.data.cart;
 
-    const variantId = event.data.variant_id;
-    const productId = event.data.product_id;
+    // 🔥 FIX: safely access data
+    const data = event.data || event.customData || {};
+
+    const variantId = data.variant_id;
+    const productId = data.product_id;
+
+    if (!variantId) {
+      console.warn("FastBuy: variant_id missing", event);
+      return;
+    }
 
     const Params = new URLSearchParams(event.context.window.location.search);
 
     const payload = {
-      event_name: "product_viewed", 
+      event_name: "product_viewed",
       customer_id: customer ? customer.id : null,
       company_id: settings.company_id,
       cart: cart ? {
         totalPrice: cart.cost.totalAmount.amount,
         totalQuantity: cart.totalQuantity,
-        lineItems: cart.lines.map(v => {
-          return {
-            id: v.merchandise.id,
-            price: v.merchandise.price.amount,
-            quantity: v.quantity
-          }
-        })
+        lineItems: cart.lines.map(v => ({
+          id: v.merchandise.id,
+          price: v.merchandise.price.amount,
+          quantity: v.quantity
+        }))
       } : null,
       event_data: {
         variantId: variantId,
