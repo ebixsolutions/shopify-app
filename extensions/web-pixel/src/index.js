@@ -101,13 +101,12 @@ register(({ settings, analytics, init }) => {
   });
 
   analytics.subscribe('fastbuy_product_view', (event) => {
-    console.log("EVENT DEBUG", event);
+    console.log("Event Check", event);
 
     const customer = init.data.customer;
     const cart = init.data.cart;
 
-    // 🔥 FIX: safely access data
-    const data = event.data || event.customData || {};
+    const data = event.customData || {};
 
     const variantId = data.variant_id;
     const productId = data.product_id;
