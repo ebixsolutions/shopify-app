@@ -83,8 +83,20 @@ export const validateSessionMiddleware = async (request, shop) => {
 
       if (!response.error) {
         if (response.msg === "User Not Found" || response.msg === "New User") {
-          console.log("User not found, clearing session:", response.msg);
-          return { valid: false, error: "User not found", clearSession: true };
+          console.log(
+            "Session validated successfully:",
+            response.msg || response.message,
+          );
+          return new Response(
+            JSON.stringify({ message: "User not found, session destroyed." }),
+            {
+              headers: {
+                "Set-Cookie":
+                  "__session=; Max-Age=0; Path=/; HttpOnly; SameSite=Lax", // Clear the session cookie with proper settings
+              },
+              status: 200,
+            },
+          );
         } else {
           console.log("Valid session found for user:", user.user_id);
           return { user, valid: true }; // Valid session
