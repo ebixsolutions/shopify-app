@@ -372,7 +372,7 @@ window.onload = () => {
 
                         $("#ebix-pro-ref-code").text(data.invite_code || "");
 
-                        $("#refer-friend #facebook").attr("href", encodeURI(`https://www.facebook.com/sharer/sharer.php?u=${window.shopUrl}&t=Register and use this code: ${data.invite_code}`));
+                        $("#refer-friend #facebook").attr("href", encodeURI(`https://www.facebook.com/sharer/sharer.php?u=${window.location.origin}&t=Register and use this code: ${data.invite_code}`));
     
 
                         $("#refer-friend #email").click((e) => {
@@ -427,7 +427,7 @@ window.onload = () => {
                             ebix_generate_table(referral_rule, "ebix-ref-reward", ebix_Promotion.CustomerId && !referral_illigible);
                             const awardText = referral_rule[0]?.award || "";
                             $("#refer-friend #whatsapp").attr("href", encodeURI(
-                                `https://api.whatsapp.com/send?text=${window.shopUrl} \nSignup with code: ${data.invite_code} \nto ${awardText}`
+                                `https://api.whatsapp.com/send?text=${window.location.origin} \nSignup with code: ${data.invite_code} \nto ${awardText}`
                             ));
                         }
                         if (referral_rule.length > 0 || referral_history.length > 0 || data.reward != null) {
