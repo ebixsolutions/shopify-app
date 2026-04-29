@@ -10,18 +10,18 @@ import { useNavigate } from "react-router-dom";
 import styles from "./style.module.css";
 
 export const loader = async ({ request }) => {
-	const url = new URL(request.url);
+  const url = new URL(request.url);
   const { admin } = await authenticate.admin(request);
-  
+
   // Fetch shop details
   const shopDetails = await admin.rest.get({ path: "shop.json" });
   // Parse the response body
   const data = await shopDetails.json();
 
-  return json({ 
+  return json({
     apiKey: process.env.SHOPIFY_API_KEY || "",
     shopDetails: data.shop,
-	  url: url,
+    url: url,
     params: url.href
   });
 };
@@ -44,66 +44,67 @@ export default function RegisterPage() {
     setFormData((prevData) => ({ ...prevData, [field]: value }));
   };
   const handleSubmit = async (e) => {
-	e.preventDefault();
-	setIsSubmitting(true);
-	setErrors({}); // Clear previous errors
+    e.preventDefault();
+    setIsSubmitting(true);
+    setErrors({}); // Clear previous errors
 
-	// Define validation rules for this form
-	const validationRules = {
-		required: true,
-		lengthValidation: {
-		  password: { min: 6, max: 12 },
-		},
-		passwordMatch: true,
-	  };
-  
-	// Run validation using the helper function
-	const validationErrors = validateForm(formData, validationRules);
-	
-	// Check if there are any validation errors
-	if (Object.keys(validationErrors).length > 0) {
-	  console.log(validationErrors); // Debugging purpose
-	  toast.error("Please fix the errors in the form.");
-	  setErrors(validationErrors); // Set errors if validation fails
-	  setIsSubmitting(false); // Allow user to fix the errors
-	  return;
-	}
-  
-	const shopData = {
-	  shop: shopDetails.myshopify_domain,
-	  name: shopDetails.name,
-    shopify_session_id: shopDetails.id,
-	  email: formData.email,
-	  Sys_Language: "en",
-	  regType: 1,
-	  default_lang: "en",
-	  password: formData.password,
-	  password_confirmation: formData.confirmPassword,
-	  terms_privacy: formData.termsPrivacy,
-	}; //params
-  const url = new URL(params);
-  const queryParams = url.searchParams.toString();
-	try {
-	  const response = await api.registerShop(shopData,queryParams);
-	  if(response.code==0) {
-		toast.success(response.msg);
-    navigate("/auth/success", {  
-    state: { 
-    ...response.data, 
-    email: formData.email,
-    password: formData.password
-  } });
-	  }else {
-		toast.error(response.msg);
-	  }
-	  
-	} catch (error) {
-	  toast.error("An error occurred while registering. Please try again.");
-	} finally {
-	  setIsSubmitting(false);
-	}
+    // Define validation rules for this form
+    const validationRules = {
+      required: true,
+      lengthValidation: {
+        password: { min: 6, max: 12 },
+      },
+      passwordMatch: true,
+    };
+
+    // Run validation using the helper function
+    const validationErrors = validateForm(formData, validationRules);
+
+    // Check if there are any validation errors
+    if (Object.keys(validationErrors).length > 0) {
+      console.log(validationErrors); // Debugging purpose
+      toast.error("Please fix the errors in the form.");
+      setErrors(validationErrors); // Set errors if validation fails
+      setIsSubmitting(false); // Allow user to fix the errors
+      return;
+    }
+
+    const shopData = {
+      shop: shopDetails.myshopify_domain,
+      name: shopDetails.name,
+      shopify_session_id: shopDetails.id,
+      email: formData.email,
+      Sys_Language: "en",
+      regType: 1,
+      default_lang: "en",
+      password: formData.password,
+      password_confirmation: formData.confirmPassword,
+      terms_privacy: formData.termsPrivacy,
+    }; //params
+    const url = new URL(params);
+    const queryParams = url.searchParams.toString();
+    try {
+      const response = await api.registerShop(shopData, queryParams);
+      if (response.code == 0) {
+        toast.success(response.msg);
+        navigate("/auth/success", {
+          state: {
+            ...response.data,
+            email: formData.email,
+            password: formData.password
+          }
+        });
+      } else {
+        toast.error(response.msg);
+      }
+
+    } catch (error) {
+      toast.error("An error occurred while registering. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
-  
+
 
   return (
     <div className={styles.pageContainer}>
@@ -160,12 +161,28 @@ export default function RegisterPage() {
                   </div>
 
                   <div className="mb-3">
-                    <Checkbox
-                      label="I agree to the terms and privacy policy"
-                      checked={formData.termsPrivacy}
-                      onChange={handleChange("termsPrivacy")}
-                      error={errors.termsPrivacy}
-                    />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <Checkbox
+                        label=""
+                        checked={formData.termsPrivacy}
+                        onChange={handleChange("termsPrivacy")}
+                        error={errors.termsPrivacy}
+                      />
+                      <Text variant="bodyMd" as="span">
+                        I agree to the{' '}
+                        <a
+                          href="https://www.sup-uni.com/privacy_policy/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ color: '#2d9bf0', textDecoration: 'none' }}
+                        >
+                          terms and privacy policy
+                        </a>
+                      </Text>
+                    </div>
+                    {errors.termsPrivacy && (
+                      <InlineError message={errors.termsPrivacy} />
+                    )}
                   </div>
 
                   <div>
