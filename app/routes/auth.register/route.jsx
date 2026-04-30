@@ -160,12 +160,28 @@ export default function RegisterPage() {
                   </div>
 
                   <div className="mb-3">
-                    <Checkbox
-                      label="I agree to the terms and privacy policy"
-                      checked={formData.termsPrivacy}
-                      onChange={handleChange("termsPrivacy")}
-                      error={errors.termsPrivacy}
-                    />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <Checkbox
+                        label=""
+                        checked={formData.termsPrivacy}
+                        onChange={handleChange("termsPrivacy")}
+                        error={errors.termsPrivacy}
+                      />
+                      <Text variant="bodyMd" as="span">
+                        I agree to the{' '}
+                        <a 
+                          href="https://www.sup-uni.com/privacy-policy/" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          style={{ color: '#2d9bf0', textDecoration: 'none'}}
+                        >
+                          terms and privacy policy
+                        </a>
+                      </Text>
+                    </div>
+                    {errors.termsPrivacy && (
+                      <InlineError message={errors.termsPrivacy} />
+                    )}
                   </div>
 
                   <div>
