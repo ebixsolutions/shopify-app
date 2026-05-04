@@ -12,6 +12,8 @@ dotenv.config();
 
 const app = express();
 
+
+
 // Manually define __dirname for ES modules
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

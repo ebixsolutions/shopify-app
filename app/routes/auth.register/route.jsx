@@ -170,11 +170,11 @@ export default function RegisterPage() {
                       />
                       <Text variant="bodyMd" as="span">
                         I agree to the{' '}
-                        <a
-                          href="https://www.sup-uni.com/privacy_policy/"
-                          target="_blank"
+                        <a 
+                          href="https://www.sup-uni.com/privacy-policy/" 
+                          target="_blank" 
                           rel="noopener noreferrer"
-                          style={{ color: '#2d9bf0', textDecoration: 'none' }}
+                          style={{ color: '#2d9bf0', textDecoration: 'none'}}
                         >
                           terms and privacy policy
                         </a>
