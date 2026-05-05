@@ -331,43 +331,70 @@ export default function App() {
     return (
       <AppProvider isEmbeddedApp apiKey={apiKey}>
         <AppContext.Provider value={{ shop, user, token }}>
-        <NavMenu>
-          <Link
+          <NavMenu>
+            <Link
               to={createNavUrl("/app")}
               onClick={handleNavClick("/app")}
               rel="home"
             >
-            Home
-          </Link>
-          <a href={createNavUrl('/app')} onClick={handleNavClick('/app')}>
-            Home
-          </a>
-          <a href={createNavUrl('/app/dashboard')} onClick={handleNavClick('/app/dashboard')}>
-            Dashboard
-          </a>
-          <a href={createNavUrl('/app/behavior_settings')} onClick={handleNavClick('/app/behavior_settings')}>
-            Behavior Tracking Settings
-          </a>
-          <a href={createNavUrl('/app/point_settings')} onClick={handleNavClick('/app/point_settings')}>
-            Points Settings
-          </a>
-          <a href={createNavUrl('/app/referral')} onClick={handleNavClick('/app/referral')}>
-            Referral
-          </a>
-          <a href={createNavUrl('/app/loyalty')} onClick={handleNavClick('/app/loyalty')}>
-            Loyalty
-          </a>
-          <a href={createNavUrl('/app/member_points_record')} onClick={handleNavClick('/app/member_points_record')}>
-            Points Management
-          </a>
-          <a href={createNavUrl('/app/my_account')} onClick={handleNavClick('/app/my_account')}>
-            My Account
-          </a>
-          <a href={createNavUrl('/app/plan')} onClick={handleNavClick('/app/plan')}>
-            Plan
-          </a>
-        </NavMenu>
-        <Outlet/>
+              Home
+            </Link>
+            <Link
+              to={createNavUrl("/app/home")}
+              onClick={handleNavClick("/app/home")}
+            >
+              Home
+            </Link>
+            <Link
+              to={createNavUrl("/app/dashboard")}
+              onClick={handleNavClick("/app/dashboard")}
+            >
+              Dashboard
+            </Link>
+            <Link
+              to={createNavUrl("/app/behavior_settings")}
+              onClick={handleNavClick("/app/behavior_settings")}
+            >
+              Behavior Tracking Settings
+            </Link>
+            <Link
+              to={createNavUrl("/app/point_settings")}
+              onClick={handleNavClick("/app/point_settings")}
+            >
+              Points Settings
+            </Link>
+            <Link
+              to={createNavUrl("/app/referral")}
+              onClick={handleNavClick("/app/referral")}
+            >
+              Referral
+            </Link>
+            <Link
+              to={createNavUrl("/app/loyalty")}
+              onClick={handleNavClick("/app/loyalty")}
+            >
+              Loyalty
+            </Link>
+            <Link
+              to={createNavUrl("/app/member_points_record")}
+              onClick={handleNavClick("/app/member_points_record")}
+            >
+              Points Management
+            </Link>
+            <Link
+              to={createNavUrl("/app/my_account")}
+              onClick={handleNavClick("/app/my_account")}
+            >
+              My Account
+            </Link>
+            <Link
+              to={createNavUrl("/app/plan")}
+              onClick={handleNavClick("/app/plan")}
+            >
+              Plan
+            </Link>
+          </NavMenu>
+          <Outlet />
         </AppContext.Provider>
       </AppProvider>
     );

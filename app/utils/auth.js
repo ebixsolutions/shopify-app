@@ -63,16 +63,18 @@ export const validateSessionMiddleware = async (request, shop) => {
     const isBillingFlow =
       url.searchParams.get("billing_id") || url.searchParams.get("charge_id");
 
-    if (
-      user?.domain &&
-      currentShop &&
-      !isBillingFlow &&
-      !currentShop.includes(user.domain.replace(".myshopify.com", ""))
-    ) {
+    const normalize = (shop) => shop?.toLowerCase().trim();
+
+    const userShop = normalize(user?.shop);
+    const current = normalize(currentShop);
+
+    if (userShop && current && !isBillingFlow && userShop !== current) {
       console.log("Store changed → redirect login");
+      console.log("domain", user?.domain);
+      console.log("shop", user?.shop);
+      console.log("currentShop", currentShop);
       user = null;
     }
-
     if (user && user.user_id && user.token) {
       const v_user = {
         user_id: user.user_id,
