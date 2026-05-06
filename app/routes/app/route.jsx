@@ -42,13 +42,6 @@ export const loader = async ({ request }) => {
         console.log("User from URL session_data:", user?.user_id);
 
         const shopFromUrl = url.searchParams.get("shop");
-        // Optional safety: match user.shop if you store shop on user
-        if (user?.shop && shopFromUrl && shopFromUrl !== user.shop) {
-          console.log(
-            "Shop mismatch between URL and user.session_data; ignoring URL user",
-          );
-          user = null;
-        }
 
         if (user && user.user_id && user.token) {
           const shop =
