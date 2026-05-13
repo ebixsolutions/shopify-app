@@ -1,5 +1,11 @@
 window.onload = () => {
 
+    const widget = document.getElementById("ebix-embeded");
+
+    if (widget && widget.parentNode !== document.body) {
+        document.body.appendChild(widget);
+    }
+
     function ebix_getCookie(cname) {
         let name = cname + "=";
         let decodedCookie = decodeURIComponent(document.cookie);
@@ -474,19 +480,25 @@ window.onload = () => {
         e.stopPropagation();
         $("#ebix-embeded-btn").css("display", "none")
     });
-    $("#ebix-embeded-btn").click((e) => {
-        $(".ebix-modal").toggleClass("show")
+    $(document).on("click", "#ebix-embeded-btn", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        $(".ebix-modal").toggleClass("show");
     });
 
     // modal action
-    $(".ebix-modal-close").click((e) => {
-        $(".ebix-modal").toggleClass("show")
+    $(document).on("click", ".ebix-modal-close", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        $(".ebix-modal").toggleClass("show");
     });
-    $(".ebix-modal-content").click((e) => {
+    $(document).on("click", ".ebix-modal-content", function (e) {
         e.stopPropagation();
     });
-    $(".ebix-modal").click((e) => {
-        $(".ebix-modal").toggleClass("show")
+    $(document).on("click", ".ebix-modal", function () {
+        $(".ebix-modal").toggleClass("show");
     });
 
     function ebix_copyCode(ele) {
