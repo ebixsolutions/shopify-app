@@ -638,9 +638,21 @@
                     if (offerElement) {
 
                         // spacing between offer and button
+                        const isDrawer =
+                            button.closest('.drawer') ||
+                            button.closest('.cart-drawer') ||
+                            button.closest('.ajaxcart') ||
+                            button.closest('.drawer__footer');
+
+                        // spacing between offer and button
                         offerElement.style.marginBottom = "12px";
                         offerElement.style.display = "block";
-                        offerElement.style.width = "100%";
+
+                        // Drawer -> full width
+                        // Full cart page -> fixed width
+                        offerElement.style.width =
+                            isDrawer ? "100%" : "45%";
+
                         offerElement.style.textAlign = "left";
 
                         // wrapper for next line alignment
