@@ -11,6 +11,8 @@ import {
   import 'react-toastify/dist/ReactToastify.css';
   import './styles/utilities.css';
   import './styles/style.css';
+
+  export { addDocumentResponseHeaders } from "~/shopify.server";
   
   // Shopify needs Remix to catch some thrown responses, so that their headers are included in the response.
   export function ErrorBoundary({ error }) {
