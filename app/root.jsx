@@ -12,6 +12,7 @@ import {
   import './styles/utilities.css';
   import './styles/style.css';
   
+  
   // Shopify needs Remix to catch some thrown responses, so that their headers are included in the response.
   export function ErrorBoundary({ error }) {
 	  console.error("Unhandled error in app:", error);
