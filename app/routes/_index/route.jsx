@@ -14,46 +14,30 @@ export const loader = async ({ request }) => {
     return json({ error: "Missing shop parameter" }, { status: 400 });
   }
 
-  const api_url = process.env.API_BASE_URL;
-  if (!api_url) {
-    console.error("Missing API_BASE_URL environment variable");
-    return json({ error: "Server configuration error" }, { status: 500 });
-  }
-
-  const sessionValidation = await validateSessionMiddleware(request);
-  console.log(sessionValidation);
-
-  if (sessionValidation.valid) {
-    return redirect(`/app?${url.searchParams.toString()}`);
-  }
-
-  if (sessionValidation.error === "Unauthorized") {
-    return redirect(`/auth/logout?${url.searchParams.toString()}`);
-  }
-if(shop && !sessionValidation.valid)
-  console.log("enterning")
-
+  const { admin, session } = await authenticate.admin(request);
 
   try {
-    const { admin, session } = await authenticate.admin(request);
-    const accessToken = session.accessToken;
-
-    // Get shop details
     const shopDetails = await admin.rest.get({ path: "shop.json" });
     const data = await shopDetails.json();
+
     const shopId = data.shop?.id || null;
     const domain = data.shop?.domain || null;
-    const shopData = { shop, accessToken, shopId, domain };
+
+    const shopData = {
+      shop,
+      accessToken: session.accessToken,
+      shopId,
+      domain,
+    };
 
     const response = await api.createShop(shopData);
-    console.log(response)
-		const responseKey = response?.data?.key;
-  
-		if (response?.data?.shop_id) {
-		  url.searchParams.set("shopify_session_id", response.data?.shop_id);
-		}
+    const responseKey = response?.data?.key;
 
-		console.log("responseKey", responseKey);
+    if (response?.data?.shop_id) {
+      url.searchParams.set("shopify_session_id", response.data.shop_id);
+    }
+
+    console.log("responseKey", responseKey);
 
     switch (responseKey) {
       case "login_page":
@@ -64,7 +48,6 @@ if(shop && !sessionValidation.valid)
       case "enable_app_page":
         return redirect(`/auth/app_enable?${url.searchParams.toString()}`);
       default:
-        console.error("Unrecognized response key:", responseKey);
         return json({ error: "Unhandled response key" }, { status: 500 });
     }
   } catch (error) {
