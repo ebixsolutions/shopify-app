@@ -14,10 +14,12 @@ export const loader = async ({ request }) => {
     return json({ error: "Missing shop parameter" }, { status: 400 });
   }
 
-  // ✅ MUST BE FIRST
-  const { admin, session } = await authenticate.admin(request);
+  const api_url = process.env.API_BASE_URL;
+  if (!api_url) {
+    console.error("Missing API_BASE_URL environment variable");
+    return json({ error: "Server configuration error" }, { status: 500 });
+  }
 
-  // 👇 Now (optionally) run your custom validation
   const sessionValidation = await validateSessionMiddleware(request);
   console.log(sessionValidation);
 
@@ -28,25 +30,30 @@ export const loader = async ({ request }) => {
   if (sessionValidation.error === "Unauthorized") {
     return redirect(`/auth/logout?${url.searchParams.toString()}`);
   }
+if(shop && !sessionValidation.valid)
+  console.log("enterning")
+
 
   try {
+    const { admin, session } = await authenticate.admin(request);
     const accessToken = session.accessToken;
 
+    // Get shop details
     const shopDetails = await admin.rest.get({ path: "shop.json" });
     const data = await shopDetails.json();
-
     const shopId = data.shop?.id || null;
     const domain = data.shop?.domain || null;
-
     const shopData = { shop, accessToken, shopId, domain };
 
     const response = await api.createShop(shopData);
-    const responseKey = response?.data?.key;
+    console.log(response)
+		const responseKey = response?.data?.key;
+  
+		if (response?.data?.shop_id) {
+		  url.searchParams.set("shopify_session_id", response.data?.shop_id);
+		}
 
-    if (response?.data?.shop_id) {
-      url.searchParams.set("shopify_session_id", response.data.shop_id);
-    }
-    console.log("responseKey", responseKey);
+		console.log("responseKey", responseKey);
 
     switch (responseKey) {
       case "login_page":
