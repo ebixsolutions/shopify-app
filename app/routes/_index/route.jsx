@@ -34,66 +34,17 @@ if(shop && !sessionValidation.valid)
   console.log("enterning")
 
 
-  // try {
-  //   const { admin, session } = await authenticate.admin(request);
-  //   const accessToken = session.accessToken;
-
-  //   // Get shop details
-  //   const shopDetails = await admin.rest.get({ path: "shop.json" });
-  //   const data = await shopDetails.json();
-  //   const shopId = data.shop?.id || null;
-  //   const domain = data.shop?.domain || null;
-  //   const shopData = { shop, accessToken, shopId, domain };
-
-  //   const response = await api.createShop(shopData);
-  //   console.log(response)
-	// 	const responseKey = response?.data?.key;
-  
-	// 	if (response?.data?.shop_id) {
-	// 	  url.searchParams.set("shopify_session_id", response.data?.shop_id);
-	// 	}
-
-	// 	console.log("responseKey", responseKey);
-
-  //   switch (responseKey) {
-  //     case "login_page":
-  //       return redirect(`/auth/index?${url.searchParams.toString()}`);
-  //     case "shop_register":
-  //     case "registration_page":
-  //       return redirect(`/auth/register?${url.searchParams.toString()}`);
-  //     case "enable_app_page":
-  //       return redirect(`/auth/app_enable?${url.searchParams.toString()}`);
-  //     default:
-  //       console.error("Unrecognized response key:", responseKey);
-  //       return json({ error: "Unhandled response key" }, { status: 500 });
-  //   }
-  // } catch (error) {
-  //   console.error("Error during loader execution:", error);
-  //   return json({ error: "Error processing request" }, { status: 500 });
-  // }
-
-  let admin, session;
   try {
-    const result = await authenticate.admin(request);
-    admin = result.admin;
-    session = result.session;
-  } catch (error) {
-    // Shopify throws a Response (302 redirect) to re-authenticate — must re-throw it
-    if (error instanceof Response) {
-      throw error;
-    }
-    console.error("Error during authenticate.admin:", error);
-    return json({ error: "Error processing request" }, { status: 500 });
-  }
-
-  try {
+    const { admin, session } = await authenticate.admin(request);
     const accessToken = session.accessToken;
+
     // Get shop details
     const shopDetails = await admin.rest.get({ path: "shop.json" });
     const data = await shopDetails.json();
     const shopId = data.shop?.id || null;
     const domain = data.shop?.domain || null;
     const shopData = { shop, accessToken, shopId, domain };
+
     const response = await api.createShop(shopData);
     console.log(response)
 		const responseKey = response?.data?.key;
@@ -101,7 +52,9 @@ if(shop && !sessionValidation.valid)
 		if (response?.data?.shop_id) {
 		  url.searchParams.set("shopify_session_id", response.data?.shop_id);
 		}
+
 		console.log("responseKey", responseKey);
+
     switch (responseKey) {
       case "login_page":
         return redirect(`/auth/index?${url.searchParams.toString()}`);
@@ -115,13 +68,9 @@ if(shop && !sessionValidation.valid)
         return json({ error: "Unhandled response key" }, { status: 500 });
     }
   } catch (error) {
-    if (error instanceof Response) {
-      throw error;
-    }
     console.error("Error during loader execution:", error);
     return json({ error: "Error processing request" }, { status: 500 });
   }
-
 };
 export default function App() {
   const { showForm } = useLoaderData();
