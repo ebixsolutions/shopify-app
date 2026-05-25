@@ -36,25 +36,25 @@ if(shop && !sessionValidation.valid)
 
 
   try {
+    console.log("→ Before authenticate.admin");
     const { admin, session } = await authenticate.admin(request);
+    console.log("→ After authenticate.admin (success)");
     const accessToken = session.accessToken;
-
-    // Get shop details
+    console.log("→ Got access token"); // Get shop details
     const shopDetails = await admin.rest.get({ path: "shop.json" });
+    console.log("→ Got shop details");
     const data = await shopDetails.json();
     const shopId = data.shop?.id || null;
     const domain = data.shop?.domain || null;
     const shopData = { shop, accessToken, shopId, domain };
-
     const response = await api.createShop(shopData);
-    console.log(response)
-		const responseKey = response?.data?.key;
-  
-		if (response?.data?.shop_id) {
-		  url.searchParams.set("shopify_session_id", response.data?.shop_id);
-		}
+    console.log(response);
+    const responseKey = response?.data?.key;
+    if (response?.data?.shop_id) {
+      url.searchParams.set("shopify_session_id", response.data?.shop_id);
+    }
 
-		console.log("responseKey", responseKey);
+    console.log("responseKey", responseKey);
 
     switch (responseKey) {
       case "login_page":
@@ -69,6 +69,11 @@ if(shop && !sessionValidation.valid)
         return json({ error: "Unhandled response key" }, { status: 500 });
     }
   } catch (error) {
+    console.log("→ Caught error:", {
+      isResponse: isResponseLike(error),
+      status: error?.status,
+      location: error?.headers?.get?.("Location") || error?.headers?.location,
+    });
     if (isResponseLike(error)) throw error;
     console.error("Error during loader execution:", error, {
       type: error?.constructor?.name,
