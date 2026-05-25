@@ -32,6 +32,15 @@ app.use(express.static(clientBuildPath));
 app.use(
   '/api',
   async (req, res, next) => {
+    if (req.url.includes("%27") || req.url.includes("'")) {
+      console.log("🚨 STRAY QUOTE DETECTED");
+      console.log("   req.url:        ", req.url);
+      console.log("   req.originalUrl:", req.originalUrl);
+      console.log("   x-forwarded-for:", req.headers["x-forwarded-for"]);
+      console.log("   x-forwarded-host:", req.headers["x-forwarded-host"]);
+      console.log("   x-real-ip:      ", req.headers["x-real-ip"]);
+      console.log("   user-agent:     ", req.headers["user-agent"]);
+    }
     try {
       const session = await getSession(req);
       const user = session.get('user');
