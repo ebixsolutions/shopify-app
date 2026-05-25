@@ -5,6 +5,7 @@ import { authenticate } from "../../shopify.server";
 import api from "../../api/auth";
 import styles from "./styles.module.css";
 import { validateSessionMiddleware } from "../../utils/auth";
+import { isResponseLike } from "../../utils/response";
 
 export const loader = async ({ request }) => {
   const url = new URL(request.url);
@@ -68,7 +69,12 @@ if(shop && !sessionValidation.valid)
         return json({ error: "Unhandled response key" }, { status: 500 });
     }
   } catch (error) {
-    console.error("Error during loader execution:", error);
+    if (isResponseLike(error)) throw error;
+    console.error("Error during loader execution:", error, {
+      type: error?.constructor?.name,
+      status: error?.status,
+      location: error?.headers?.get?.("Location"),
+    });
     return json({ error: "Error processing request" }, { status: 500 });
   }
 };
