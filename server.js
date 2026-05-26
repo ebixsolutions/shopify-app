@@ -31,6 +31,10 @@ app.use(express.static(clientBuildPath));
 // Proxy middleware for API requests
 app.use(
   '/api',
+(req, res, next) => {
+    console.log('🔥 API proxy hit:', req.originalUrl);
+   next();
+  },
   async (req, res, next) => {
     if (req.url.includes("%27") || req.url.includes("'")) {
       console.log("🚨 STRAY QUOTE DETECTED");
@@ -60,6 +64,14 @@ app.use(
     changeOrigin: true,
     pathRewrite: { '^/api': '' },
     logLevel: 'debug',
+    onProxyReq(proxyReq, req) {
+      console.log(
+        '➡️ Proxying:',
+        req.originalUrl,
+        '->',
+        API_BASE_URL + req.originalUrl.replace(/^\/api/, '')
+      );
+    },
     onError(err, req, res) {
       console.error('Proxy error:', err.message);
       if (!res.headersSent) {

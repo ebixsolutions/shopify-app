@@ -137,6 +137,8 @@ service.interceptors.response.use(
     } else {
       // alert("Please try again later!")
     }
+          // Always reject the error so callers can handle it properly
+    return Promise.reject(error);
   },
 );
 
