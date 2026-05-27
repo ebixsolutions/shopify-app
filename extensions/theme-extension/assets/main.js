@@ -376,7 +376,7 @@
                                     "beforebegin",
                                     container
                                 );
-                            }else if (productDescription) {
+                            } else if (productDescription) {
 
                                 // SHOW AFTER PRODUCT DESCRIPTION
                                 productDescription.insertAdjacentElement(
@@ -684,10 +684,12 @@
 
                         // Drawer -> full width
                         // Full cart page -> fixed width
-                        offerElement.style.width =
-                            isDrawer
-                                ? "100%"
-                                : `${button.offsetWidth}px`;
+                        if (button.offsetWidth > 400) {
+                            offerElement.style.width =
+                                isDrawer
+                                    ? "100%"
+                                    : `${button.offsetWidth}px`;
+                        }
 
                         offerElement.style.textAlign = "left";
 
@@ -697,8 +699,10 @@
                         const wrapper = document.createElement("div");
                         wrapper.style.display = "flex";
                         wrapper.style.justifyContent = "flex-end";
+                        if (button.offsetWidth > 400) {
                         wrapper.style.maxWidth =
                             `${button.offsetWidth}px`;
+                        }
 
                         wrapper.style.width = "100%";
 
