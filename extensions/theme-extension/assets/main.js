@@ -655,10 +655,15 @@
 
                         offerElement.style.textAlign = "left";
 
-                        // wrapper for next line alignment
+                       const buttonWidth =
+                        button.getBoundingClientRect().width;
+
                         const wrapper = document.createElement("div");
                         wrapper.style.display = "flex";
                         wrapper.style.justifyContent = "flex-end";
+                        wrapper.style.maxWidth =
+                            `${button.offsetWidth}px`;
+
                         wrapper.style.width = "100%";
 
                         wrapper.appendChild(offerElement);
