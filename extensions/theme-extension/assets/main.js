@@ -351,6 +351,40 @@
 
                         if (block.children.length > 0) {
                             container.style.display = "block";
+
+                            // PRODUCT DESCRIPTION SELECTORS
+                            const productDescription =
+                                document.querySelector(".product__description") ||
+                                document.querySelector(".product-description") ||
+                                document.querySelector(".product-single__description") ||
+                                document.querySelector(".product__accordion") ||
+                                document.querySelector(".rte");
+
+                            // ADD TO CART AREA
+                            const addToCartButton =
+                                document.querySelector('form[action*="/cart/add"] button[type="submit"]') ||
+                                document.querySelector('button[name="add"]') ||
+                                document.querySelector('.product-form__submit') ||
+                                document.querySelector('.add-to-cart') ||
+                                document.querySelector('[data-add-to-cart]');
+
+                            // MOVE CONTAINER
+                            if (addToCartButton) {
+
+                                // SHOW BEFORE ADD TO CART BUTTON
+                                addToCartButton.insertAdjacentElement(
+                                    "beforebegin",
+                                    container
+                                );
+                            }else if (productDescription) {
+
+                                // SHOW AFTER PRODUCT DESCRIPTION
+                                productDescription.insertAdjacentElement(
+                                    "afterend",
+                                    container
+                                );
+
+                            }
                         }
                     }
                 })
@@ -651,12 +685,14 @@
                         // Drawer -> full width
                         // Full cart page -> fixed width
                         offerElement.style.width =
-                            isDrawer ? "100%" : "45%";
+                            isDrawer
+                                ? "100%"
+                                : `${button.offsetWidth}px`;
 
                         offerElement.style.textAlign = "left";
 
-                       const buttonWidth =
-                        button.getBoundingClientRect().width;
+                        const buttonWidth =
+                            button.getBoundingClientRect().width;
 
                         const wrapper = document.createElement("div");
                         wrapper.style.display = "flex";
