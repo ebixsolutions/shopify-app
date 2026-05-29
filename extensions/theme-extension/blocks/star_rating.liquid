@@ -1,214 +1,1213 @@
 {%- style -%}
+
+  .ebix-modal{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.5);
+    z-index:9999;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .ebix-modal.show{
+    display:flex;
+  }
+
+  .ebix-modal-dialog{
+    width:100%;
+    max-width:540px;
+    margin:20px;
+  }
+
   .ebix-modal-header{
-    background: {{ block.settings.header_background_color }};
-    color: {{ block.settings.header_text_color }};
+    background:#111111;
+    color:#ffffff;
+    text-align:center;
+    position:relative;
+    font-weight:700;
+    letter-spacing:.5px;
+    display: block;
+    padding: 24px;
+  }
+
+  .ebix-modal-title{
+    margin:0;
+    font-size:15px;
+    font-weight:800;
   }
 
   .ebix-modal-close{
-    color: {{ block.settings.header_text_color }};
+    color:#ffffff;
+    position:absolute;
+    right:14px;
+    top:5px;
+    background:none;
+    border:none;
+    font-size:24px;
+    cursor:pointer;
   }
 
-  .ebix-card-btn{
-    background: {{ block.settings.header_background_color }};
-    color: {{ block.settings.header_text_color }};
+  .ebix-modal-content{
+    border-radius:26px;
+    overflow:hidden;
+    background:#fff;
   }
 
-    .ebix-card-btn1{
-    background: {{ block.settings.header_background_color }};
-    color: {{ block.settings.header_text_color }};
+  .ebix-modal-body{
+    padding:0;
+    background:#fff;
   }
+
+  /* =========================
+      DASHBOARD
+  ========================= */
+
+  #ebix-loyalty-dashboard{
+    font-family:Inter,sans-serif;
+    background:#fff;
+  }
+
+  .ebix-wallet-header{
+    padding:20px 24px 10px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:2px;
+  }
+  .wallet-title-row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+  .wallet-label{
+    margin:0;
+    font-size:16px;
+    font-weight:800;
+    color:#111;
+    line-height:1;
+  }
+
+  .wallet-tier{
+    display:inline;
+    align-items:center;
+  }
+
+  #ebix-tier{
+      display:inline;
+      align-items:center;
+      justify-content:center;
+      background:#f7e58b;
+      color:#000;
+      border-radius:999px;
+      padding:6px 18px;
+      font-size:11px;
+      font-weight:700;
+      line-height:1;
+  }
+
+  .wallet-value-card{
+    text-align:right;
+  }
+
+  .wallet-value-card p{
+    margin:0;
+    color:#7d7d7d;
+    font-size:11px;
+  }
+
+  .wallet-value-card h3{
+    margin:6px 0 0;
+    color:#1570ff;
+    font-size:60px;
+    line-height:1;
+    font-weight:800;
+  }
+
+  .ebix-history-tabs{
+    display:flex;
+    border-bottom:1px solid #e7e7e7;
+    margin-top:10px;
+  }
+
+  .ebix-history-tabs button{
+    flex:1;
+    background:none;
+    border:none;
+    padding:16px 10px;
+    font-size:13px;
+    color:#666;
+    cursor:pointer;
+    position:relative;
+  }
+
+  .ebix-history-tabs button.active{
+    color:#1570ff;
+    font-weight:700;
+  }
+
+  .ebix-history-tabs button.active:after{
+    content:'';
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:100%;
+    height:3px;
+    background:#1570ff;
+  }
+
+  .ebix-dashboard-content{
+    padding:22px;
+  }
+
+  .ebix-section-title{
+    font-size:15px;
+    font-weight:800;
+    color:#111;
+    margin-bottom:14px;
+  }
+
+  /* =========================
+      TASK CARD
+  ========================= */
+
+  .ebix-task-card{
+    background:#f4f4f6;
+    border-radius:14px;
+    padding:16px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:14px;
+  }
+
+  .ebix-task-left{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+
+  .ebix-task-icon{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+  }
+
+  .ebix-task-info h4{
+    margin:0;
+    font-size:14px;
+    color:#111;
+    font-weight:700;
+  }
+
+  .ebix-task-info span{
+    color:#1570ff;
+    font-size:13px;
+    font-weight:700;
+  }
+
+  .ebix-task-btn{
+    border:1px solid #1570ff;
+    background:#fff;
+    color:#1570ff;
+    border-radius:8px;
+    padding:8px 18px;
+    font-size:12px;
+    font-weight:700;
+    cursor:pointer;
+  }
+
+  .ebix-task-btn.completed{
+    border:none;
+    background:#ebfff2;
+    color:#22a55a;
+  }
+
+  .ebix-task-btn.view-btn{
+    border:1px solid #1570ff;
+    background:#fff;
+    color:#1570ff;
+    border-radius:8px;
+    padding:8px 18px;
+    font-size:12px;
+    font-weight:700;
+    cursor:pointer;
+  }
+
+  .ebix-task-btn.order-btn{
+    border:1px solid #1570ff;
+    background:#fff;
+    color:#1570ff;
+    border-radius:8px;
+    padding:8px 18px;
+    font-size:12px;
+    font-weight:700;
+    cursor:pointer;
+  }
+
+  /* =========================
+      REFERRAL BOX
+  ========================= */
+
+  .ebix-referral-box{
+    border:1px dashed #4ea0ff;
+    background:#f8fbff;
+    border-radius:16px;
+    padding:18px;
+  }
+
+  .ebix-ref-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    flex-wrap:nowrap;
+  }
+
+  .ebix-referral-code-label{
+    color:#1570ff;
+    font-size:11px;
+    font-weight:800;
+    margin-bottom:8px;
+  }
+
+  .ebix-referral-code{
+    font-size:24px;
+    font-weight:900;
+    color:#111;
+    letter-spacing:1px;
+  }
+
+  .ebix-referral-code-small{
+    font-size:18px;
+    font-weight:800;
+  }
+
+  .ebix-ref-right{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+}
+
+.ebix-copy-btn{
+  border:none;
+  background:#111;
+  color:#fff;
+  border-radius:6px;
+  padding:8px 16px;
+  cursor:pointer;
+  font-size:11px;
+}
+
+.ebix-quick-share-label{
+  font-size:10px;
+  font-weight:700;
+  color:#666;
+  text-transform:uppercase;
+  margin-top:2px;
+}
+
+ .ebix-share-icons{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+ .ebix-share-icons a,
+.ebix-share-icons span{
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  background:#fff;
+  border:1px solid #ddd;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  text-decoration:none;
+  color:#111;
+}
+
+  /* =========================
+      REDEEM
+  ========================= */
+
+  .ebix-redeem-main-btn{
+    width:100%;
+    border:none;
+    background:#111;
+    color:#fff;
+    border-radius:10px;
+    padding:15px;
+    font-size:14px;
+    font-weight:800;
+    cursor:pointer;
+  }
+
+  .ebix-redeem-note{
+    text-align:center;
+    margin-top:16px;
+    color:#777;
+    font-size:12px;
+    line-height:2;
+  }
+
+  .ebix-login-prompt{
+    text-align:center;
+    padding:40px 20px;
+  }
+
+  .ebix-login-prompt p{
+    color:#666;
+    font-size:13px;
+    margin:0 0 20px 0;
+  }
+
+  .ebix-login-btn{
+    background:#111;
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    padding:12px 24px;
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+  }
+
+  .ebix-coupon-box{
+    margin-top:18px;
+    border:1px dashed #4ea0ff;
+    background:#f8fbff;
+    border-radius:14px;
+    padding:16px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+
+  .ebix-max-note{
+    margin-top:12px;
+    text-align:center;
+    font-size:12px;
+    color:#666;
+  }
+
+  /* =========================
+      HISTORY
+  ========================= */
+
+  #ebix-history-list{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+
+  .ebix-history-item{
+    border:1px solid #ececec;
+    border-radius:14px;
+    padding:14px;
+  }
+
+  .ebix-history-top{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+  }
+
+  .ebix-history-top h4{
+    margin:0;
+    font-size:13px;
+    color:#111;
+  }
+
+  .ebix-points-credit{
+    color:#1570ff;
+    font-weight:800;
+    font-size:13px;
+  }
+
+  .ebix-points-debit{
+    color:#ff4d4f;
+    font-weight:800;
+    font-size:13px;
+  }
+
+  .ebix-history-date{
+    margin-top:8px;
+    color:#888;
+    font-size:11px;
+    text-transform:lowercase;
+  }
+/* TASK CARDS */
+.ebix-task-card {
+  background: #f4f4f6;
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.ebix-task-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.ebix-task-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.ebix-task-info h4 {
+  margin: 0 0 2px;
+  font-size: 13px;
+  color: #111;
+  font-weight: 700;
+}
+
+.ebix-task-info h4 a {
+  color: #111;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.ebix-task-award {
+  color: #1570ff;
+  font-size: 12px;
+  font-weight: 700;
+  margin-left: 8px;
+}
+
+.ebix-quick-share{
+  margin-top:16px;
+}
+
+.ebix-quick-share-label{
+  font-size:12px;
+  font-weight:700;
+  color:#666;
+  margin-bottom:0;
+  margin-right:10px;
+  white-space:nowrap;
+}
+
+.ebix-task-status-done {
+  background: #ebfff2;
+  color: #22a55a;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  border: none;
+  white-space: nowrap;
+}
+
+.ebix-task-status-pending {
+  background: #fff;
+  color: #1570ff;
+  border: 1px solid #1570ff;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.ebix-task-status-done {
+    background: #ebfff2;
+    color: #22a55a;
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    border: none;
+    white-space: nowrap;
+    cursor: default;
+}
+
+.ebix-task-status-pending {
+    background: #fff;
+    color: #1570ff;
+    border: 1px solid #1570ff;
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.ebix-task-award {
+    color: #1570ff;
+    font-size: 12px;
+    font-weight: 700;
+    margin-left: 8px;
+    display: inline;
+}
 {%- endstyle -%}
 
-<div id="custom-offer-widget" style="background-color: #f4f4f4; display:none; border: 1px solid #ddd; border-radius: 10px; padding: 14px 16px; margin: 15px auto; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08); font-family: 'Segoe UI', sans-serif; max-width: 460px; color: #333;">
-  <div style="font-weight: bold; font-size: 17px; margin-bottom: 10px;">🎉 You're a Special Customer!</div>
-
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 8px;">
-  <p style="background: #f0f0f0; color: #444; border-radius: 5px; font-size: 15px; margin: 0; padding: 6px 10px;">
-    Special offer just for you:
-    <del style="color: rgb(99, 23, 23); margin: 0 6px;" id="unit-price">₹340</del>
-    <span style="color: #28a745; font-weight: bold; font-size: 16px;" id="spl-price">₹200 Only</span>
-  </p>
-</div>
-
-  <div>
-    <p style="font-size: 16px; color: #666; margin-top: 4px; margin-bottom: 0;">✨ The offer will be applied at checkout.</p>
-  </div>
-</div>
-
-<div id="Promotion-List" style="display: none;">
-  <div style="font-weight: bold; font-size: 17px; margin-bottom: 10px;">Extra Deals</div>
-  <div class="Promotion-List-block">
-    <div class="Promotion-List-offer-box">
-      <div class="offerType">
-        <div class="Promotion-List-offer-label">OFFER</div>
-      </div>
-      <div class="Promotion-List-offer-text">Get 10% off</div>
-    </div>
-  </div>
-</div>
-
 <div id="ebix-embeded">
+
   <div id="ebix-embeded-btn" style="{{ block.settings.position }}">
     <div class="ebix-embeded-close-btn">×</div>
     <img src="{{ 'giftbox.svg' | asset_url }}" alt="promotion" width="40" height="40">
   </div>
 
-  <!-- Modal -->
   <div class="ebix-modal">
+
     <div class="ebix-modal-dialog">
+
       <div class="ebix-modal-content">
-        <div
-          class="ebix-modal-header"
-        >
-          <p class="ebix-modal-title">{{ block.settings.header_text }}</p>
-          <button type="button" class="ebix-modal-close">×</button>
+
+        <!-- HEADER -->
+
+        <div class="ebix-modal-header">
+
+          <p class="ebix-modal-title">
+            ★ REFER FRIENDS & EARN POINTS ★
+          </p>
+
+          <button type="button" class="ebix-modal-close">
+            ×
+          </button>
+
         </div>
+
+        <!-- BODY -->
 
         <div class="ebix-modal-body">
-          {% if customer %}
-            <h6 class="title">
-              Hello,
-              {% if customer.first_name != '' %}
-                {{ customer.first_name }}!
-              {% else %}
-                {{ customer.last_name }}!
-              {% endif %}
-            </h6>
-          {% endif %}
 
-          <div class="ebix-card" id="ebix-loyalty-card">
-            <h5>Loyalty Points</h5>
-            {% if customer %}
-              <h6>Your Tier: <span id="ebix-tier">-</span></h6>
-              <h4>Your Points: <span id="ebix-points">0</span></h4>
-            {% endif %}
+          <div id="ebix-loyalty-dashboard">
 
-            <p style="margin-top: 10px"><b>Earn:</b> <span id="ebix-reward">-</span></p>
-            <p><b>Redeem:</b> <span id="ebix-redeem">-</span></p>
+            <!-- TOP -->
 
-            {% if customer %}
-              <div id="ebix-redeem-point">
-                <hr style="margin: 10px;">
-                <p><b>Redeem Your points</b></p>
-                <h6>
-                  <span id="ebix-redeem-coupon"></span>
-                  <button class="ebix-card-btn" id="ebix-cpy-redeem-code">Copy</button>
-                </h6>
-                <p>Use code at checkout - redeem up to <span id="ebix-max-point"></span> Pts <span id="total-redeemable"></span></p>
+            <div class="ebix-wallet-header">
+
+              <div class="ebix-wallet-left">
+
+                <p class="wallet-label">
+                  MY REWARDS
+                  <span class="wallet-tier" style="display: none;">
+                    <span id="ebix-tier">
+                    </span>
+                  </span>
+                </p>
+
               </div>
-            {% else %}
-              <hr style="margin: 10px;">
-              <p style="margin-bottom: 15px;"><b>Get more points </b></p>
-              <div style="margin-bottom: 15px;">
-                <a href="/account/register" class="ebix-card-btn1">Join Now</a>
+
+              <div class="wallet-value-card">
+
+                <p>
+                  <span id="ebix-point-value">1 Point = USD 1.00</span>
+                </p>
+
+                <h4 style="color:#1570ff">
+                  <span id="ebix-points" style="display: none;">0 Pts</span> 
+                </h4>
+
               </div>
-            {% endif %}
-            {% if customer %}
-              <p>
-                <b>Rewards:</b>
-                <p>Complete these tasks to earn points for yourself.</p>
-              </p>
-               <div class="ebix-ref-reward" id="reward_only">-</div>
-            {% endif %}
+
+            </div>
+
+            <!-- TABS -->
+
+            <div class="ebix-history-tabs">
+
+              <button
+                class="active"
+                data-tab="task"
+              >
+                Tasks
+              </button>
+
+              <button data-tab="refer">
+                Refer
+              </button>
+
+              <button data-tab="redeem">
+                Redeem
+              </button>
+
+            </div>
+
+            <!-- CONTENT -->
+
+            <div class="ebix-dashboard-content">
+
+              <!-- TASK -->
+
+              <div
+                class="ebix-tab-panel"
+                id="ebix-tab-task"
+              >
+
+                <!-- Referral code entry box (shown when not logged in or eligible for referral) -->
+                <div class="ebix-referral-box" id="ebix-referral-card" style="margin-bottom:20px; display:none;">
+                  <div style="font-size:15px; font-weight:700; color:#111; margin-bottom:4px;">
+                    Have a Referral Code?
+                  </div>
+                  <div id="ebix-referral-input-container" style="display:none;">
+                    <div style="color:#888; font-size:13px; margin-bottom:14px;">
+                      Enter your friend's code to unlock rewards
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                      <input
+                        type="text"
+                        id="ebix-referral-code-input"
+                        placeholder="Enter referral code"
+                        style="flex:1; border:1px solid #ddd; border-radius:8px; padding:10px 14px; font-size:13px; outline:none;"
+                      />
+                      <button
+                        class="ebix-copy-btn"
+                        id="ebix-join-referral"
+                        style="white-space:nowrap; padding:10px 20px;"
+                      >
+                        Apply
+                      </button>
+                    </div>
+                    <div id="ebix-ref-err" style="margin-top:8px;"></div>
+                  </div>
+                  <div id="ebix-signup-container" style="display:block;">
+                    <button
+                      class="ebix-copy-btn"
+                      id="ebix-signup-btn"
+                      style="width:100%; white-space:nowrap; padding:8px 16px; background:#1570ff; font-size:12px;"
+                    >
+                      Sign up now and claim my rewards
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Tasks section -->
+                <div class="ebix-section-title" id="tasks-title">
+                  Enter your friend's code to unlock Tasks &amp; Earn
+                </div>
+                <div id="reward_only"></div>
+
+                <!-- Logged in tasks container -->
+                <div id="ebix-logged-in-tasks" style="display:none;"></div>
+
+              </div>
+
+              <!-- REFER -->
+
+              <div
+                class="ebix-tab-panel"
+                id="ebix-tab-refer"
+                style="display:none;"
+              >
+
+                <!-- Logged in referral code display -->
+                <div class="ebix-referral-box" id="ebix-referral-code-display" style="display:none;">
+
+                 
+
+                  <div class="ebix-ref-top">
+
+                    <div class="ebix-referral-code">
+                      <div class="ebix-referral-code-label">
+                        YOUR REFERRAL CODE
+                      </div>
+                      <span id="ebix-pro-ref-code">
+                        XXXX
+                      </span>
+
+                    </div>
+
+                   <div class="ebix-ref-right">
+
+                  <button
+                    class="ebix-copy-btn"
+                    id="ebix-cpy-ref-code"
+                  >
+                    Copy
+                  </button>
+
+                  <div class="ebix-quick-share-label">
+                    QUICK SHARE VIA
+                  </div>
+
+                  <div class="ebix-share-icons">
+
+                    <span id="email">
+                      ✉
+                    </span>
+
+                    <a
+                      href="#"
+                      target="_blank"
+                      id="facebook"
+                    >
+                      f
+                    </a>
+
+                    <a
+                      href="#"
+                      target="_blank"
+                      id="whatsapp"
+                    >
+                      ⓦ
+                    </a>
+
+                  </div>
+
+                </div>
+
+                  </div>
+
+                </div>
+
+                <!-- Not logged in prompt -->
+                <div class="ebix-login-prompt" id="ebix-refer-login-prompt" style="display:none;">
+                  <div class="ebix-referral-box">
+                    <div class="ebix-referral-code-label" style="text-align: left;">
+                      YOUR REFERRAL CODE
+                    </div>
+                    <button class="ebix-login-btn">
+                    Login to get Code
+                  </button>
+                  </div>
+                </div>
+
+                <div
+                  id="ebix-email-err"
+                  style="margin-top:12px;"
+                ></div>
+
+              </div>
+
+              <!-- REDEEM -->
+
+              <div
+                class="ebix-tab-panel"
+                id="ebix-tab-redeem"
+                style="display:none;"
+              >
+
+                <!-- Not logged in prompt -->
+                <div class="ebix-login-prompt" id="ebix-redeem-login-prompt" style="display:none;">
+                  <button class="ebix-login-btn" onclick="window.location.href='/account/login'">Login to Manage Rewards</button>
+                  <p>Login to view your points balance and redeem rewards.</p>
+                </div>
+
+                <!-- Logged in redeem section -->
+                <div id="ebix-redeem-logged-in" style="display:none;">
+
+                  <div class="ebix-redeem-note">
+
+                    <div>
+                      Earn: <span id="ebix-earn-text">$1.00 spent = 1 Point</span>
+                    </div>
+
+                    <div>
+                      Redeem: <span id="ebix-redeem-text">1 Point = $1.00 Discount</span>
+                    </div>
+
+                  </div>
+
+                  <div
+                    id="ebix-redeem-point"
+                    style="display:none;"
+                  >
+
+                    <div class="ebix-coupon-box">
+
+                      <div>
+
+                        <div class="ebix-referral-code-label">
+                          REDEEM COUPON
+                        </div>
+
+                        <div class="ebix-referral-code-small">
+
+                          <span id="ebix-redeem-coupon">
+                            XXXX
+                          </span>
+
+                        </div>
+
+                      </div>
+
+                      <button
+                        class="ebix-copy-btn"
+                        id="ebix-cpy-redeem-code"
+                      >
+                        Copy
+                      </button>
+
+                    </div>
+
+                    <div class="ebix-max-note">
+
+                      Redeem up to
+                      <span id="ebix-max-point">
+                        0
+                      </span>
+                      Points
+
+                      <span id="total-redeemable"></span>
+
+                    </div>
+
+                  </div>
+
+                  <div
+                    class="ebix-section-title"
+                    style="margin-top:24px;"
+                  >
+                    Transactions
+                  </div>
+
+                  <div id="ebix-history-list"></div>
+                </div>
+
+              </div>
+
+            </div>
+
           </div>
 
-          <div class="ebix-card" id="ebix-referral-card">
-            <h5>Referral</h5>
-
-            {% if customer %}
-              <div id="refer-friend">
-                <p>Refer a friend:</p>
-                <span id="email">
-                  <img src="{{ 'email.svg' | asset_url }}" alt="email" style="width: 20px !important;" height="20">
-                </span>
-                <a
-                  href="#"
-                  target="_blank"
-                  id="facebook"
-                >
-                  <img src="{{ 'facebook.svg' | asset_url }}" alt="facebook" style="width: 20px !important;" height="20">
-                </a>
-                <a
-                  href="#"
-                  target="_blank"
-                  id="whatsapp"
-                >
-                  <img src="{{ 'whatsapp.svg' | asset_url }}" alt="whatsapp" style="width: 20px !important;" height="20">
-                </a>
-              </div>
-              <div id="ebix-email-err"></div>
-              <h6>
-                Refer with code: <span id="ebix-pro-ref-code"></span>
-                <button class="ebix-card-btn" id="ebix-cpy-ref-code">Copy</button>
-              </h6>
-
-              <button class="ebix-card-btn" id="ebix-join-referral">Receive your reward</button>
-              <div id="ebix-ref-err"></div>
-            {% endif %}
-
-            <p>
-              <b>Referral Rewards:</b>
-              <p>Use the above referral code to invite friends to complete tasks and get rewards</p>
-            </p>
-            <div class="ebix-ref-reward" id="referral_only">-</div>
-            <div id="ebix-ref-history"></div>
-          </div>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <div id="ebix-custom-prompt" style="display:none;" class="ebix-modal-bg">
-    <div class="ebix-custom-modal">
-      <p>Enter Referral Code, Get Reward:</p>
-      <input 
-        type="text" 
-        id="ebix-referral-code-input" 
-        placeholder="Enter your friend's referral code." 
-      />
-      <div class="ebix-btn-group">
-        <button class="ebix-btn-confirm" id="ebix-confirm-referral">Confirm</button>
-        <button class="ebix-btn-cancel" id="ebix-cancel-referral">Cancel</button>
       </div>
+
     </div>
+
   </div>
 
 </div>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    if (!window.location.pathname.includes("/products/")) {
-      const promoBlock = document.querySelector(".Promotion-List-block");
-      if (promoBlock) promoBlock.style.display = "none";
-    }
-    const offerWidget = document.getElementById("custom-offer-widget");
-    const promotionWidget = document.getElementById("Promotion-List");
-    const addToCartBtn = document.querySelector(
-      'form[action*="/cart/add"] button[type="submit"], .product-form__buttons button[type="submit"]'
-    );
-    if (addToCartBtn && offerWidget) {
-      addToCartBtn.parentNode.insertBefore(offerWidget, addToCartBtn);
-    } else {
-      console.warn("Add to Cart button not found.");
-    }
-    if(addToCartBtn && promotionWidget) {
-      addToCartBtn.parentNode.insertBefore(promotionWidget, addToCartBtn);
-    }
-  });
-</script>
-<!-- In your custom-liquid.liquid or section -->
-<div id="drawer-offers-template" style="display: none;">
-  <div class="drawer-offers-block">
-    <div class="offer-box">
-      <div class="offer-label">OFFER</div>
-      <div class="offer-text">Get 10% off</div>
-    </div>
-  </div>
-</div>
 
-<!-- ✅ Visible Offers Section -->
-<div id="drawer-offers-list"></div>
 <script type="text/javascript" src="{{ 'jquery-3.7.1.min.js' | asset_url }}" defer></script>
+
+<script>
+
+/* =========================
+  TABS
+========================= */
+
+document.addEventListener(
+  'click',
+  function(e){
+
+    if(
+      e.target.matches(
+        '.ebix-history-tabs button'
+      )
+    ){
+
+      document
+      .querySelectorAll(
+        '.ebix-history-tabs button'
+      )
+      .forEach(btn => {
+
+        btn.classList.remove(
+          'active'
+        );
+
+      });
+
+      e.target.classList.add(
+        'active'
+      );
+
+      document
+      .querySelectorAll(
+        '.ebix-tab-panel'
+      )
+      .forEach(panel => {
+
+        panel.style.display =
+          'none';
+
+      });
+
+      document.getElementById(
+        'ebix-tab-' +
+        e.target.dataset.tab
+      ).style.display =
+        'block';
+
+    }
+
+  }
+);
+
+/* =========================
+  COPY
+========================= */
+
+document.addEventListener(
+  'click',
+  function(e){
+
+    if(
+      e.target.id ===
+      'ebix-cpy-ref-code'
+    ){
+
+      navigator.clipboard.writeText(
+        document.getElementById(
+          'ebix-pro-ref-code'
+        ).innerText
+      );
+
+      e.target.innerText =
+        'Copied';
+
+      setTimeout(() => {
+
+        e.target.innerText =
+          'Copy';
+
+      },1500);
+
+    }
+
+    if(
+      e.target.id ===
+      'ebix-cpy-redeem-code'
+    ){
+
+      navigator.clipboard.writeText(
+        document.getElementById(
+          'ebix-redeem-coupon'
+        ).innerText
+      );
+
+      e.target.innerText =
+        'Copied';
+
+      setTimeout(() => {
+
+        e.target.innerText =
+          'Copy';
+
+      },1500);
+
+    }
+
+  }
+);
+
+/* =========================
+  HISTORY
+========================= */
+
+function ebix_render_history(logs){
+
+  let html = '';
+
+  logs.forEach(log => {
+
+    const isCredit =
+      log.transaction_type ===
+      'credit';
+
+    html += `
+
+      <div class="ebix-history-item">
+
+        <div class="ebix-history-top">
+
+          <h4>
+            ${
+              log.badge && log.reason
+              ? `${log.badge}: ${log.reason}`
+              : log.reason || log.badge || 'Reward Activity'
+            }
+          </h4>
+
+          <div class="
+            ${
+              isCredit
+              ? 'ebix-points-credit'
+              : 'ebix-points-debit'
+            }
+          ">
+
+            ${
+              isCredit
+              ? '+'
+              : '-'
+            }${log.points} Pts
+
+          </div>
+
+        </div>
+
+        <div class="ebix-history-date">
+
+          ${
+            log.formatted_date
+            ? log.formatted_date
+            : ''
+          }
+
+        </div>
+
+      </div>
+
+    `;
+
+  });
+
+  if(!html){
+
+    html = `
+      <div class="ebix-history-item">
+        No Transaction History found
+      </div>
+    `;
+
+  }
+
+  document.getElementById(
+    'ebix-history-list'
+  ).innerHTML = html;
+
+}
+
+/* =========================
+  RENDER TASKS
+========================= */
+
+function ebix_render_tasks(tasks){
+  let html = '';
+  
+  const iconMap = {
+    'Register': '🎁',
+    'visit_page': '🔗',
+    'first_order': '🛒',
+    'add_order': '🔄'
+  };
+
+  tasks.forEach(item => {
+    item.rules.forEach(rule => {
+      const icon = iconMap[rule.attribute_operation] || '⭐';
+      const isPassed = rule.is_rule_passed;
+      
+      let btnHtml = '';
+      if (isPassed) {
+        btnHtml = '<button class="ebix-task-status-done" disabled>✓ Completed</button>';
+      }
+
+      html += `
+        <div class="ebix-task-card">
+          <div class="ebix-task-left">
+            <div class="ebix-task-icon">${icon}</div>
+            <div class="ebix-task-info">
+              <h4>${rule.task} <span class="ebix-task-award">+${item.award}</span></h4>
+            </div>
+          </div>
+          ${btnHtml}
+        </div>
+      `;
+    });
+  });
+
+  return html;
+}
+
+/* =========================
+  UPDATE UI BASED ON LOGIN STATE
+========================= */
+
+function ebix_update_ui_state(isLoggedIn, data){
+  // Task tab
+  if (isLoggedIn) {
+    document.getElementById('ebix-referral-card').style.display = 'none';
+    document.getElementById('tasks-title').style.display = 'block';
+    document.getElementById('tasks-title').textContent = 'Complete tasks to earn points';
+    document.getElementById('reward_only').style.display = 'none';
+    document.getElementById('ebix-logged-in-tasks').style.display = 'block';
+    
+    if (data && data.referral_rule && data.referral_rule.length > 0) {
+      document.getElementById('ebix-logged-in-tasks').innerHTML = ebix_render_tasks(data.referral_rule);
+    }
+  } else {
+    document.getElementById('ebix-referral-card').style.display = 'block';
+    document.getElementById('ebix-referral-input-container').style.display = 'none';
+    document.getElementById('ebix-signup-container').style.display = 'block';
+    document.getElementById('tasks-title').style.display = 'none';
+    document.getElementById('reward_only').style.display = 'block';
+    document.getElementById('ebix-logged-in-tasks').style.display = 'none';
+  }
+
+  // Refer tab
+  if (isLoggedIn) {
+    document.getElementById('ebix-referral-code-display').style.display = 'block';
+    document.getElementById('ebix-refer-login-prompt').style.display = 'none';
+  } else {
+    document.getElementById('ebix-referral-code-display').style.display = 'none';
+    document.getElementById('ebix-refer-login-prompt').style.display = 'block';
+  }
+
+  // Redeem tab
+  if (isLoggedIn) {
+    document.getElementById('ebix-redeem-login-prompt').style.display = 'none';
+    document.getElementById('ebix-redeem-logged-in').style.display = 'block';
+  } else {
+    document.getElementById('ebix-redeem-login-prompt').style.display = 'block';
+    document.getElementById('ebix-redeem-logged-in').style.display = 'none';
+  }
+}
+
+/* =========================
+  INITIALIZE UI STATE
+========================= */
+
+function ebix_init_ui_state(){
+  const isLoggedIn = typeof ebix_Promotion !== 'undefined' && ebix_Promotion.CustomerId;
+  
+  // Set initial state before API call
+  if (!isLoggedIn) {
+    document.getElementById('ebix-referral-card').style.display = 'block';
+    document.getElementById('ebix-referral-input-container').style.display = 'none';
+    document.getElementById('ebix-signup-container').style.display = 'block';
+    document.getElementById('tasks-title').style.display = 'none';
+    document.getElementById('reward_only').style.display = 'block';
+    document.getElementById('ebix-logged-in-tasks').style.display = 'none';
+    
+    document.getElementById('ebix-referral-code-display').style.display = 'none';
+    document.getElementById('ebix-refer-login-prompt').style.display = 'block';
+    
+    document.getElementById('ebix-redeem-login-prompt').style.display = 'block';
+    document.getElementById('ebix-redeem-logged-in').style.display = 'none';
+  }
+}
+
+// Initialize on DOM ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', ebix_init_ui_state);
+} else {
+  ebix_init_ui_state();
+}
+
+</script>
+
 <script type="text/javascript">
+
   const ebix_referral_img1 = "{{ 'referral1.svg' | asset_url }}";
   const ebix_referral_img2 = "{{ 'referral2.svg' | asset_url }}";
   const ebix_referral_img3 = "{{ 'referral3.svg' | asset_url }}";
@@ -225,13 +1224,8 @@
   {% if shop %}
     ebix_Promotion.ShopId = {{ shop.id }};
   {% endif %}
-</script>
 
-{% comment %}
-  "enabled_on": {
-    "templates": ["cart", "product"]
-  },
-{% endcomment %}
+</script>
 
 {% schema %}
 {
@@ -240,7 +1234,6 @@
   "stylesheet": "style.css",
   "javascript": "app.min.js",
   "settings": [
-    { "type": "header", "content": "Floating Icon" },
     {
       "type": "select",
       "id": "position",
@@ -253,11 +1246,7 @@
         { "value": "left:10px; top:calc(50% - 30px);", "label": "Left Middle" },
         { "value": "left:calc(50% - 30px); bottom:10px;", "label": "Bottom Middle" }
       ]
-    },
-    { "type": "header", "content": "Popup Header" },
-    { "type": "text", "id": "header_text", "label": "Text", "default": "★ Buy More, Get More ★" },
-    { "type": "color", "id": "header_background_color", "label": "Background Color", "default": "#000000" },
-    { "type": "color", "id": "header_text_color", "label": "Text Color", "default": "#ffffff" }
+    }
   ]
 }
 {% endschema %}
