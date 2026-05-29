@@ -634,9 +634,9 @@
                   <span id="ebix-point-value">1 Point = USD 1.00</span>
                 </p>
 
-                <h4 style="color:#1570ff">
+                <p style="color:#1570ff;font-size: 27px;font-weight: bold;">
                   <span id="ebix-points" style="display: none;">0 Pts</span> 
-                </h4>
+                </p>
 
               </div>
 
@@ -708,7 +708,7 @@
                     >
                       Sign up now and claim my rewards
                     </button>
-                    <p>Then tap the Gift icon to enter code & claim !</p>
+                    <span>Then tap the Gift icon to enter code & claim !</span>
                   </div>
                 </div>
 
@@ -857,17 +857,17 @@
                           <span id="ebix-redeem-coupon">
                             XXXX
                           </span>
-
-                        </div>
-
-                      </div>
-
-                      <button
+                         <button
                         class="ebix-copy-btn"
                         id="ebix-cpy-redeem-code"
                       >
                         Copy
                       </button>
+                        </div>
+
+                      </div>
+
+                     
 
                     </div>
 
@@ -1033,43 +1033,45 @@ function ebix_render_history(logs) {
 
   logs.forEach(log => {
     const isCredit = log.transaction_type === 'credit';
-
-    // --- Parse label ---
-    let label = '';
     const reason = log.reason || '';
-    const badge = log.badge || '';
 
-    // Extract order ID from reason string e.g. "Order: EG177995333595231 (...)"
+    // Extract order ID from reason: "Order: EG177995333595231 (...)"
     const orderMatch = reason.match(/Order:\s*([\w]+)/);
     const orderId = orderMatch ? orderMatch[1] : null;
 
-    // Format order total if available
+    // Format amount if available
     const amount = log.order_total_amount
       ? ' ($' + parseFloat(log.order_total_amount).toFixed(2) + ')'
       : '';
 
-    if (log.point_earning_type === 'referral' && isCredit) {
-      if (!log.order_id) {
-        // No order = welcome/signup referral reward
-        label = 'Task: Welcome Reward';
-      } else {
-        // Referred by someone on an order
-        label = 'Referral: Order ' + (orderId || log.order_id) + amount;
-      }
+    // Check if reason contains "Referrer："
+    const hasReferrer = reason.includes('Referrer');
 
-    } else if (log.point_earning_type === 'auto' && !isCredit) {
-      // Redeem/debit on purchase
-      label = 'Redeem: ' + (orderId || log.order_id || '') + amount;
+    // Check if reason contains "Redeem"
+    const isRedeem = reason.toLowerCase().includes('redeem');
 
-    } else if (log.point_earning_type === 'auto' && isCredit) {
-      // Normal purchase earn
-      label = 'Order: ' + (orderId || log.order_id || '') + amount;
+    // Check if it's a welcome reward (no order_id, referral type)
+    const isWelcome = !log.order_id && log.point_earning_type === 'referral';
+
+    let label = '';
+
+    if (isWelcome) {
+      label = 'Task: Welcome Reward';
+
+    } else if (hasReferrer && orderId) {
+      label = 'Referrer: Order ' + orderId + amount;
+
+    } else if (isRedeem && orderId) {
+      label = 'Redeem: Order' + orderId + amount;
+
+    } else if (orderId) {
+      label = 'Order: ' + orderId + amount;
 
     } else {
-      label = badge || reason || 'Reward Activity';
+      label = log.badge || reason || 'Reward Activity';
     }
 
-    // --- Format date: "28 May 2026, 03:29 PM" → "2026-05-28" ---
+    // Format date from unix timestamp → YYYY-MM-DD
     let dateStr = '';
     if (log.created_at) {
       const d = new Date(log.created_at * 1000);
