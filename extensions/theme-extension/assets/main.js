@@ -489,10 +489,9 @@
 
                                 $("#ebix-pro-ref-code").text(data.invite_code || "");
 
-                                $("#refer-friend #facebook").attr("href", encodeURI(`https://www.facebook.com/sharer/sharer.php?u=${window.location.origin}&t=Register and use this code: ${data.invite_code}`));
+                                $(".ebix-modal #facebook").attr("href", `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.origin)}&t=${encodeURIComponent('Register and use this code: ' + data.invite_code)}`);
 
-
-                                $("#refer-friend #email").click((e) => {
+                                $(".ebix-modal #email").off("click").on("click", (e) => {
 
                                     var emails = prompt("Enter invitation emails:");
                                     emails = emails.split(",").map(v => v.trim())
@@ -543,9 +542,7 @@
                                 if (referral_rule.length > 0) {
                                     ebix_generate_table(referral_rule, "ebix-ref-reward", ebix_Promotion.CustomerId && !referral_illigible);
                                     const awardText = referral_rule[0]?.award || "";
-                                    $("#refer-friend #whatsapp").attr("href", encodeURI(
-                                        `https://api.whatsapp.com/send?text=${window.location.origin} \nSignup with code: ${data.invite_code} \nto ${awardText}`
-                                    ));
+                                    $(".ebix-modal #whatsapp").attr("href", `https://api.whatsapp.com/send?text=${encodeURIComponent(window.location.origin + '\nSignup with code: ' + data.invite_code + '\nto earn ' + awardText)}`);
                                 }
                                 if (referral_rule.length > 0 || referral_history.length > 0 || data.reward != null) {
                                     $("#ebix-embeded-btn").css("display", "flex");
