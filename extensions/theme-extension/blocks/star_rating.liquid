@@ -52,14 +52,20 @@
   }
 
   .ebix-modal-content{
-    border-radius:26px;
-    overflow:hidden;
-    background:#fff;
+    border-radius: 26px;
+  overflow: hidden;
+  background: #fff;
+  min-height: 400px;
+  height: 580px;          /* ← fixed total height */
+  display: flex;
+  flex-direction: column;
   }
 
   .ebix-modal-body{
-    padding:0;
-    background:#fff;
+   flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   }
 
   /* =========================
@@ -67,8 +73,11 @@
   ========================= */
 
   #ebix-loyalty-dashboard{
-    font-family:Inter,sans-serif;
-    background:#fff;
+   font-family: Arial, Helvetica, sans-serif;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   }
 
   .ebix-wallet-header{
@@ -161,7 +170,10 @@
   }
 
   .ebix-dashboard-content{
-    padding:22px;
+    padding: 22px;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
   }
 
   .ebix-section-title{
@@ -263,6 +275,7 @@
     background:#f8fbff;
     border-radius:16px;
     padding:18px;
+    text-align:left;
   }
 
   .ebix-ref-top{
@@ -307,6 +320,7 @@
   padding:8px 16px;
   cursor:pointer;
   font-size:11px;
+  margin:10px;
 }
 
 .ebix-quick-share-label{
@@ -364,7 +378,6 @@
 
   .ebix-login-prompt{
     text-align:center;
-    padding:40px 20px;
   }
 
   .ebix-login-prompt p{
@@ -662,7 +675,7 @@
               >
 
                 <!-- Referral code entry box (shown when not logged in or eligible for referral) -->
-                <div class="ebix-referral-box" id="ebix-referral-card" style="margin-bottom:20px; display:none;">
+                <div class="ebix-referral-box" id="ebix-referral-card" style="margin-bottom:20px; display:none;text-align:center;">
                   <div style="font-size:15px; font-weight:700; color:#111; margin-bottom:4px;">
                     Have a Referral Code?
                   </div>
@@ -695,6 +708,7 @@
                     >
                       Sign up now and claim my rewards
                     </button>
+                    <p>Then tap the Gift icon to enter code & claim !</p>
                   </div>
                 </div>
 
@@ -729,19 +743,19 @@
                         YOUR REFERRAL CODE
                       </div>
                       <span id="ebix-pro-ref-code">
-                        XXXX
+                      XXXX
                       </span>
-
+                      <button
+                      class="ebix-copy-btn"
+                      id="ebix-cpy-ref-code"
+                      >
+                      Copy
+                      </button>
                     </div>
 
                    <div class="ebix-ref-right">
 
-                  <button
-                    class="ebix-copy-btn"
-                    id="ebix-cpy-ref-code"
-                  >
-                    Copy
-                  </button>
+                 
 
                   <div class="ebix-quick-share-label">
                     QUICK SHARE VIA
@@ -750,7 +764,7 @@
                   <div class="ebix-share-icons">
 
                     <span id="email">
-                      ✉
+                      <img src="{{ 'email.svg' | asset_url }}" alt="email" style="width: 20px !important;" height="20">
                     </span>
 
                     <a
@@ -758,7 +772,7 @@
                       target="_blank"
                       id="facebook"
                     >
-                      f
+                      <img src="{{ 'facebook.svg' | asset_url }}" alt="facebook" style="width: 20px !important;" height="20">
                     </a>
 
                     <a
@@ -766,7 +780,7 @@
                       target="_blank"
                       id="whatsapp"
                     >
-                      ⓦ
+                      <img src="{{ 'whatsapp.svg' | asset_url }}" alt="whatsapp" style="width: 20px !important;" height="20">
                     </a>
 
                   </div>
@@ -783,7 +797,7 @@
                     <div class="ebix-referral-code-label" style="text-align: left;">
                       YOUR REFERRAL CODE
                     </div>
-                    <button class="ebix-login-btn">
+                    <button class="ebix-login-btn"  onclick="window.location.href='/account/login'">
                     Login to get Code
                   </button>
                   </div>
@@ -807,7 +821,7 @@
                 <!-- Not logged in prompt -->
                 <div class="ebix-login-prompt" id="ebix-redeem-login-prompt" style="display:none;">
                   <button class="ebix-login-btn" onclick="window.location.href='/account/login'">Login to Manage Rewards</button>
-                  <p>Login to view your points balance and redeem rewards.</p>
+                  <p style="padding:12px;">Login to view your points balance and redeem rewards.</p>
                 </div>
 
                 <!-- Logged in redeem section -->
@@ -1014,78 +1028,75 @@ document.addEventListener(
   HISTORY
 ========================= */
 
-function ebix_render_history(logs){
-
+function ebix_render_history(logs) {
   let html = '';
 
   logs.forEach(log => {
+    const isCredit = log.transaction_type === 'credit';
 
-    const isCredit =
-      log.transaction_type ===
-      'credit';
+    // --- Parse label ---
+    let label = '';
+    const reason = log.reason || '';
+    const badge = log.badge || '';
+
+    // Extract order ID from reason string e.g. "Order: EG177995333595231 (...)"
+    const orderMatch = reason.match(/Order:\s*([\w]+)/);
+    const orderId = orderMatch ? orderMatch[1] : null;
+
+    // Format order total if available
+    const amount = log.order_total_amount
+      ? ' ($' + parseFloat(log.order_total_amount).toFixed(2) + ')'
+      : '';
+
+    if (log.point_earning_type === 'referral' && isCredit) {
+      if (!log.order_id) {
+        // No order = welcome/signup referral reward
+        label = 'Task: Welcome Reward';
+      } else {
+        // Referred by someone on an order
+        label = 'Referral: Order ' + (orderId || log.order_id) + amount;
+      }
+
+    } else if (log.point_earning_type === 'auto' && !isCredit) {
+      // Redeem/debit on purchase
+      label = 'Redeem: ' + (orderId || log.order_id || '') + amount;
+
+    } else if (log.point_earning_type === 'auto' && isCredit) {
+      // Normal purchase earn
+      label = 'Order: ' + (orderId || log.order_id || '') + amount;
+
+    } else {
+      label = badge || reason || 'Reward Activity';
+    }
+
+    // --- Format date: "28 May 2026, 03:29 PM" → "2026-05-28" ---
+    let dateStr = '';
+    if (log.created_at) {
+      const d = new Date(log.created_at * 1000);
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      dateStr = `${yyyy}-${mm}-${dd}`;
+    }
 
     html += `
-
       <div class="ebix-history-item">
-
         <div class="ebix-history-top">
-
-          <h4>
-            ${
-              log.badge && log.reason
-              ? `${log.badge}: ${log.reason}`
-              : log.reason || log.badge || 'Reward Activity'
-            }
-          </h4>
-
-          <div class="
-            ${
-              isCredit
-              ? 'ebix-points-credit'
-              : 'ebix-points-debit'
-            }
-          ">
-
-            ${
-              isCredit
-              ? '+'
-              : '-'
-            }${log.points} Pts
-
+          <h4>${label}</h4>
+          <div class="${isCredit ? 'ebix-points-credit' : 'ebix-points-debit'}">
+            ${isCredit ? '+' : '-'}${log.points} Pts
           </div>
-
         </div>
-
-        <div class="ebix-history-date">
-
-          ${
-            log.formatted_date
-            ? log.formatted_date
-            : ''
-          }
-
-        </div>
-
+        <div class="ebix-history-date">${dateStr}</div>
       </div>
-
     `;
-
   });
 
-  if(!html){
-
-    html = `
-      <div class="ebix-history-item">
-        No Transaction History found
-      </div>
-    `;
-
+  if (!html) {
+    html = `<div class="ebix-history-item">No Transaction History found</div>`;
   }
 
-  document.getElementById(
-    'ebix-history-list'
-  ).innerHTML = html;
-
+  document.getElementById('ebix-history-list').innerHTML = html;
 }
 
 /* =========================
