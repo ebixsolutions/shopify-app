@@ -1052,11 +1052,15 @@ function ebix_render_history(logs) {
 
     // Check if it's a welcome reward (no order_id, referral type)
     const isWelcome = !log.order_id && log.point_earning_type === 'referral';
+    const isVisit = !log.order_id && log.point_earning_type === 'Purchase';
 
     let label = '';
 
     if (isWelcome) {
       label = 'Task: Welcome Reward';
+
+    } else if (isVisit) {
+      label = 'Task: Visit Page';
 
     } else if (hasReferrer && orderId) {
       label = 'Referrer: Order ' + orderId + amount;
