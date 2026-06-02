@@ -1182,6 +1182,12 @@ function ebix_update_ui_state(isLoggedIn, data) {
     } else {
       document.getElementById('tasks-title').style.display = 'none';
       document.getElementById('ebix-logged-in-tasks').style.display = 'none';
+      document.getElementById('ebix-referral-card').style.display = 'block';
+      document.getElementById('ebix-referral-card').innerHTML = `
+          <div style="font-size:15px; font-weight:700; color:#111; margin-bottom:4px;">
+              No Referral Tasks
+          </div>
+      `;
     }
 
   } else {
