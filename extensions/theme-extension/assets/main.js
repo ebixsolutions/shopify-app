@@ -743,24 +743,23 @@
         }
 
         function createOfferElement(offer) {
-            const template = document.querySelector('#drawer-offers-template .drawer-offers-block');
-            if (!template) {
-                console.warn("Offer template missing");
-                return null;
-            }
 
-            const clone = template.cloneNode(true);
-            clone.setAttribute("data-injected", "true");
-            clone.setAttribute("data-offer-id", offer.rule.promotion_id || offer.rule.rule_id);
+    const div = document.createElement("div");
 
-            const textEl = clone.querySelector('.offer-text');
-            const labelEl = clone.querySelector('.offer-label');
+    div.className = "drawer-offers-block";
+    div.setAttribute("data-injected", "true");
 
-            if (textEl) textEl.textContent = offer.offer_message;
-            if (labelEl) labelEl.textContent = offer.offer_type_name || "OFFER";
+    div.innerHTML = `
+        <div class="offer-label">
+            ${offer.offer_type_name || "OFFER"}
+        </div>
+        <div class="offer-text">
+            ${offer.offer_message || ""}
+        </div>
+    `;
 
-            return clone;
-        }
+    return div;
+}
 
         function insertOffersBeforeCheckoutButtons(offers) {
 
@@ -804,7 +803,8 @@
 
                         // spacing between offer and button
                         offerElement.style.marginBottom = "12px";
-                        offerElement.style.display = "block";
+                        offerElement.style.display = "flex";
+                        offerElement.style.setProperty("background", "#fdfce2", "important");
 
                         // Drawer -> full width
                         // Full cart page -> fixed width
@@ -821,6 +821,8 @@
                             button.getBoundingClientRect().width;
 
                         const wrapper = document.createElement("div");
+                        wrapper.classList.add("ebix-offer-wrapper");
+                        wrapper.setAttribute("data-injected", "true");
                         wrapper.style.display = "flex";
                         wrapper.style.justifyContent = "flex-end";
                         if (button.offsetWidth > 400) {
@@ -842,18 +844,59 @@
             });
         }
 
+        function ensureDrawerOfferContainer() {
+    let container = document.getElementById("drawer-offers-list");
+
+    if (container) return container;
+
+    container = document.createElement("div");
+    container.id = "drawer-offers-list";
+    container.style.marginBottom = "12px";
+
+    const checkoutButton =
+        document.querySelector('button[name="checkout"]') ||
+        document.querySelector('input[name="checkout"]') ||
+        document.querySelector('.cart__checkout') ||
+        document.querySelector('.cart__submit-controls button') ||
+        document.querySelector('form[action="/cart"] [type="submit"]') ||
+        document.querySelector('.drawer__footer button') ||
+        document.querySelector('.ajaxcart__footer button');
+
+    if (checkoutButton) {
+        checkoutButton.parentNode.insertBefore(
+            container,
+            checkoutButton
+        );
+
+        console.log(
+            "drawer-offers-list inserted before checkout button"
+        );
+    } else {
+        console.warn(
+            "Checkout button not found for drawer-offers-list"
+        );
+    }
+
+    return container;
+}
+
         function displayOffersInDrawer(offers) {
-            const container = document.getElementById('drawer-offers-list');
-            const template = document.querySelector('#drawer-offers-template .drawer-offers-block');
-            if (!container || !template) {
+            const container = ensureDrawerOfferContainer();
+
+           
+
+            if (!container) {
                 console.warn("Drawer elements missing");
                 return;
             }
 
             container.innerHTML = '';
+
             offers.forEach(offer => {
                 const el = createOfferElement(offer);
-                if (el) container.appendChild(el);
+                if (el) {
+                    container.appendChild(el);
+                }
             });
 
             container.style.display = 'block';
@@ -886,12 +929,13 @@
                 .then(response => {
                     if (response.status === 200 && Array.isArray(response.data) && response.code === 0) {
                         latestOffers = response.data;
+                        ensureDrawerOfferContainer();
                         displayOffersInDrawer(latestOffers);
-                        requestAnimationFrame(() => {
+                        
                             setTimeout(() => {
                                 insertOffersBeforeCheckoutButtons(latestOffers);
-                            }, 1200);
-                        });
+                            }, 100);
+                       
                     } else {
                         console.warn("No offers returned or response invalid");
                     }
@@ -924,7 +968,7 @@
         div.innerHTML = `
     <div class="Promotion-List-block"></div>
 
-    <div class="Promotion-List-offer-box">
+    <div class="Promotion-List-offer-box" style="display:none;">
         <span class="Promotion-List-offer-label"></span>
         <span class="Promotion-List-offer-text"></span>
     </div>
