@@ -585,8 +585,55 @@
     <div class="ebix-embeded-close-btn">×</div>
     <img src="{{ 'giftbox.svg' | asset_url }}" alt="promotion" width="40" height="40">
   </div>
+  <div id="ebix-invite-modal" class="ebix-modal">
 
-  <div class="ebix-modal">
+  <div class="ebix-modal-dialog">
+    <div class="ebix-modal-content">
+
+      <div class="ebix-modal-header">
+        ★ SPECIAL REFERRAL OFFER ★
+        <button type="button" class="ebix-modal-close" id="ebix-invite-modal-close">×</button>
+      </div>
+
+      <div class="ebix-modal-body">
+        <div style="padding:22px 24px 8px; font-family:Arial,Helvetica,sans-serif;">
+
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+            <span style="font-size:15px;color:#666;">
+              <b id="ebix-invite-firstname" style="color:#111;">Someone</b> invites you!
+            </span>
+          </div>
+
+          <h2 style="font-size:28px;font-weight:800;color:#111;margin:0 0 6px;line-height:1.15;">
+            Get Rewards &amp; Save Big
+          </h2>
+         
+
+        </div>
+
+        <div style="margin:12px 24px;border:1.5px solid #fdfde1;background:#fdfde1;
+          border-radius:14px;padding:14px 16px;
+          align-items:center;justify-content:space-between;gap:10px;">
+         <a
+            id="ebix-invite-signup-btn"
+            href="/account/register"
+            style="display:block;width:100%;background:#1570ff;color:#fff;
+            text-decoration:none;text-align:center;border-radius:12px;
+            padding:14px;font-size:14px;font-weight:700;">
+            Sign Up Now &amp; Claim My Rewards
+        </a>
+          <p style="text-align:center;font-size:12px;color:#aaa;margin-top:10px;">
+            Then tap the Gift icon to enter code &amp; claim!
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+  <div class="ebix-modal" id="ebix-modal">
 
     <div class="ebix-modal-dialog">
 
