@@ -376,6 +376,11 @@
                                 const offerText = clone.querySelector(".Promotion-List-offer-text");
                                 const offerLabelText = clone.querySelector(".Promotion-List-offer-label");
 
+                                if (offerLabelText) {
+                                    offerLabelText.textContent = offer.offer_type;
+                                    offerLabelText.style.height = "auto";
+                                }
+
                                 if (offerText) offerText.textContent = offer.offer_message;
                                 else console.error("Missing .Promotion-List-offer-text in clone");
 
@@ -744,12 +749,12 @@
 
         function createOfferElement(offer) {
 
-    const div = document.createElement("div");
+            const div = document.createElement("div");
 
-    div.className = "drawer-offers-block";
-    div.setAttribute("data-injected", "true");
+            div.className = "drawer-offers-block";
+            div.setAttribute("data-injected", "true");
 
-    div.innerHTML = `
+            div.innerHTML = `
         <div class="offer-label">
             ${offer.offer_type_name || "OFFER"}
         </div>
@@ -758,8 +763,8 @@
         </div>
     `;
 
-    return div;
-}
+            return div;
+        }
 
         function insertOffersBeforeCheckoutButtons(offers) {
 
@@ -845,45 +850,45 @@
         }
 
         function ensureDrawerOfferContainer() {
-    let container = document.getElementById("drawer-offers-list");
+            let container = document.getElementById("drawer-offers-list");
 
-    if (container) return container;
+            if (container) return container;
 
-    container = document.createElement("div");
-    container.id = "drawer-offers-list";
-    container.style.marginBottom = "12px";
+            container = document.createElement("div");
+            container.id = "drawer-offers-list";
+            container.style.marginBottom = "12px";
 
-    const checkoutButton =
-        document.querySelector('button[name="checkout"]') ||
-        document.querySelector('input[name="checkout"]') ||
-        document.querySelector('.cart__checkout') ||
-        document.querySelector('.cart__submit-controls button') ||
-        document.querySelector('form[action="/cart"] [type="submit"]') ||
-        document.querySelector('.drawer__footer button') ||
-        document.querySelector('.ajaxcart__footer button');
+            const checkoutButton =
+                document.querySelector('button[name="checkout"]') ||
+                document.querySelector('input[name="checkout"]') ||
+                document.querySelector('.cart__checkout') ||
+                document.querySelector('.cart__submit-controls button') ||
+                document.querySelector('form[action="/cart"] [type="submit"]') ||
+                document.querySelector('.drawer__footer button') ||
+                document.querySelector('.ajaxcart__footer button');
 
-    if (checkoutButton) {
-        checkoutButton.parentNode.insertBefore(
-            container,
-            checkoutButton
-        );
+            if (checkoutButton) {
+                checkoutButton.parentNode.insertBefore(
+                    container,
+                    checkoutButton
+                );
 
-        console.log(
-            "drawer-offers-list inserted before checkout button"
-        );
-    } else {
-        console.warn(
-            "Checkout button not found for drawer-offers-list"
-        );
-    }
+                console.log(
+                    "drawer-offers-list inserted before checkout button"
+                );
+            } else {
+                console.warn(
+                    "Checkout button not found for drawer-offers-list"
+                );
+            }
 
-    return container;
-}
+            return container;
+        }
 
         function displayOffersInDrawer(offers) {
             const container = ensureDrawerOfferContainer();
 
-           
+
 
             if (!container) {
                 console.warn("Drawer elements missing");
@@ -931,11 +936,11 @@
                         latestOffers = response.data;
                         ensureDrawerOfferContainer();
                         displayOffersInDrawer(latestOffers);
-                        
-                            setTimeout(() => {
-                                insertOffersBeforeCheckoutButtons(latestOffers);
-                            }, 100);
-                       
+
+                        setTimeout(() => {
+                            insertOffersBeforeCheckoutButtons(latestOffers);
+                        }, 100);
+
                     } else {
                         console.warn("No offers returned or response invalid");
                     }
