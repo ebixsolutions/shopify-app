@@ -3,6 +3,7 @@ type = "web_pixel_extension"
 
 
 runtime_context = "strict"
+uid = "bf0c0bec-8f6f-89f8-bcb1-0723c5ee9461eaf9defa"
 
 [settings]
 type = "object"
