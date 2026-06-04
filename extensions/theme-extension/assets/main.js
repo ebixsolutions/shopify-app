@@ -3,7 +3,6 @@
     function initEbix() {
 
         console.log("EBIX INIT");
-
         if (window.ebixInitialized) return;
         window.ebixInitialized = true;
 
@@ -34,56 +33,11 @@
             return re.test(email);
         }
 
+
         function ebix_register_referral() {
             $("#ebix-custom-prompt").show();
             $("#ebix-referral-code-input").val("");
 
-            $("#ebix-confirm-referral").off().on("click", function () {
-                const code = $("#ebix-referral-code-input").val();
-                $("#ebix-custom-prompt").hide();
-
-                if (code) {
-                    let oldBtnTxt = $("#ebix-join-referral").text();
-                    $("#ebix-join-referral").text("Loading...");
-                    $("#ebix-join-referral").prop("disabled", true);
-                    fetch(`/apps/shopify/register_referral`, {
-                        method: "POST",
-                        body: JSON.stringify({
-                            customer_id: ebix_Promotion.CustomerId,
-                            shopify_shop_id: ebix_Promotion.ShopId,
-                            code
-                        }),
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'ngrok-skip-browser-warning': 'true',
-                            'Sys-Language': 'en'
-                        }
-                    })
-                        .then((response) => response.json())
-                        .then((res) => {
-
-                            $("#ebix-join-referral").text(oldBtnTxt);
-                            $("#ebix-join-referral").prop("disabled", false);
-                            $("#ebix-ref-err").html("");
-
-                            if (res.code == 0) {
-                                $("#ebix-referral-card").hide();
-                                $("#ebix-join-referral").hide();
-                                $("#ebix-redeem-point").hide();
-                                ebix_getDatas();
-                            } else {
-                                $("#ebix-ref-err").html(`<p style="color:red">${res.msg}</p>`);
-                            }
-                        }).catch(e => {
-                            $("#ebix-join-referral").text(oldBtnTxt);
-                            $("#ebix-join-referral").prop("disabled", false);
-                        });
-                }
-            });
-            // Cancel click
-            $("#ebix-cancel-referral").off().on("click", function () {
-                $("#ebix-custom-prompt").hide();
-            });
         }
         function ebix_generate_table_by_id(data, elementId) {
             if (!data || data.length === 0) return;
@@ -578,8 +532,8 @@
                             }
 
                             if (referral_illigible) {
-                                $("#ebix-join-referral").show();
-                                $("#ebix-join-referral").click((e) => {
+                                $("#ebix-confirm-referral").show();
+                                $("#ebix-confirm-referral").click((e) => {
                                     ebix_register_referral();
                                 });
                             }
@@ -617,7 +571,7 @@
         }
 
         $("#ebix-referral-card").hide();
-        $("#ebix-join-referral").hide();
+        $("#ebix-confirm-referral").hide();
         $("#ebix-redeem-point").hide();
 
         if (ebix_getCookie("ebix-embeded-closed")) {
@@ -1005,6 +959,52 @@
         }
 
         PromotionList();
+
+        $("#ebix-confirm-referral").off().on("click", function () {
+            const code = $("#ebix-referral-code-input").val();
+
+
+            if (code) {
+                let oldBtnTxt = $("#ebix-confirm-referral").text();
+                $("#ebix-confirm-referral").text("Loading...");
+                $("#ebix-confirm-referral").prop("disabled", true);
+                fetch(`/apps/shopify/register_referral`, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        customer_id: ebix_Promotion.CustomerId,
+                        shopify_shop_id: ebix_Promotion.ShopId,
+                        code
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'ngrok-skip-browser-warning': 'true',
+                        'Sys-Language': 'en'
+                    }
+                })
+                    .then((response) => response.json())
+                    .then((res) => {
+
+                        //$("#ebix-confirm-referral").text(oldBtnTxt);
+                        $("#ebix-confirm-referral").prop("disabled", false);
+                        $("#ebix-ref-err").html("");
+
+                        if (res.code == 0) {
+                            $("#ebix-confirm-referral").hide();
+                            console.log("Before ebix_getDatas");
+                            console.log(typeof ebix_getDatas);
+                            ebix_getDatas();
+                            console.log("After ebix_getDatas");
+                        } else {
+                            $("#ebix-ref-err").html(`<p style="color:red">${res.msg}</p>`);
+                        }
+                    }).catch(e => {
+                        $("#ebix-confirm-referral").text(oldBtnTxt);
+                        $("#ebix-confirm-referral").prop("disabled", false);
+                    });
+            }
+
+        });
+
     }
 
     if (document.readyState === "loading") {
@@ -1021,5 +1021,8 @@
             initEbix();
         }
     );
+
+
+
 
 })();
