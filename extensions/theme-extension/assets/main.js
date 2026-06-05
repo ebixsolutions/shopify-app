@@ -554,7 +554,7 @@
                             if (isLoggedIn) {
                                 if (data.point_logs && data.point_logs.length > 0) {
                                     if (typeof ebix_render_history === 'function') {
-                                        ebix_render_history(data.point_logs);
+                                        ebix_render_history(data.point_logs, data.referral_history || []);
                                     }
                                 } else {
                                     // Show no transaction history found message

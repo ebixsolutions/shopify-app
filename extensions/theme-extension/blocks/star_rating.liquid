@@ -1075,10 +1075,10 @@ document.addEventListener(
   HISTORY
 ========================= */
 
-function ebix_render_history(logs) {
+function ebix_render_history(logs, referralHistory = []) {
   let html = '';
 
-  logs.forEach(log => {
+  logs.forEach((log, index) => {
     const isCredit = log.transaction_type === 'credit';
     const reason = log.reason || '';
 
@@ -1104,30 +1104,64 @@ function ebix_render_history(logs) {
     const isWelcome = !log.order_id && log.point_earning_type === 'referral';
     
     const isVisit = !log.order_id && log.point_earning_type === 'auto';
-
+    const isCouponReward = log.point_earning_type === "coupon_reward";
     let label = '';
 
-    if (isWelcome) {
-      label = 'Task: Welcome Reward';
+      let referralName = "";
 
-    } else if (isVisit) {
-      label = 'Task: Visit Page';
+      const match1 = reason.match(/Referral\s*\(New Member\)：(.+)$/);
 
-    } else if (hasReferrer && orderId) {
-      label = 'Referrer: Order ' + orderId + amount;
+      if (match1) {
+          referralName = match1[1].trim();
+      }
 
-    }else if (hasReferral && orderId) {
-      label = 'Referral: Order ' + orderId + amount;
 
-    } else if (isRedeem && orderId) {
-      label = 'Redeem: Order' + orderId + amount;
+      if (isWelcome) {
 
-    } else if (orderId) {
-      label = 'Order: ' + orderId + amount;
+          let email = '';
 
-    } else {
-      label = log.badge || reason || 'Reward Activity';
-    }
+          const match = reason.match(/Referral\s+NO\.(REF\d+)/i);
+
+          if (match) {
+              const referralNo = match[1];
+
+              const referral = referralHistory.find(
+                  r => r.referral_no === referralNo
+              );
+
+              email = referral?.email || '';
+          }
+
+        if (index === 0) {
+            label = 'Task: Welcome Reward';
+        } else {
+            label = email
+                ? `Referral (${email})`
+                : 'Referral';
+        }
+
+      } else if (isVisit) {
+          label = 'Task: Visit Page';
+
+      } else if (hasReferrer && orderId) {
+          label = 'Referrer: Order ' + orderId + amount;
+
+      } else if (hasReferral && orderId) {
+          label = `Referral: Order ${orderId}${amount}${
+              referralName ? ' - ' + referralName : ''
+          }`;
+
+      } else if (isRedeem && orderId) {
+          label = 'Redeem: Order ' + orderId + amount;
+
+      } else if (orderId) {
+          label = 'Order: ' + orderId + amount;
+
+      }else if (isCouponReward) {
+          label = log.reason;
+      } else {
+          label = log.badge || reason || 'Reward Activity';
+      }
 
     // Format date from unix timestamp → YYYY-MM-DD
     let dateStr = '';
