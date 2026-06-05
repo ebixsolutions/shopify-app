@@ -1177,9 +1177,11 @@ function ebix_render_history(logs, referralHistory = []) {
       <div class="ebix-history-item">
         <div class="ebix-history-top">
           <h4>${label}</h4>
+          ${log.points > 0 ? `
           <div class="${isCredit ? 'ebix-points-credit' : 'ebix-points-debit'}">
             ${isCredit ? '+' : '-'}${log.points} Pts
           </div>
+        ` : ''}
         </div>
         <div class="ebix-history-date">${dateStr}</div>
       </div>
