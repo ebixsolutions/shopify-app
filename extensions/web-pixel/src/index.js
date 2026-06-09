@@ -6,12 +6,26 @@ register(({ settings, analytics, browser, init }) => {
   const INACTIVITY_MS = 15 * 60 * 1000;
   const HEARTBEAT_MS = 30 * 1000;
   const COOKIE_KEY = "pvs";
+  const SESSION_TAB_KEY = "pvs_tab_id";
   const COOKIE_TTL_SECONDS = 60;
-
-  const TAB_ID = `tab_${Date.now()}_${Math.random().toString(36).slice(2)}`;
 
   let inactivityTimer = null;
   let heartbeatTimer = null;
+  let TAB_ID = null;
+  const initTabId = async () => {
+    try {
+      const existing = await browser.sessionStorage.getItem(SESSION_TAB_KEY);
+      if (existing) {
+        TAB_ID = existing;
+      } else {
+        TAB_ID = `tab_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+        await browser.sessionStorage.setItem(SESSION_TAB_KEY, TAB_ID);
+      }
+    } catch {
+      TAB_ID = `tab_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+    }
+    console.log("TAB_ID:", TAB_ID);
+  };
 
   const sendData = (payload) => {
     console.log("payload", payload);
@@ -88,6 +102,7 @@ register(({ settings, analytics, browser, init }) => {
       event_data: {
         variantId: session.variantId,
         productId: session.productId,
+        durationSeconds: Math.round((endTime - session.startTime) / 1000),
         ...(isTabClosed && {
           startedAt: session.startTime,
           endedAt: endTime,
@@ -111,7 +126,6 @@ register(({ settings, analytics, browser, init }) => {
       if (existing.variantId !== variantId) {
         await sendProductViewEnd("next_product", existing);
       } else {
-        // Same product — refresh and reset timers
         saveCookie({ ...existing, lastActive: Date.now(), tabId: TAB_ID });
         startInactivityTimer();
         startHeartbeat();
@@ -134,6 +148,8 @@ register(({ settings, analytics, browser, init }) => {
 
 
   analytics.subscribe("page_viewed", async () => {
+    await initTabId();
+
     const session = await getCookie();
     if (!session) return;
 
@@ -184,6 +200,8 @@ register(({ settings, analytics, browser, init }) => {
 
 
   analytics.subscribe("product_viewed", async (event) => {
+    await initTabId();
+
     const customer = init.data.customer;
     const cart = init.data.cart;
 
@@ -220,6 +238,7 @@ register(({ settings, analytics, browser, init }) => {
 
   analytics.subscribe("fastbuy_product_view", async (event) => {
     console.log("Event Check", event);
+    await initTabId(); 
 
     const customer = init.data.customer;
     const cart = init.data.cart;
