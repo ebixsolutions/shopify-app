@@ -1148,11 +1148,11 @@ function ebix_render_history(logs, referralHistory = []) {
               email = referral?.email || '';
           }
 
-        if (index === 0) {
+        if (!email) {
             label = 'Task: Welcome Reward';
         } else {
             label = email
-                ? `Referral (${email})`
+                ? `Referral : ${email}`
                 : 'Referral';
         }
 
