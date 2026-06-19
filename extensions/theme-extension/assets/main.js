@@ -518,6 +518,7 @@
                                 // Logged in: show referral input container, hide signup button
                                 $("#ebix-referral-input-container").show();
                                 $("#ebix-signup-container").hide();
+                                $("#ebix-referral-title").css("text-align", "left");
 
                                 if (referral_rule.length > 0 || referral_history.length > 0) {
                                     $("#ebix-referral-card").css("display", "block");
@@ -995,7 +996,8 @@
                             ebix_getDatas();
                             console.log("After ebix_getDatas");
                         } else {
-                            $("#ebix-ref-err").html(`<p style="color:red">${res.msg}</p>`);
+                            $("#ebix-confirm-referral").text(oldBtnTxt);
+                            $("#ebix-ref-err").html(`<p style="color:red; font-size:11px; margin:4px 0 0 0;">${res.msg}</p>`);
                         }
                     }).catch(e => {
                         $("#ebix-confirm-referral").text(oldBtnTxt);

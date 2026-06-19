@@ -184,10 +184,16 @@
   }
 
   .ebix-section-title{
-    font-size:15px;
+    font-size:14px;
     font-weight:800;
     color:#111;
     margin-bottom:14px;
+  }
+
+  #tasks-title.light{
+    font-size:14px;
+    font-weight:400;
+    color:#888;
   }
 
   /* =========================
@@ -738,11 +744,11 @@
               >
 
                 <!-- Referral code entry box (shown when not logged in or eligible for referral) -->
-                <div class="ebix-referral-box" id="ebix-referral-card" style="margin-bottom:20px; display:none;text-align:center;">
-                  <div style="font-size:15px; font-weight:700; color:#111; margin-bottom:4px;">
+                <div class="ebix-referral-box" id="ebix-referral-card" style="margin-bottom:10px; display:none;text-align:left; padding:12px;">
+                  <div id="ebix-referral-title" style="font-size:15px; font-weight:700; color:#111; margin-bottom:3px; text-align:left;">
                     Have a Referral Code?
                   </div>
-                  <div id="ebix-referral-input-container" style="display:none;">
+                  <div id="ebix-referral-input-container" style="display:none;text-align:left;">
                     <div style="color:#888; font-size:13px; margin-bottom:14px;">
                       Enter your friend's code to unlock rewards
                     </div>
@@ -751,33 +757,33 @@
                         type="text"
                         id="ebix-referral-code-input"
                         placeholder="Enter referral code"
-                        style="flex:1; border:1px solid #ddd; border-radius:8px; padding:10px 14px; font-size:13px; outline:none;"
+                        style="flex:1; border:1px solid #ddd; border-radius:8px; padding:6px 14px; font-size:13px; outline:none;"
                       />
                       <button
                         class="ebix-copy-btn"
                         id="ebix-confirm-referral"
-                        style="white-space:nowrap; padding:10px 20px;"
+                        style="white-space:nowrap; padding:6px 20px; margin:0;"
                       >
                         Apply
                       </button>
                     </div>
                     <div id="ebix-ref-err" style="margin-top:8px;"></div>
                   </div>
-                  <div id="ebix-signup-container" style="display:block;">
+                  <div id="ebix-signup-container" style="display:block; text-align:center;">
                     <button
                       class="ebix-copy-btn"
                       id="ebix-signup-btn"
-                      style="width:100%; white-space:nowrap; padding:8px 16px; background:#1570ff; font-size:12px;"
+                      style="width:auto; white-space:nowrap; padding:6px 60px; background:#1570ff; font-size:12px; margin-bottom:4px;"
                     >
-                      Sign up now and claim my rewards
+                      Sign Up Now & Claim My Rewards
                     </button>
-                    <span>Then tap the Gift icon to enter code & claim !</span>
+                    <span style="display:block; margin-top:4px; font-size:12px; color:#555;">Then tap the Gift icon to enter code & claim !</span>
                   </div>
                 </div>
 
                 <!-- Tasks section -->
-                <div class="ebix-section-title" id="tasks-title">
-                  Enter your friend's code to unlock Tasks &amp; Earn
+                <div class="ebix-section-title light" id="tasks-title">
+                  Complete these tasks to unlock your exclusive rewards
                 </div>
                 <div id="reward_only"></div>
 
@@ -1205,7 +1211,7 @@ function ebix_render_history(logs, referralHistory = []) {
   });
 
   if (!html) {
-    html = `<div class="ebix-history-item">No Transaction History found</div>`;
+    html = `<div class="ebix-history-item" style="font-size:15px;">No Transaction History found</div>`;
   }
 
   document.getElementById('ebix-history-list').innerHTML = html;
@@ -1271,6 +1277,7 @@ function ebix_update_ui_state(isLoggedIn, data) {
 
     if (hasTasks) {
       document.getElementById('tasks-title').style.display = 'block';
+      document.getElementById('tasks-title').classList.remove('light');
       document.getElementById('tasks-title').textContent =
         "Enter your friend's code to unlock Tasks & Earn";
 
@@ -1297,11 +1304,13 @@ function ebix_update_ui_state(isLoggedIn, data) {
     document.getElementById('ebix-referral-card').style.display = 'block';
     document.getElementById('ebix-referral-input-container').style.display = 'none';
     document.getElementById('ebix-signup-container').style.display = 'block';
+    document.getElementById('ebix-referral-title').style.textAlign = 'center';
     document.getElementById('reward_only').style.display = 'block';
     if(data.rules_list && data.rules_list.length > 0 && !isLoggedIn){
       document.getElementById('tasks-title').style.display = 'block';
+      document.getElementById('tasks-title').classList.add('light');
       document.getElementById('tasks-title').textContent =
-          "Enter your friend's code to unlock Tasks & Earn";
+          "Complete these tasks to unlock your exclusive rewards";
       document.querySelectorAll('.ebix-logged-in-tasks').forEach(el => {
           el.style.display = 'block';
           el.innerHTML = ebix_render_tasks(data.rules_list);
@@ -1345,6 +1354,7 @@ function ebix_init_ui_state(){
     document.getElementById('ebix-referral-card').style.display = 'block';
     document.getElementById('ebix-referral-input-container').style.display = 'none';
     document.getElementById('ebix-signup-container').style.display = 'block';
+    document.getElementById('ebix-referral-title').style.textAlign = 'center';
     document.getElementById('tasks-title').style.display = 'none';
     document.getElementById('reward_only').style.display = 'block';
     document.querySelectorAll('.ebix-logged-in-tasks').forEach(el => {
