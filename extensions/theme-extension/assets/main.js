@@ -39,7 +39,7 @@
             $("#ebix-referral-code-input").val("");
 
         }
-        function ebix_generate_table_by_id(data, elementId) {
+        function ebix_generate_table_by_id(data, elementId, isLoggedIn) {
             if (!data || data.length === 0) return;
 
             var container = document.getElementById(elementId);
@@ -59,18 +59,31 @@
                     var icon = iconMap[val.attribute_operation] || "⭐";
                     var isPassed = val.is_rule_passed;
 
-                    var statusBtn = isPassed
-                        ? '<button class="ebix-task-status-done" disabled>✓ Completed</button>'
-                        : '';
+                    var actionBtn = '';
+                    if (isPassed) {
+                        actionBtn = '<button class="ebix-task-status-done" disabled>✓ Completed</button>';
+                    } else if (isLoggedIn) {
+                        if (val.attribute_operation === 'first_order') {
+                            actionBtn = '<a href="/collections/all" class="ebix-task-status-pending">Order Now</a>';
+                        } else if (val.attribute_operation === 'visit_page') {
+                            var taskHrefMatch = val.task && val.task.match(/href=["']([^"']+)["']/);
+                            var taskHref = taskHrefMatch ? taskHrefMatch[1] : '/collections/all';
+                            actionBtn = '<a href="' + taskHref + '" class="ebix-task-status-pending">View</a>';
+                        } else if (val.attribute_operation === 'add_order') {
+                            actionBtn = '<a href="/collections/all" class="ebix-task-status-pending">View</a>';
+                        }
+                    }
+
+                    var plainTask = val.task.replace(/<[^>]*>/g, '').trim();
 
                     var card = '<div class="ebix-task-card">'
                         + '<div class="ebix-task-left">'
                         + '<div class="ebix-task-icon">' + icon + '</div>'
                         + '<div class="ebix-task-info">'
-                        + '<h4>' + val.task + ' - ' + item.award + '</h4>'
+                        + '<h4>' + plainTask + ' <span class="ebix-task-award">+' + item.award + '</span></h4>'
                         + '</div>'
                         + '</div>'
-                        + statusBtn
+                        + actionBtn
                         + '</div>';
 
                     container.insertAdjacentHTML("beforeend", card);
@@ -413,7 +426,7 @@
                             const isLoggedIn = !!ebix_Promotion.CustomerId;
 
                             if (data.membership && isLoggedIn && data.membership.name) {
-                                $(".wallet-tier").css("display", "inline")
+                                $(".wallet-tier").css("display", "inline-flex")
                                 $("#ebix-tier").text(data.membership.name);
                             } else {
                                 $(".wallet-tier").css("display", "none")
@@ -549,7 +562,7 @@
                             if (referral_history.length > 0)
                                 ebix_referral_table(referral_history, "ebix-ref-history", ebix_Promotion.CustomerId && !referral_illigible)
                             if (referral_rule.length > 0)
-                                ebix_generate_table_by_id(referral_rule, "reward_only");
+                                ebix_generate_table_by_id(referral_rule, "reward_only", isLoggedIn);
 
                             // Render transaction history if logged in
                             if (isLoggedIn) {

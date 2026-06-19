@@ -106,15 +106,18 @@
     font-weight:800;
     color:#111;
     line-height:1;
+    display:flex;
+    align-items:center;
+    gap:10px;
   }
 
   .wallet-tier{
-    display:inline;
+    display:inline-flex;
     align-items:center;
   }
 
   #ebix-tier{
-      display:inline;
+      display:inline-flex;
       align-items:center;
       justify-content:center;
       background:#f7e58b;
@@ -558,6 +561,8 @@
   font-size: 12px;
   font-weight: 700;
   white-space: nowrap;
+  text-decoration: none;
+  display: inline-block;
 }
 .ebix-task-status-done {
     background: #ebfff2;
@@ -1223,9 +1228,9 @@ function ebix_render_history(logs, referralHistory = []) {
   RENDER TASKS
 ========================= */
 
-function ebix_render_tasks(tasks){
+function ebix_render_tasks(tasks, isLoggedIn){
   let html = '';
-  
+
   const iconMap = {
     'Register': '🎁',
     'visit_page': '🔗',
@@ -1237,18 +1242,30 @@ function ebix_render_tasks(tasks){
     item.rules.forEach(rule => {
       const icon = iconMap[rule.attribute_operation] || '⭐';
       const isPassed = rule.is_rule_passed;
-      
+
       let btnHtml = '';
       if (isPassed) {
         btnHtml = '<button class="ebix-task-status-done" disabled>✓ Completed</button>';
+      } else if (isLoggedIn) {
+        if (rule.attribute_operation === 'first_order') {
+          btnHtml = '<a href="/collections/all" class="ebix-task-status-pending">Order Now</a>';
+        } else if (rule.attribute_operation === 'visit_page') {
+          const taskHrefMatch = rule.task && rule.task.match(/href=["']([^"']+)["']/);
+          const taskHref = taskHrefMatch ? taskHrefMatch[1] : '/collections/all';
+          btnHtml = `<a href="${taskHref}" class="ebix-task-status-pending">View</a>`;
+        } else if (rule.attribute_operation === 'add_order') {
+          btnHtml = '<a href="/collections/all" class="ebix-task-status-pending">View</a>';
+        }
       }
+
+      const plainTask = rule.task.replace(/<[^>]*>/g, '').trim();
 
       html += `
         <div class="ebix-task-card">
           <div class="ebix-task-left">
             <div class="ebix-task-icon">${icon}</div>
             <div class="ebix-task-info">
-              <h4>${rule.task} <span class="ebix-task-award">+${item.award}</span></h4>
+              <h4>${plainTask} <span class="ebix-task-award">+${item.award}</span></h4>
             </div>
           </div>
           ${btnHtml}
@@ -1285,7 +1302,7 @@ function ebix_update_ui_state(isLoggedIn, data) {
 
      document.querySelectorAll('.ebix-logged-in-tasks').forEach(el => {
         el.style.display = 'block';
-        el.innerHTML = ebix_render_tasks(data.referral_rule);
+        el.innerHTML = ebix_render_tasks(data.referral_rule, isLoggedIn);
     });
 
     } else {
@@ -1315,7 +1332,7 @@ function ebix_update_ui_state(isLoggedIn, data) {
           "Complete these tasks to unlock your exclusive rewards";
       document.querySelectorAll('.ebix-logged-in-tasks').forEach(el => {
           el.style.display = 'block';
-          el.innerHTML = ebix_render_tasks(data.rules_list);
+          el.innerHTML = ebix_render_tasks(data.rules_list, isLoggedIn);
       });
     }else if(!data.rules_list) {
       document.getElementById('tasks-title').style.display = 'none';
