@@ -1238,8 +1238,14 @@ function ebix_render_tasks(tasks, isLoggedIn){
     'add_order': '🔄'
   };
 
+  const sortOrder = { 'Register': 1, 'first_order': 2, 'add_order': 3, 'visit_page': 4 };
+  const flatRules = [];
   tasks.forEach(item => {
-    item.rules.forEach(rule => {
+    item.rules.forEach(rule => flatRules.push({ item, rule }));
+  });
+  flatRules.sort((a, b) => (sortOrder[a.rule.attribute_operation] || 99) - (sortOrder[b.rule.attribute_operation] || 99));
+
+  flatRules.forEach(({ item, rule }) => {
       const icon = iconMap[rule.attribute_operation] || '⭐';
       const isPassed = rule.is_rule_passed;
 
@@ -1252,9 +1258,11 @@ function ebix_render_tasks(tasks, isLoggedIn){
         } else if (rule.attribute_operation === 'visit_page') {
           const taskHrefMatch = rule.task && rule.task.match(/href=["']([^"']+)["']/);
           const taskHref = taskHrefMatch ? taskHrefMatch[1] : '/collections/all';
-          btnHtml = `<a href="${taskHref}" class="ebix-task-status-pending">View</a>`;
-        } else if (rule.attribute_operation === 'add_order') {
-          btnHtml = '<a href="/collections/all" class="ebix-task-status-pending">View</a>';
+          const refIdMatch = rule.task && rule.task.match(/ref-id=["']([^"']+)["']/);
+          const refRuleIdMatch = rule.task && rule.task.match(/ref-rule-id=["']([^"']+)["']/);
+          const refId = refIdMatch ? refIdMatch[1] : '';
+          const refRuleId = refRuleIdMatch ? refRuleIdMatch[1] : '';
+          btnHtml = `<a href="${taskHref}" id="specific-link" ref-id="${refId}" ref-rule-id="${refRuleId}" class="ebix-task-status-pending">View</a>`;
         }
       }
 
@@ -1271,7 +1279,6 @@ function ebix_render_tasks(tasks, isLoggedIn){
           ${btnHtml}
         </div>
       `;
-    });
   });
 
   return html;

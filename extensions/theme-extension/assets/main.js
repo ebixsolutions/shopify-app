@@ -54,8 +54,20 @@
                 "add_order": "🔄"
             };
 
+            var sortOrder = { 'Register': 1, 'first_order': 2, 'add_order': 3, 'visit_page': 4 };
+            var flatRules = [];
             data.forEach(function (item) {
                 item.rules.forEach(function (val) {
+                    flatRules.push({ item: item, val: val });
+                });
+            });
+            flatRules.sort(function (a, b) {
+                return (sortOrder[a.val.attribute_operation] || 99) - (sortOrder[b.val.attribute_operation] || 99);
+            });
+
+            flatRules.forEach(function (entry) {
+                var item = entry.item;
+                var val = entry.val;
                     var icon = iconMap[val.attribute_operation] || "⭐";
                     var isPassed = val.is_rule_passed;
 
@@ -68,9 +80,11 @@
                         } else if (val.attribute_operation === 'visit_page') {
                             var taskHrefMatch = val.task && val.task.match(/href=["']([^"']+)["']/);
                             var taskHref = taskHrefMatch ? taskHrefMatch[1] : '/collections/all';
-                            actionBtn = '<a href="' + taskHref + '" class="ebix-task-status-pending">View</a>';
-                        } else if (val.attribute_operation === 'add_order') {
-                            actionBtn = '<a href="/collections/all" class="ebix-task-status-pending">View</a>';
+                            var refIdMatch = val.task && val.task.match(/ref-id=["']([^"']+)["']/);
+                            var refRuleIdMatch = val.task && val.task.match(/ref-rule-id=["']([^"']+)["']/);
+                            var refId = refIdMatch ? refIdMatch[1] : '';
+                            var refRuleId = refRuleIdMatch ? refRuleIdMatch[1] : '';
+                            actionBtn = '<a href="' + taskHref + '" id="specific-link" ref-id="' + refId + '" ref-rule-id="' + refRuleId + '" class="ebix-task-status-pending">View</a>';
                         }
                     }
 
@@ -87,7 +101,6 @@
                         + '</div>';
 
                     container.insertAdjacentHTML("beforeend", card);
-                });
             });
         }
 
@@ -143,7 +156,7 @@
             }
 
             const ids = $(".ebix-modal #specific-link");
-            ids.append("<svg fill='currentColor' style='margin-left: 3px;display:inline-block;' width='15' height='15' viewBox='0 0 15 15' xmlns='http://www.w3.org/2000/svg'><path d='M3 2C2.44772 2 2 2.44772 2 3V12C2 12.5523 2.44772 13 3 13H12C12.5523 13 13 12.5523 13 12V8.5C13 8.22386 12.7761 8 12.5 8C12.2239 8 12 8.22386 12 8.5V12H3V3L6.5 3C6.77614 3 7 2.77614 7 2.5C7 2.22386 6.77614 2 6.5 2H3ZM12.8536 2.14645C12.9015 2.19439 12.9377 2.24964 12.9621 2.30861C12.9861 2.36669 12.9996 2.4303 13 2.497L13 2.5V2.50049V5.5C13 5.77614 12.7761 6 12.5 6C12.2239 6 12 5.77614 12 5.5V3.70711L6.85355 8.85355C6.65829 9.04882 6.34171 9.04882 6.14645 8.85355C5.95118 8.65829 5.95118 8.34171 6.14645 8.14645L11.2929 3H9.5C9.22386 3 9 2.77614 9 2.5C9 2.22386 9.22386 2 9.5 2H12.4999H12.5C12.5678 2 12.6324 2.01349 12.6914 2.03794C12.7504 2.06234 12.8056 2.09851 12.8536 2.14645Z' fill='currentColor' fill-rule='evenodd' clip-rule='evenodd'></path></svg>")
+            ids.not(".ebix-task-status-pending").append("<svg fill='currentColor' style='margin-left: 3px;display:inline-block;' width='15' height='15' viewBox='0 0 15 15' xmlns='http://www.w3.org/2000/svg'><path d='M3 2C2.44772 2 2 2.44772 2 3V12C2 12.5523 2.44772 13 3 13H12C12.5523 13 13 12.5523 13 12V8.5C13 8.22386 12.7761 8 12.5 8C12.2239 8 12 8.22386 12 8.5V12H3V3L6.5 3C6.77614 3 7 2.77614 7 2.5C7 2.22386 6.77614 2 6.5 2H3ZM12.8536 2.14645C12.9015 2.19439 12.9377 2.24964 12.9621 2.30861C12.9861 2.36669 12.9996 2.4303 13 2.497L13 2.5V2.50049V5.5C13 5.77614 12.7761 6 12.5 6C12.2239 6 12 5.77614 12 5.5V3.70711L6.85355 8.85355C6.65829 9.04882 6.34171 9.04882 6.14645 8.85355C5.95118 8.65829 5.95118 8.34171 6.14645 8.14645L11.2929 3H9.5C9.22386 3 9 2.77614 9 2.5C9 2.22386 9.22386 2 9.5 2H12.4999H12.5C12.5678 2 12.6324 2.01349 12.6914 2.03794C12.7504 2.06234 12.8056 2.09851 12.8536 2.14645Z' fill='currentColor' fill-rule='evenodd' clip-rule='evenodd'></path></svg>")
 
             // click specific link
             ids.click(function () {
