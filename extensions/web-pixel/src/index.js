@@ -256,7 +256,7 @@ register(({ settings, analytics, browser, init }) => {
     const Params = new URLSearchParams(event.context.window.location.search);
 
     sendData({
-      event_name: "product_viewed",
+      event_name: "fastbuy_product_view",
       customer_id: customer ? customer.id : null,
       company_id: settings.company_id,
       cart: cart
@@ -270,7 +270,7 @@ register(({ settings, analytics, browser, init }) => {
             })),
           }
         : null,
-      event_data: { variantId, productId },
+      event_data: { variantId, productId, is_fast_buy: true },
       ecosphere_id: Params.get("ebix_ecosphere_id"),
       auto_label: Params.get("ebix_auto_label"),
     });
