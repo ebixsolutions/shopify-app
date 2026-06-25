@@ -634,7 +634,7 @@
           align-items:center;justify-content:space-between;gap:10px;">
          <a
             id="ebix-invite-signup-btn"
-            href="/account/register"
+            href="{{ routes.account_register_url }}"
             style="display:block;width:100%;background:#1570ff;color:#fff;
             text-decoration:none;text-align:center;border-radius:12px;
             padding:14px;font-size:14px;font-weight:700;">
@@ -840,7 +840,7 @@
                   <div class="ebix-share-icons">
 
                     <span id="email">
-                      <img src="{{ 'email.svg' | asset_url }}" alt="email" style="width: 20px !important;" height="20">
+                      <img src="{{ 'email.svg' | asset_url }}" alt="email" width="20" height="20" style="width: 20px !important;">
                     </span>
 
                     <a
@@ -848,7 +848,7 @@
                       target="_blank"
                       id="facebook"
                     >
-                      <img src="{{ 'facebook.svg' | asset_url }}" alt="facebook" style="width: 20px !important;" height="20">
+                      <img src="{{ 'facebook.svg' | asset_url }}" alt="facebook" width="20" height="20" style="width: 20px !important;">
                     </a>
 
                     <a
@@ -856,7 +856,7 @@
                       target="_blank"
                       id="whatsapp"
                     >
-                      <img src="{{ 'whatsapp.svg' | asset_url }}" alt="whatsapp" style="width: 20px !important;" height="20">
+                      <img src="{{ 'whatsapp.svg' | asset_url }}" alt="whatsapp" width="20" height="20" style="width: 20px !important;">
                     </a>
 
                   </div>
