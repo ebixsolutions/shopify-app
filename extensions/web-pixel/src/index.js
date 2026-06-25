@@ -256,7 +256,7 @@ register(({ settings, analytics, browser, init }) => {
     const Params = new URLSearchParams(event.context.window.location.search);
 
     sendData({
-      event_name: "product_viewed_fast_buy_link",
+      event_name: "product_viewed",
       customer_id: customer ? customer.id : null,
       company_id: settings.company_id,
       cart: cart
