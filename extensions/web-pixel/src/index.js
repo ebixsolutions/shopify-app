@@ -119,14 +119,14 @@ register(({ settings, analytics, browser, init }) => {
     }, INACTIVITY_MS);
   };
 
-  const startProductView = async (variantId, productId) => {
+  const startProductView = async (variantId, productId, isFastBuy = false) => {
     const existing = await getCookie();
 
     if (existing) {
       if (existing.variantId !== variantId) {
         await sendProductViewEnd("next_product", existing);
       } else {
-        saveCookie({ ...existing, lastActive: Date.now(), tabId: TAB_ID });
+        saveCookie({ ...existing, lastActive: Date.now(), tabId: TAB_ID, isFastBuy });
         startInactivityTimer();
         startHeartbeat();
         return;
@@ -140,6 +140,7 @@ register(({ settings, analytics, browser, init }) => {
       lastActive: Date.now(),
       tabId: TAB_ID,
       addedToCart: false,
+      isFastBuy,
     });
 
     startInactivityTimer();
@@ -172,12 +173,18 @@ register(({ settings, analytics, browser, init }) => {
     const variantId = cartLine.merchandise.id;
     const session = await getCookie();
 
+    let isFastBuy = false;
     if (session && session.variantId === variantId) {
+      isFastBuy = !!session.isFastBuy;
       saveCookie({ ...session, addedToCart: true });
     }
 
+    const cartEventName = isFastBuy
+      ? e.name.replace("product_", "fastbuy_product_")
+      : e.name;
+
     sendData({
-      event_name: e.name,
+      event_name: cartEventName,
       customer_id: customer.id,
       company_id: settings.company_id,
       cart: cart
@@ -191,7 +198,7 @@ register(({ settings, analytics, browser, init }) => {
             })),
           }
         : null,
-      event_data: { variantId, quantity: cartLine.quantity },
+      event_data: { variantId, quantity: cartLine.quantity, is_fast_buy: isFastBuy },
     });
   };
 
@@ -251,7 +258,7 @@ register(({ settings, analytics, browser, init }) => {
       return;
     }
 
-    await startProductView(variantId, productId);
+    await startProductView(variantId, productId, true);
 
     const Params = new URLSearchParams(event.context.window.location.search);
 
