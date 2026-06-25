@@ -224,68 +224,68 @@
             }
         }
 
-        function getCurrentProductHandle() {
-            const path = window.location.pathname;
-            const match = path.match(/^\/products\/([\w-]+)/);
-            return match ? match[1] : null;
-        }
+        // function getCurrentProductHandle() {
+        //     const path = window.location.pathname;
+        //     const match = path.match(/^\/products\/([\w-]+)/);
+        //     return match ? match[1] : null;
+        // }
 
         const originalDispatchEvent = EventTarget.prototype.dispatchEvent;
 
         EventTarget.prototype.dispatchEvent = function (event) {
             const result = originalDispatchEvent.call(this, event);
-            const inputs = document.querySelectorAll('form[action^="/cart/add"] input[name="id"]');
-            const lastInput = inputs[inputs.length - 1];
-            if (lastInput) {
-                displayAllProductIds(lastInput.value);
-            }
+            // const inputs = document.querySelectorAll('form[action^="/cart/add"] input[name="id"]');
+            // const lastInput = inputs[inputs.length - 1];
+            // if (lastInput) {
+            //     // displayAllProductIds(lastInput.value);
+            // }
             return result;
         };
 
-        function displayAllProductIds(value) {
-            const products = getCurrentProductHandle();
-            const onpageVID = document.querySelector('form[action^="/cart/add"] input[name="id"]');
-            const variantId = onpageVID ? onpageVID.value : null;
-            const variant_id = variantId || value;
-            if (!ebix_Promotion.ShopId) return;
-            const req = JSON.stringify({
-                customer_id: ebix_Promotion.CustomerId,
-                shopify_shop_id: ebix_Promotion.ShopId,
-                variant_id: variant_id,
-            });
-            fetch(`/apps/shopify/get_special_price`, {
-                method: "POST",
-                body: req,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'ngrok-skip-browser-warning': 'true',
-                    'Sys-Language': 'en'
-                }
-            })
-                .then((response) => response.json())
-                .then((res) => {
-                    const rules = res?.data?.data;
+        // function displayAllProductIds(value) {
+        //     const products = getCurrentProductHandle();
+        //     const onpageVID = document.querySelector('form[action^="/cart/add"] input[name="id"]');
+        //     const variantId = onpageVID ? onpageVID.value : null;
+        //     const variant_id = variantId || value;
+        //     if (!ebix_Promotion.ShopId) return;
+        //     const req = JSON.stringify({
+        //         customer_id: ebix_Promotion.CustomerId,
+        //         shopify_shop_id: ebix_Promotion.ShopId,
+        //         variant_id: variant_id,
+        //     });
+        //     fetch(`/apps/shopify/get_special_price`, {
+        //         method: "POST",
+        //         body: req,
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //             'ngrok-skip-browser-warning': 'true',
+        //             'Sys-Language': 'en'
+        //         }
+        //     })
+        //         .then((response) => response.json())
+        //         .then((res) => {
+        //             const rules = res?.data?.data;
 
-                    if (Array.isArray(rules) && rules.length > 0) {
-                        rules.forEach(rule => {
-                            const newPrice = rule?.eff?.variants?.[0]?.discount_price;
-                            const unitPrice = parseFloat(rule?.eff?.variants?.[0]?.unit_price || 0).toFixed(2);
+        //             if (Array.isArray(rules) && rules.length > 0) {
+        //                 rules.forEach(rule => {
+        //                     const newPrice = rule?.eff?.variants?.[0]?.discount_price;
+        //                     const unitPrice = parseFloat(rule?.eff?.variants?.[0]?.unit_price || 0).toFixed(2);
 
-                            $("#spl-price").text(newPrice);
-                            $("#unit-price").text(unitPrice);
-                        });
+        //                     $("#spl-price").text(newPrice);
+        //                     $("#unit-price").text(unitPrice);
+        //                 });
 
-                        $("#custom-offer-widget").css("display", "block");
-                    } else {
-                        $("#custom-offer-widget").css("display", "none");
-                    }
-                })
-                .catch((error) => {
-                    console.error("Error fetching special price:", error);
-                    $("#custom-offer-widget").css("display", "none");
-                });
-        }
-        displayAllProductIds();
+        //                 $("#custom-offer-widget").css("display", "block");
+        //             } else {
+        //                 $("#custom-offer-widget").css("display", "none");
+        //             }
+        //         })
+        //         .catch((error) => {
+        //             console.error("Error fetching special price:", error);
+        //             $("#custom-offer-widget").css("display", "none");
+        //         });
+        // }
+        // displayAllProductIds();
         function PromotionList(value) {
             const promotion = window.ebix_Promotion;
 
