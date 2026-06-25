@@ -163,6 +163,13 @@ register(({ settings, analytics, browser, init }) => {
   });
 
 
+  const extractNumericId = (id) => {
+    if (!id) return null;
+    const str = String(id);
+    const parts = str.split("/");
+    return parts[parts.length - 1];
+  };
+
   const handleCartEvent = async (e) => {
     const customer = init.data.customer;
     const cart = init.data.cart;
@@ -174,7 +181,7 @@ register(({ settings, analytics, browser, init }) => {
     const session = await getCookie();
 
     let isFastBuy = false;
-    if (session && session.variantId === variantId) {
+    if (session && extractNumericId(session.variantId) === extractNumericId(variantId)) {
       isFastBuy = !!session.isFastBuy;
       saveCookie({ ...session, addedToCart: true });
     }
